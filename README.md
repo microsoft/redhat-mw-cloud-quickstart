@@ -3,7 +3,12 @@
 
 This project contains the Azure Quickstart templates for Red Hat Middleware products.  They are:
 
-*  <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/jboss-eap-standalone-rhel7" target="_blank"> [Red Hat JBoss EAP on an Azure VM]</a> - This template creates a standalone JBoss EAP 7 with a sample web app on a RHEL 7 Azure VM.
+* [Red Hat JBoss EAP Standalone on Azure RHEL VM](jboss-eap-standalone-rhel7/README.md) - This template creates a standalone JBoss EAP 7 with a sample web app on a RHEL 7 Azure VM.
 
-*  <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/jboss-eap-standalone-openshift" target="_blank"> [Red Hat JBoss EAP on OpenShift Container Platform on Azure RHEL VM]</a> - This template creates an ephemeral instance of an all-in-one OpenShift Container Platform 3 cluster and Red Hat JBoss EAP 7 with a sample web app.
+* [Red Hat JBoss EAP Standalone on OpenShift on Azure RHEL VM](jboss-eap-standalone-openshift/README.md) - This template a standalone JBoss EAP 7 with a sample web app on OpenShift Container Platfom on a RHEL 7 Azure VM.
 
+* [Red Hat JBoss EAP Cluster on Azure RHEL VM](jboss-eap-clustered-rhel7/README.md) - This template creates cluster JBoss EAP 7 with a sample web app on a RHEL 7 Azure VM.
+
+* [Red Hat JBoss EAP Cluster on OpenShift on Azure RHEL VM](jboss-eap-clustered-openshift/README.md) - This template cluster JBoss EAP 7 with a sample web app on OpenShift Container Platfom on a RHEL 7 Azure VM.
+
+* [Red Hat WildFly Standalone on Azure CentOS VM](wildfly-standalone-centos/README.md) - This template a standalone WildFly 16 with a sample web app on a CentOS 7 Azure VM.
