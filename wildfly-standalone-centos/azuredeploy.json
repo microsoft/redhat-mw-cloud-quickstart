@@ -32,10 +32,10 @@
         "description": "Password for WildFly manager"
       }
     },
-    "sshPassPhrase": {
+    "sshKeyData": {
       "type": "securestring",
       "metadata": {
-        "description": "Pass phrase for SSH certificate"
+        "description": "SSH RSA public key file as a string."
       }
     },
     "_artifactsLocation": {
@@ -277,7 +277,7 @@
           "fileUris": [
             "[concat(parameters('_artifactsLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
-          "commandToExecute": "[concat('sh wildfly-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('wildflyUserName'),' ',variables('singlequote'),parameters('wildflyPassword'),variables('singlequote'),' ',variables('escapedQuote'),parameters('sshPassPhrase'),variables('escapedQuote'))]"
+          "commandToExecute": "[concat('sh wildfly-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('wildflyUserName'),' ',variables('singlequote'),parameters('wildflyPassword'),variables('singlequote'),' ',variables('escapedQuote'),parameters('sshKeyData'),variables('escapedQuote'))]"
         }
       }
     }
