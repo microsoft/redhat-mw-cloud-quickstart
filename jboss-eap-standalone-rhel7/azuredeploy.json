@@ -50,10 +50,10 @@
         "description": "Red Hat Subscription Manager Pool (must contain JBoss EAP entitlement)."
       }
     },
-    "sshPassPhrase": {
+    "sshKeyData": {
       "type": "securestring",
       "metadata": {
-        "description": "Pass phrase for SSH certificate"
+        "description": "SSH RSA public key file as a string."
       }
     },
     "_artifactsLocation": {
