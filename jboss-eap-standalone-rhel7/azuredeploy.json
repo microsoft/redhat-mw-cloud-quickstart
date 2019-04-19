@@ -79,6 +79,8 @@
     }
   },
   "variables": {
+    "singlequote": "'",
+    "escapedQuote": "\"",
     "imagePublisher": "redhat",
     "imageOffer": "rhel",
     "imageSKU": "7.2",
@@ -293,7 +295,7 @@
           "fileUris": [
             "[concat(parameters('_artifactsLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
-          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('eapUserName'),' ',parameters('eapPassword'),' ',parameters('rhsmUserName'),' ',parameters('rhsmPassword'),' ', parameters('rhsmPool'),' ',parameters('sshKeyData'))]"
+          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('eapUserName'),' ',variables('singlequote'),parameters('eapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'),' ',variables('escapedQuote'),parameters('sshKeyData'),variables('escapedQuote'))]"
         }
       }
     }
