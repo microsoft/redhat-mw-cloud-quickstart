@@ -92,6 +92,10 @@ Click on a project, "A Clustered JBoss EAP Application", you will see running 2 
 
 <img src="images/session-replication-overview.png" width="800">
 
+**NOTE: You can scale out or in JBoss EAP Pods manuallly when you click up or down arrow on the right of Pod image.
+More importantly, OpenShift provides <a href="https://docs.openshift.com/container-platform/3.11/dev_guide/pod_autoscaling.html"> Pod Autoscaling</a> to automatically increase or decrease the scale of a replication controller or deployment configuration, 
+based on metrics collected from the pods that belong to that replication controller or deployment configuration.**
+
 If you look at the running pod's logs, you should be able to identify the JGroups cluster members being added `Received new cluster view:`
 
 <img src="images/session-replication-logs.png" width="800">
