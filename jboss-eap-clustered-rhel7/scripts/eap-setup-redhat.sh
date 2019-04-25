@@ -21,9 +21,7 @@ export STORAGE_ACCESS_KEY=${11}
 export CONTAINER_NAME="eapblobcontainer"
 
 echo "EAP_USER: " ${EAP_USER} >> /home/$1/install.log
-echo "EAP_PASSWORD: " ${EAP_PASSWORD} >> /home/$1/install.log
 echo "RHSM_USER: " ${RHSM_USER} >> /home/$1/install.log
-echo "RHSM_PASSWORD: " ${RHSM_PASSWORD} >> /home/$1/install.log
 echo "RHSM_POOL: " ${RHSM_POOL} >> /home/$1/install.log
 echo "STORAGE_ACCOUNT_NAME: " ${STORAGE_ACCOUNT_NAME} >> /home/$1/install.log
 echo "STORAGE_ACCESS_KEY: " ${STORAGE_ACCESS_KEY} >> /home/$1/install.log

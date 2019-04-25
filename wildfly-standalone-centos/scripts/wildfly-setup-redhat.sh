@@ -7,7 +7,6 @@ export WILDFLY_USER=$2
 export WILDFLY_PASSWORD=$3
 
 echo "WILDFLY_USER: " ${WILDFLY_USER} >> /home/$1/install.log
-echo "WILDFLY_PASSWORD: " ${WILDFLY_PASSWORD} >> /home/$1/install.log
 
 echo "WILDFLY Downloading..." >> /home/$1/install.log
 cd /home/$1
@@ -59,6 +58,7 @@ echo "SSH User name:  "$1 > /home/$1/vsts_ssh_info
 echo "SSH passphrase: "$4 >> /home/$1/vsts_ssh_info
 echo "SSH Private key:" >> /home/$1/vsts_ssh_info
 cat id_rsa >> /home/$1/vsts_ssh_info
+
 
 echo "Configure SELinux to use Linux ACL's for file protection..." >> /home/$1/install.log
 setsebool -P allow_ftpd_full_access 1

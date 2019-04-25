@@ -29,10 +29,8 @@ echo "RHSMMODE " $RHSMMODE >> /tmp/envVars.out
 echo "RESOURCEGROUP " $RESOURCEGROUP >> /tmp/envVars.out
 echo "WILDCARDZONE " $WILDCARDZONE >> /tmp/envVars.out
 echo "AUSERNAME " $AUSERNAME >> /tmp/envVars.out
-echo "PASSWORD " $PASSWORD >> /tmp/envVars.out
 echo "THEHOSTNAME " $THEHOSTNAME >> /tmp/envVars.out
 echo "RHSM_USER " $RHSM_USER >> /tmp/envVars.out
-echo "RHSM_PASSWORD " $RHSM_PASSWORD >> /tmp/envVars.out
 echo "RHSM_POOL " $RHSM_POOL >> /tmp/envVars.out
 echo "FULLDOMAIN " $FULLDOMAIN >> /tmp/envVars.out
 

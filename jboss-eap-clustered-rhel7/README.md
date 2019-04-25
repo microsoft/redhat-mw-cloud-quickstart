@@ -37,7 +37,7 @@ To create the VM, you will need to:
 
 3. Input EAP username and password to enable the EAP manager UI and deployment method.
 
-4. Input username and password to registry Red Hat Subscription for JBoss EAP Installation.
+4. Input RHSM username and password to registry Red Hat Subscription for JBoss EAP Installation.
 
 5. Input a passphrase to use with your SSH certificate.  This pass phrase will be used as the Team Services SSH endpoint passphrase.
 
