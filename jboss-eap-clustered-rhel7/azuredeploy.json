@@ -56,6 +56,21 @@
         "description": "SSH RSA public key file as a string."
       }
     },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D4_v3",
+      "allowedValues": [
+        "Standard_D4_v3",
+        "Standard_D8_v3",
+        "Standard_DS4_v2",
+        "Standard_DS4_v3",
+        "Standard_DS8_v3",
+        "Standard_DS16_v3"
+      ],
+      "metadata": {
+        "description": "The size of the Virtual Machine."
+      }
+    },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
@@ -88,7 +103,6 @@
     "publicIPAddressName": "[concat('myIP8',variables('baseName'))]",
     "publicIPAddressType": "Dynamic",
     "virtualMachineName": "[parameters('dnsLabelPrefix')]",
-    "vmSize": "Standard_D4_v3",
     "virtualNetworkName": "eap-vnet",
     "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'),'-nsg8')]",
     "storageAccountType": "Standard_LRS",
@@ -199,7 +213,7 @@
             }
           },
           {
-            "name": "EAPADMIN",
+            "name": "EAPADMIN1",
             "properties": {
               "priority":380,
               "protocol":"Tcp",
@@ -212,9 +226,22 @@
             }
           },
           {
-            "name": "EAPAPP1",
+            "name": "EAPADMIN2",
             "properties": {
               "priority":400,
+              "protocol":"Tcp",
+              "access":"Allow",
+              "direction":"Inbound",
+              "sourceAddressPrefix":"*",
+              "sourcePortRange":"*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange":"10090"
+            }
+          },
+          {
+            "name": "EAPAPP1",
+            "properties": {
+              "priority":420,
               "protocol":"Tcp",
               "access":"Allow",
               "direction":"Inbound",
@@ -227,7 +254,7 @@
           {
             "name": "EAPAPP2",
             "properties": {
-              "priority":420,
+              "priority":440,
               "protocol":"Tcp",
               "access":"Allow",
               "direction":"Inbound",
@@ -305,7 +332,7 @@
       "tags": {},
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[variables('vmSize')]"
+          "vmSize": "[parameters('vmSize')]"
         },
         "storageProfile": {
           "osDisk": {
