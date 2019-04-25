@@ -88,7 +88,7 @@
     "publicIPAddressName": "[concat('myIP8',variables('baseName'))]",
     "publicIPAddressType": "Dynamic",
     "virtualMachineName": "[parameters('dnsLabelPrefix')]",
-    "vmSize": "Standard_F1",
+    "vmSize": "Standard_D4_v3",
     "virtualNetworkName": "eap-vnet",
     "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'),'-nsg8')]",
     "storageAccountType": "Standard_LRS",
