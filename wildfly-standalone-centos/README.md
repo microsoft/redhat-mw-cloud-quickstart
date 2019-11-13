@@ -38,7 +38,7 @@ To create the VM, you will need to:
 
 ## After you Deploy to Azure
 
-Once you create the VM, open a web broser and got to **http://<PUBLIC_HOSTNAME>:8080/dukes/** and you should see the applicaiton running:
+Once you create the VM, open a web browser and got to **http://<PUBLIC_HOSTNAME>:8080/dukes/** and you should see the application running:
 
 <img src="images/app.png" width="800">
 
@@ -48,7 +48,7 @@ If you want to access the administration console go to **http://<PUBLIC_HOSTNAME
 
 ## Notes
 
-If you're interested in Red Hat JBoss EAP Azure Quickstart templates, you can fine it as here:
+If you're interested in Red Hat JBoss EAP Azure Quickstart templates, you can find it here:
 
 *  <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/jboss-eap-standalone-rhel7" target="_blank"> [Red Hat JBoss EAP on an Azure VM]</a> - Standalone JBoss EAP 7 with a sample web app on a RHEL 7 Azure VM.
 
