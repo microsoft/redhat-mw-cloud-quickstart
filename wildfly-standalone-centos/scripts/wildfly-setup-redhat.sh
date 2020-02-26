@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Red Hat WILDFLY 16.0.0.Final Standalone Intallation Start..." >> /home/$1/install.log
+echo "Red Hat WILDFLY 18.0.1.Final Standalone Intallation Start..." >> /home/$1/install.log
 /bin/date +%H:%M:%S  >> /home/$1/install.log
 
 export WILDFLY_USER=$2
@@ -11,18 +11,20 @@ echo "WILDFLY_USER: " ${WILDFLY_USER} >> /home/$1/install.log
 echo "WILDFLY Downloading..." >> /home/$1/install.log
 cd /home/$1
 yum install -y git unzip java
-curl https://download.jboss.org/wildfly/16.0.0.Final/wildfly-16.0.0.Final.zip -o wildfly-16.0.0.Final.zip
-unzip wildfly-16.0.0.Final.zip
+yum -y install wget
+export WILDFLY_RELEASE="18.0.1"
+wget https://download.jboss.org/wildfly/$WILDFLY_RELEASE.Final/wildfly-$WILDFLY_RELEASE.Final.tar.gz
+tar xvf wildfly-$WILDFLY_RELEASE.Final.tar.gz
 
 echo "Sample app deploy..." >> /home/$1/install.log 
 git clone https://github.com/danieloh30/dukes.git
-/bin/cp -rf /home/$1/dukes/target/dukes.war /home/$1/wildfly-16.0.0.Final/standalone/deployments/
+/bin/cp -rf /home/$1/dukes/target/dukes.war /home/$1/wildfly-$WILDFLY_RELEASE.Final/standalone/deployments/
 
 echo "Configuring WILDFLY managment user..." >> /home/$1/install.log 
-/home/$1/wildfly-16.0.0.Final/bin/add-user.sh -u $WILDFLY_USER -p $WILDFLY_PASSWORD -g 'guest,mgmtgroup' 
+/home/$1/wildfly-$WILDFLY_RELEASE.Final/bin/add-user.sh -u $WILDFLY_USER -p $WILDFLY_PASSWORD -g 'guest,mgmtgroup' 
 
-echo "Start WILDFLY 16.0.0.Final instance..." >> /home/$1/install.log 
-/home/$1/wildfly-16.0.0.Final/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 > /dev/null 2>&1 &
+echo "Start WILDFLY 18.0.1.Final instance..." >> /home/$1/install.log 
+/home/$1/wildfly-$WILDFLY_RELEASE.Final/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 > /dev/null 2>&1 &
 
 echo "Configure firewall for ports 8080, 9990..." >> /home/$1/install.log 
 firewall-cmd --zone=public --add-port=8080/tcp --permanent 
@@ -63,5 +65,5 @@ cat id_rsa >> /home/$1/vsts_ssh_info
 echo "Configure SELinux to use Linux ACL's for file protection..." >> /home/$1/install.log
 setsebool -P allow_ftpd_full_access 1
 
-echo "Red Hat WILDFLY 16.0.0.Final Standalone Intallation End..." >> /home/$1/install.log
+echo "Red Hat WILDFLY 18.0.1.Final Standalone Intallation End..." >> /home/$1/install.log
 /bin/date +%H:%M:%S >> /home/$1/install.log
