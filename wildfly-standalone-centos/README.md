@@ -1,28 +1,52 @@
 # VM-Redhat - WildFly 16.0.0.Final standalone mode
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FMicrosoft%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fwildfly-standalone-centos%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/wildfly-standalone-centos/azuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 <a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FMicrosoft%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fwildfly-standalone-centos%2Fazuredeploy.json" target="_blank">
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-This template deploys a web applicaton deployed on WildFly 16.0.0.Final running on CentOS 7.
-
 `Tags: WILDFLY, Red Hat, CentOS`
 
-To obtain a rhsm account go to: www.redhat.com and sign in.
+<!-- TOC -->
 
-## Solution overview and deployed resources
-This template creates all of the compute resources to run WILDFLY 16 on top of CentOS 7.5, deploying the following components:
-- CentOS 7.5 VM 
+1. [Solution Overview](#solution-overview)
+2. [Template Solution Architecture ](#template-solution-architecture)
+3. [Licenses and Costs ](#licenses-and-costs)
+4. [Prerequisites](#prerequisites)
+5. [Deployment Steps](#deployment-steps)
+6. [Deployment Time](#deployment-time)
+7. [Support](#support)
+
+<!-- /TOC -->
+
+## Solution Overview and deployed resources
+WildFly 18 is the latest release in a series of JBoss open-source application server offerings. WildFly 18 is an exceptionally fast, lightweight and powerful implementation of the Jakarta Platform specifications. The state-of-the-art architecture built on the Modular Service Container enables services on-demand when your application requires them.
+
+This Azure quickstart template deploys a web applicaton deployed on WildFly 18.0.1.Final running on CentOS 8.This template creates all of the compute resources to run WILDFLY 18.0.1 on top of CentOS 8.0, deploying the following components:
+- CentOS 8 VM 
 - Public DNS 
 - Private Virtual Network 
 - Security Configuration 
-- WildFly 16.0.0.Final
-- Sample application deployed to WildFly 16.0.0.Final
+- WildFly 18.0.1.Final
+- Sample application deployed to WildFly 18.0.1.Final
 
-To learn more about WildFly 16.0.0.Final, check out:
-https://docs.wildfly.org/16/
+To obtain a rhsm account go to: www.redhat.com and sign in.
+
+To learn more about WildFly 18.0.0.Final, check out:
+https://docs.wildfly.org/18/
+
+## Solution overview and deployed resources
+This template creates all of the compute resources to run WILDFLY 18.0.1 on top of CentOS 8.0, deploying the following components:
+- CentOS 8 VM 
+- Public DNS 
+- Private Virtual Network 
+- Security Configuration 
+- WildFly 18.0.1.Final
+- Sample application deployed to WildFly 18.0.1.Final
+
+To learn more about WildFly 18.0.0.Final, check out:
+https://docs.wildfly.org/18/
 
 ## Before you Deploy to Azure
 
