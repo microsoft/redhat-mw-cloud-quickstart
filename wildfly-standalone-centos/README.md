@@ -10,7 +10,7 @@
 
 <!-- TOC -->
 
-1. [Solution Overview](#solution-overview)
+1. [Solution Overview and deployed resources](#solution-overview)
 2. [Template Solution Architecture ](#template-solution-architecture)
 3. [Licenses and Costs ](#licenses-and-costs)
 4. [Prerequisites](#prerequisites)
