@@ -68,7 +68,7 @@ Build your environment with WILDFLY 18.0.1 on top of CentOS 8.0 on Azure in a fe
 - Launch the Template by click on Deploy to Azure button.  
 - Fill in all the required parameter values. Accept the terms and condition on click Purchase.
 - Once the deployment is successfull, go the VM and copy the Public IP of the VM.
-- Open a web broser and got to **http://<PUBLIC_HOSTNAME>:8080/dukes/** and you should see the applicaiton running:
+- Open a web browser and go to **http://<PUBLIC_HOSTNAME>:8080/dukes/** and you should see the applicaiton running:
 
 <img src="images/app.png" width="800">
 
