@@ -67,22 +67,19 @@ This uses CentOS 8 image which is a PAY AS YOU GO image and doesn't require the 
 Build your environment with WILDFLY 18.0.1 on top of CentOS 8.0 on Azure in a few simple steps:  
 - Launch the Template by click on Deploy to Azure button.  
 - Fill in all the required parameter values. Accept the terms and condition on click Purchase.
+- Once the deployment is successfull, go the VM and copy the Public IP of the VM.
+- Open a web broser and got to **http://<PUBLIC_HOSTNAME>:8080/dukes/** and you should see the applicaiton running:
+
+<img src="images/app.png" width="800">
+
+- If you want to access the administration console go to **http://<PUBLIC_HOSTNAME>:8080** and click on the link Administration Console:
+
+<img src="images/admin.png" width="800">
+
 
 ## Deployment Time 
 
 The deployment takes less than 10 minutes to complete.
-
-## After you Deploy to Azure
-
-Once the deployment is successfull, go the VM and copy the Public IP of the VM.
-
-Open a web broser and got to **http://<PUBLIC_HOSTNAME>:8080/dukes/** and you should see the applicaiton running:
-
-<img src="images/app.png" width="800">
-
-If you want to access the administration console go to **http://<PUBLIC_HOSTNAME>:8080** and click on the link Administration Console:
-
-<img src="images/admin.png" width="800">
 
 ## Notes
 
