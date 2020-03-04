@@ -16,7 +16,7 @@
 4. [Prerequisites](#prerequisites)
 5. [Deployment Steps](#deployment-steps)
 6. [Deployment Time](#deployment-time)
-7. [After you Deploy to Azure](#after-you-deploy-to-azure)
+7. [Post Deployment Steps](#post-deployment-steps)
 8. [Support](#support)
 
 <!-- /TOC -->
@@ -66,7 +66,34 @@ This uses CentOS 8 image which is a PAY AS YOU GO image and doesn't require the 
 
 Build your environment with WILDFLY 18.0.1 on top of CentOS 8.0 on Azure in a few simple steps:  
 - Launch the Template by click on Deploy to Azure button.  
-- Fill in all the required parameter values. Accept the terms and condition on click Purchase.
+- Fill in the following parameter values. Then accept the terms and condition before clicking on Purchase.
+
+1. **Subscription** - Choose the right subscription where you would like to deploy.
+
+2. **Resource Group** - Create a new Resource group or you can select an existing one.
+
+3. **Location** - Choose the right location for your deployment.
+
+4. **Admin Username** - User account name for logging into your CentOS VM.
+
+5. **Admin Password** - User account password for logging into your CentOS VM.
+
+6. **DNS Label Prefix** - DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error.
+
+7. **Wildfly Username** - User name for Wildfly Manager.
+
+8. **Wildfly Password** - User account password for Wildfly Manager.
+
+9. **SSH Key Data** - Generate an SSH key using Puttygen and provide the data here.
+
+10. Leave the rest of the Parameter Value as it is and proceed.
+
+## Deployment Time 
+
+The deployment takes less than 10 minutes to complete.
+
+## Post Deployment Steps
+
 - Once the deployment is successfull, go the VM and copy the Public IP of the VM.
 - Open a web browser and go to **http://<PUBLIC_HOSTNAME>:8080/dukes/** and you should see the applicaiton running:
 
@@ -75,11 +102,6 @@ Build your environment with WILDFLY 18.0.1 on top of CentOS 8.0 on Azure in a fe
 - If you want to access the administration console go to **http://<PUBLIC_HOSTNAME>:8080** and click on the link Administration Console:
 
 <img src="images/admin.png" width="800">
-
-
-## Deployment Time 
-
-The deployment takes less than 10 minutes to complete.
 
 ## Notes
 
