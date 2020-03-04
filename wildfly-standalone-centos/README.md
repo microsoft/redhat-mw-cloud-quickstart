@@ -42,7 +42,7 @@ This template creates all of the compute resources to run WILDFLY 18.0.1 on top 
 To learn more about WildFly 18.0.0.Final, check out:
 https://docs.wildfly.org/18/
 
-Deployment Architecture diagram to be prepared and finalized.
+<img src="images/wildfly-arch.PNG" width="800">
 
 ## Licenses and Costs 
 
