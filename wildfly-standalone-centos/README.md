@@ -39,10 +39,11 @@ This template creates all of the compute resources to run WILDFLY 18.0.1 on top 
 - WildFly 18.0.1.Final
 - Sample application deployed to WildFly 18.0.1.Final
 
+Following is the Architecture :
+<img src="images/wildfly.arch.PNG" width="800">
+
 To learn more about WildFly 18.0.0.Final, check out:
 https://docs.wildfly.org/18/
-
-<img src="images/wildfly-arch.PNG" width="800">
 
 ## Licenses and Costs 
 
