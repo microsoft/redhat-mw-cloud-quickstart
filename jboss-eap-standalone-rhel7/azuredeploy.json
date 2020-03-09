@@ -83,7 +83,7 @@
     "escapedQuote": "\"",
     "imagePublisher": "redhat",
     "imageOffer": "rhel",
-    "imageSKU": "7.2",
+    "imageSKU": "7-LVM",
     "baseName": "[uniquestring(parameters('dnsLabelPrefix'),resourceGroup().id)]",
     "nicName": "[concat('myNic8',variables('baseName'))]",
     "addressPrefix": "10.0.0.0/16",
