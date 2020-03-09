@@ -45,7 +45,7 @@
             "description": "Base URL for Marketplace Deployment",
             "artifactsBaseUrl": ""
           },
-          "defaultValue": "https://raw.githubusercontent.com/ossvillage/JBoss-EAP-7.2-cluster-Two-Node-RHEL/master/"
+          "defaultValue": "https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/edit/master/jboss-eap-clustered-rhel-VMSS/"
         },
         "adminPasswordOrKey": {
           "type": "securestring",
@@ -329,9 +329,10 @@
     },
     {
       "apiVersion": "2016-04-30-preview",
+      "type": "Microsoft.Compute/virtualMachines",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nic1Name'))]",
-        [ "variables('asName')" ]
+        "[variables('asName')]"
       ],
       "location": "[parameters('location')]",
       "name": "[variables('vm1Name')]",
@@ -388,15 +389,14 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.2.4',' ',variables('jbosseapstrgName'),' ',variables('accesskey'),' ',variables('containerName'), variables('scriptClose'))]"
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.2.4',' ',variables('jbosseapstrgName'),' ',listKeys(variables('storageAccountId'), '2019-04-01').keys[0].value,' ',variables('containerName'), variables('scriptClose'))]"
             }
           }
         }
       ],
       "tags": {
         "Tag1": "ManagedVM"
-      },
-      "type": "Microsoft.Compute/virtualMachines"
+      }
     },
     {
       "apiVersion": "2016-04-30-preview",
@@ -408,7 +408,7 @@
       },
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nic2Name'))]",
-        [ "variables('asName')" ]
+        "[variables('asName')]"
       ],
       "properties": {
         "availabilitySet": {
@@ -463,7 +463,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.3.4',' ',variables('jbosseapstrgName'),' ',variables('accesskey'),' ',variables('containerName'), variables('scriptClose'))]"
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.3.4',' ',variables('jbosseapstrgName'),' ',listKeys(variables('storageAccountId'), '2019-04-01').keys[0].value,' ',variables('containerName'), variables('scriptClose'))]"
             }
           }
         }
