@@ -51,43 +51,43 @@ This uses CentOS 8 image which is a PAY AS YOU GO image and doesn't require the 
 
 ## Prerequisites 
 
-- Azure Subscription with specified payment method (CentOS-Based 8.0 is a market place product and requires payment method to be specified in Azure Subscription)
+1. Azure Subscription with specified payment method (CentOS-Based 8.0 is a market place product and requires payment method to be specified in Azure Subscription)
 
-- To create the VM, you will need to:
+2. To create the VM, you will need to:
 
-1. Choose an admin user name and password for your VM.  
+    - Choose an admin user name and password for your VM.  
 
-2. Choose a name for your VM. 
+    - Choose a name for your VM. 
 
-3. Choose a WILDFLY username and password to enable the WILDFLY admin console and deployment method. 
+    - Choose a WILDFLY username and password to enable the WILDFLY admin console and deployment method. 
 
-4. Choose a Passphrase to use with your SSH certificate.  This pass phrase will be used as the Team Services SSH endpoint passphrase.
+    - Choose a Passphrase to use with your SSH certificate.  This pass phrase will be used as the Team Services SSH endpoint passphrase.
 
 ## Deployment Steps  
 
 Build your environment with WILDFLY 18.0.1 on top of CentOS 8.0 on Azure in a few simple steps:  
-- Launch the Template by click on Deploy to Azure button.  
-- Fill in the following parameter values. Then accept the terms and condition before clicking on Purchase.
+1. Launch the Template by click on Deploy to Azure button.  
+2. Fill in the following parameter values. Then accept the terms and condition before clicking on Purchase.
 
-1. **Subscription** - Choose the right subscription where you would like to deploy.
+    - **Subscription** - Choose the right subscription where you would like to deploy.
 
-2. **Resource Group** - Create a new Resource group or you can select an existing one.
+    - **Resource Group** - Create a new Resource group or you can select an existing one.
 
-3. **Location** - Choose the right location for your deployment.
+    - **Location** - Choose the right location for your deployment.
 
-4. **Admin Username** - User account name for logging into your CentOS VM.
+    - **Admin Username** - User account name for logging into your CentOS VM.
 
-5. **Admin Password** - User account password for logging into your CentOS VM.
+    - **Admin Password** - User account password for logging into your CentOS VM.
 
-6. **DNS Label Prefix** - DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error.
+    - **DNS Label Prefix** - DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error.
 
-7. **Wildfly Username** - User name for Wildfly Manager.
+    - **Wildfly Username** - User name for Wildfly Manager.
 
-8. **Wildfly Password** - User account password for Wildfly Manager.
+    - **Wildfly Password** - User account password for Wildfly Manager.
 
-9. **SSH Key Data** - Generate an SSH key using Puttygen and provide the data here.
+    - **SSH Key Data** - Generate an SSH key using Puttygen and provide the data here.
 
-10. Leave the rest of the Parameter Value as it is and proceed.
+    - Leave the rest of the Parameter Value as it is and proceed.
 
 ## Deployment Time 
 
