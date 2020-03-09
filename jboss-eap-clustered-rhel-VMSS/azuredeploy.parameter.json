@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "value": "eapadmin"
+    },
+    "location": {
+      "value": "west us"
+    },
+    "EAPUser": {
+      "value": "eapadmin"
+    },
+    "EAPPassword": {
+      "value": "Spektra@123456"
+    },
+    "adminPasswordOrKey": {
+      "value": "Spektra@123456"
+    }
+  }
+}
