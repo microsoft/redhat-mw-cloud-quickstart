@@ -1,14 +1,16 @@
 #!/bin/sh
 
+# $1 - VM Host User Name
+
 echo "Red Hat JBoss EAP 7 Cluster Intallation Start: " | /bin/date +%H:%M:%S  >> /home/$1/install.log
 
 export JBOSS_HOME="/opt/rh/jboss-eap-7.2/"
-export EAP_USER=$1
-export EAP_PASSWORD=$2
-export IP_ADDR=$3
-export STORAGE_ACCOUNT_NAME=${4}
-export STORAGE_ACCESS_KEY=${5}
-export CONTAINER_NAME= $6
+export EAP_USER=$2
+export EAP_PASSWORD=$3
+export IP_ADDR=$4
+export STORAGE_ACCOUNT_NAME=${5}
+export STORAGE_ACCESS_KEY=${6}
+export CONTAINER_NAME= $7
 
 
 echo "Configure firewall for ports 8080, 8180, 9990, 10090..." >> /home/$1/install.log 
