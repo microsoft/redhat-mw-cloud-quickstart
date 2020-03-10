@@ -9,7 +9,7 @@ export EAP_USER=$2
 export EAP_PASSWORD=$3
 export IP_ADDR=$4
 export STORAGE_ACCOUNT_NAME=${5}
-export STORAGE_ACCESS_KEY=${6}
+export STORAGE_ACCESS_KEY=base64 -d ${6}
 export CONTAINER_NAME= $7
 
 
