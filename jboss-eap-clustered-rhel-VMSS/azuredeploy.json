@@ -45,7 +45,7 @@
             "description": "Base URL for Marketplace Deployment",
             "artifactsBaseUrl": ""
           },
-          "defaultValue": "https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/edit/master/jboss-eap-clustered-rhel-VMSS/"
+          "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/jboss-eap-clustered-rhel-VMSS/"
         },
         "adminPasswordOrKey": {
           "type": "securestring",
