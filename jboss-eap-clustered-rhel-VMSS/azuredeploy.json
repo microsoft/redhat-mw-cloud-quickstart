@@ -397,7 +397,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.2.4',' ',variables('jbosseapstrgName'),' ',base64(listKeys(variables('storageAccountId'), '2019-04-01').keys[0].value),' ',variables('containerName'), variables('scriptClose'))]"
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.2.4',' ',variables('jbosseapstrgName'),' ',base64(listKeys(variables('storageAccountId'), '2019-04-01').keys[0].value),' ',variables('containerName'), variables('scriptClose'))]"
             }
           }
         }
@@ -472,7 +472,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.3.4',' ',variables('jbosseapstrgName'),' ',base64(listKeys(variables('storageAccountId'), '2019-04-01').keys[0].value),' ',variables('containerName'), variables('scriptClose'))]"
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.3.4',' ',variables('jbosseapstrgName'),' ',base64(listKeys(variables('storageAccountId'), '2019-04-01').keys[0].value),' ',variables('containerName'), variables('scriptClose'))]"
             }
           }
         }
