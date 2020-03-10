@@ -67,7 +67,6 @@
       },
   "variables": {
     "scriptFileName": "deployjbosseap.sh",
-    "accesskey": "[listKeys(variables('storageAccountId'), '2019-04-01').keys[0].value]",
     "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName'))]",
     "containerName": "azureping",
     "scriptStart": "su -c'sh ",
@@ -107,7 +106,7 @@
       }
     },
     "networkSecurityGroupName": "jbosseap-72-nsg",
-    "jbosseapstrgName": "[concat('jbosseapstrg', uniqueString(resourceGroup().id))]"
+    "jbosseapstrgName": "[concat('jbosstrg', uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -450,7 +449,7 @@
             "displayName": "JBOSSEAPINstall"
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', variables('vm1Name'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', variables('vm2Name'))]"
           ],
           "properties": {
             "publisher": "Microsoft.Azure.Extensions",
