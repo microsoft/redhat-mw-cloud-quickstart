@@ -76,6 +76,7 @@
     "vm1Name": "jbosseap-server-1",
     "vm2Name": "jbosseap-server-2",
     "asName": "jbosseap-as",
+    "skuName": "Aligned",
     "imagePublisher": "RedHat",
     "imageOffer": "RHEL",
     "imageSku": "7.7",
@@ -91,6 +92,7 @@
     "publicIPAddresslb": "[concat(uniquestring(variables('loadBalancersName')), 'publicip')]",
     "publicIPAddressType": "Dynamic",
     "vmSize": "Standard_DS2_v2",
+    "numberOfInstances": 2,
     "virtualNetworkName": "jbosseap72-vnet",
     "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet1Name'))]",
     "subnet2Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet2Name'))]",
@@ -329,12 +331,16 @@
     {
       "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vm1Name')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "Tag1": "ManagedVM"
+      },
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nic1Name'))]",
-        "[variables('asName')]"
+        "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
       ],
-      "location": "[parameters('location')]",
-      "name": "[variables('vm1Name')]",
       "properties": {
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('asName'))]"
@@ -361,13 +367,16 @@
             "offer": "[variables('imageOffer')]",
             "sku": "[variables('imageSku')]",
             "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
           }
         }
       },
       "resources": [
         {
           "type": "extensions",
-          "name": "jbosseap-extesnion",
+          "name": "jbosseap-extension",
           "apiVersion": "2016-04-30-preview",
           "location": "[parameters('location')]",
           "comments": "These VM Extensions are Install JBOSSEAP",
@@ -392,10 +401,7 @@
             }
           }
         }
-      ],
-      "tags": {
-        "Tag1": "ManagedVM"
-      }
+      ]
     },
     {
       "apiVersion": "2016-04-30-preview",
@@ -407,7 +413,8 @@
       },
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nic2Name'))]",
-        "[variables('asName')]"
+        "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
       ],
       "properties": {
         "availabilitySet": {
@@ -428,6 +435,9 @@
             "offer": "[variables('imageOffer')]",
             "sku": "[variables('imageSku')]",
             "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
           }
         },
         "networkProfile": {
@@ -441,7 +451,7 @@
       "resources": [
         {
           "type": "extensions",
-          "name": "jbosseap-extesnion",
+          "name": "jbosseap-extension",
           "apiVersion": "2016-04-30-preview",
           "location": "[parameters('location')]",
           "comments": "These VM Extensions are Install JBOSSEAP",
@@ -524,12 +534,11 @@
               "frontendPort": 80,
               "backendPort": 8080,
               "enableFloatingIP": false,
-              "idleTimeoutInMinutes": 4,
+              "idleTimeoutInMinutes": 5,
               "protocol": "Tcp",
               "enableTcpReset": false,
-              "loadDistribution": "SourceIPProtocol",
               "backendAddressPool": {
-                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/backendAddressPools/jbosseap-server')]"
+                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/backendAddressPools/jbosseap-servers')]"
               },
               "probe": {
                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/probes/eap-lb-health')]"
@@ -547,23 +556,23 @@
               "numberOfProbes": 2
             }
           }
-        ],
-        "inboundNatRules": [],
-        "inboundNatPools": []
+        ]
       }
     },
     {
       "name": "[Variables('asName')]",
       "type": "Microsoft.Compute/availabilitySets",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2015-06-15",
-      "dependsOn": [],
+      "apiVersion": "2019-03-01",
       "tags": {
         "displayName": "jbosseap-as"
       },
       "properties": {
         "platformUpdateDomainCount": 2,
         "platformFaultDomainCount": 2
+      },
+      "sku": {
+        "name": "[variables('skuName')]"
       }
     },
     {
