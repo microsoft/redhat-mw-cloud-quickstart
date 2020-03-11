@@ -12,6 +12,11 @@ export STORAGE_ACCOUNT_NAME=${5}
 export STORAGE_ACCESS_KEY=base64 -d ${6}
 export CONTAINER_NAME= $7
 
+echo "EAP admin user"+${EAP_USER} >> /home/$1/install.log
+echo "Private IP Address of VM"+${IP_ADDR} >> /home/$1/install.log
+echo "Storage Account Name"+${STORAGE_ACCOUNT_NAME} >> /home/$1/install.log
+echo "Storage Account Access Key"+${STORAGE_ACCESS_KEY} >> /home/$1/install.log
+echo "Storage Container Name"+${STORAGE_ACCESS_KEY} >> /home/$1/install.log
 
 echo "Configure firewall for ports 8080, 8180, 9990, 10090..." >> /home/$1/install.log 
 
