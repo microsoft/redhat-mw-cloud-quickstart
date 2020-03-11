@@ -9,8 +9,8 @@ export EAP_USER=$2
 export EAP_PASSWORD=$3
 export IP_ADDR=$4
 export STORAGE_ACCOUNT_NAME=${5}
-export STORAGE_ACCESS_KEY=base64 -d ${6}
-export CONTAINER_NAME= $7
+export CONTAINER_NAME=$6
+export STORAGE_ACCESS_KEY=$(echo "${7}" | openssl enc -d -base64)
 
 echo "EAP admin user"+${EAP_USER} >> /home/$1/install.log
 echo "Private IP Address of VM"+${IP_ADDR} >> /home/$1/install.log
