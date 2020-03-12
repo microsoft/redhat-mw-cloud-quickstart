@@ -410,7 +410,7 @@
                 ]
               },
               "protectedSettings": {
-                "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.2.4',' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value), variables('scriptClose'))]"
+                "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('EAPUser'),' ',parameters('EAPPassword'),' ',reference(variables('nic1Name')).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value), variables('scriptClose'))]"
               }
             }
           }
@@ -485,7 +485,7 @@
                 ]
               },
               "protectedSettings": {
-                "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.3.4',' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value), variables('scriptClose'))]"
+                "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('EAPUser'),' ',parameters('EAPPassword'),' ',reference(variables('nic2Name')).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value), variables('scriptClose'))]"
               }
             }
           }
