@@ -58,7 +58,7 @@ $JBOSS_HOME/bin/standalone.sh -bprivate $IP_ADDR --server-config=standalone-azur
 
 echo "deploy an applicaiton " >> /home/$1/install.log
 git clone https://github.com/danieloh30/eap-session-replication.git
-cp $HOME/eap-session-replication/target/eap-session-replication.war $JBOSS_HOME/standalone/deployments/
+cp eap-session-replication/target/eap-session-replication.war $JBOSS_HOME/standalone/deployments/
 touch $JBOSS_HOME/standalone/deployments/eap-session-replication.war.dodeploy
 
 echo "Configuring EAP managment user..." >> /home/$1/install.log 
