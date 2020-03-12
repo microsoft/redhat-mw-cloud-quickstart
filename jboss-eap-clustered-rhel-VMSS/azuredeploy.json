@@ -79,7 +79,7 @@
       "skuName": "Aligned",
       "imagePublisher": "RedHat",
       "imageOffer": "RHEL",
-      "imageSku": "7.7",
+      "imageSku": "8",
       "nic1Name": "[concat(uniquestring(variables('vm1Name')), 'nic')]",
       "nic2Name": "[concat(uniquestring(variables('vm2Name')), 'nic')]",
       "addressPrefix": "10.3.0.0/16",
