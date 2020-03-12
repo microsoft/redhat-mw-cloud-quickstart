@@ -2,7 +2,19 @@
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-clustered-rhel-VMSS%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
-  
+
+<!-- TOC -->
+
+1. [Solution Overview ](#solution-overview)
+2. [Template Solution Architecture ](#template-solution-architecture)
+3. [Licenses and Costs ](#licenses-and-costs)
+4. [Prerequisites](#prerequisites)
+5. [Deployment Steps](#deployment-steps)
+6. [Deployment Time](#deployment-time)
+7. [Post Deployment Steps](#post-deployment-steps)
+
+<!-- /TOC -->
+
 ## Solution Overview
 This template creates two JBoss EAP Instances running inside a VNet and each server is in it’s own subnet. Both the servers are added to the backend pool of a Load Balancer.
 
