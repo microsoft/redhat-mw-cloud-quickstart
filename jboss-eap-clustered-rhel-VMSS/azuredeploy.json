@@ -1,603 +1,628 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "adminUsername": {
-      "type": "string",
-      "metadata": {
-        "description": "User name for the Virtual Machine."
-      }
-    },
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Location for all resources."
-      }
-    },
-    "authenticationType": {
-      "type": "string",
-      "defaultValue": "sshPublicKey",
-      "allowedValues": [
-        "sshPublicKey",
-        "password"
-      ],
-      "metadata": {
-        "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
-      }
-    },
-    "EAPUser": {
-      "type": "string",
-      "metadata": {
-        "description": "User name for the JBOSS EAP."
-      }
-    },
-      "EAPPassword": {
-        "type": "securestring",
-        "minLength": 10,
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "adminUsername": {
+        "type": "string",
         "metadata": {
-          "description": "Password for the JBOSS EAP"
+          "description": "User name for the Virtual Machine."
         }
       },
-        "baseUrl": {
-          "type": "string",
-          "metadata": {
-            "description": "Base URL for Marketplace Deployment",
-            "artifactsBaseUrl": ""
-          },
-          "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/jboss-eap-clustered-rhel-VMSS/"
-        },
-        "adminPasswordOrKey": {
+      "location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]",
+        "metadata": {
+          "description": "Location for all resources."
+        }
+      },
+      "authenticationType": {
+        "type": "string",
+        "defaultValue": "sshPublicKey",
+        "allowedValues": [
+          "sshPublicKey",
+          "password"
+        ],
+        "metadata": {
+          "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
+        }
+      },
+      "EAPUser": {
+        "type": "string",
+        "metadata": {
+          "description": "User name for the JBOSS EAP."
+        }
+      },
+        "EAPPassword": {
           "type": "securestring",
+          "minLength": 10,
           "metadata": {
-            "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+            "description": "Password for the JBOSS EAP"
           }
         },
-    "jbosseapstrgType": {
-      "type": "string",
-      "defaultValue": "Standard_LRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Standard_ZRS",
-        "Standard_GRS",
-        "Standard_RAGRS",
-        "Premium_LRS"
-      ]
-    }
-      },
-  "variables": {
-    "scriptFileName": "deployjbosseap.sh",
-    "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName'))]",
-    "containerName": "azureping",
-    "scriptStart": "su -c'sh ",
-    "customScriptCommand": "[concat(variables('scriptStart'), variables('scriptFileName'), ' ')]",
-    "scriptClose": "'",
-    "loadBalancersName": "jbosseap-lb",
-    "vm1Name": "jbosseap-server-1",
-    "vm2Name": "jbosseap-server-2",
-    "asName": "jbosseap-as",
-    "skuName": "Aligned",
-    "imagePublisher": "RedHat",
-    "imageOffer": "RHEL",
-    "imageSku": "7.7",
-    "nic1Name": "[concat(uniquestring(variables('vm1Name')), 'nic')]",
-    "nic2Name": "[concat(uniquestring(variables('vm2Name')), 'nic')]",
-    "addressPrefix": "10.3.0.0/16",
-    "subnet1Name": "eap-server1-subnet",
-    "subnet1Prefix": "10.3.2.0/24",
-    "subnet2Name": "eap-server2-subnet",
-    "subnet2Prefix": "10.3.3.0/24",
-    "publicIPAddress1Name": "[concat(uniquestring(variables('vm1Name')), 'publicip')]",
-    "publicIPAddress2Name": "[concat(uniquestring(variables('vm2Name')), 'publicip')]",
-    "publicIPAddresslb": "[concat(uniquestring(variables('loadBalancersName')), 'publicip')]",
-    "publicIPAddressType": "Dynamic",
-    "vmSize": "Standard_DS2_v2",
-    "numberOfInstances": 2,
-    "virtualNetworkName": "jbosseap72-vnet",
-    "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet1Name'))]",
-    "subnet2Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet2Name'))]",
-    "linuxConfiguration": {
-      "disablePasswordAuthentication": true,
-      "ssh": {
-        "publicKeys": [
-          {
-            "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-            "keyData": "[parameters('adminPasswordOrKey')]"
-          }
-        ]
-      }
-    },
-    "networkSecurityGroupName": "jbosseap-72-nsg",
-    "jbosseapstrgName": "[concat('jbosstrg', uniqueString(resourceGroup().id))]"
-  },
-  "resources": [
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddress1Name')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddress2Name')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddresslb')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
-      }
-    },
-    {
-      "comments": "Default Network Security Group for template",
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "2019-08-01",
-      "name": "[variables('networkSecurityGroupName')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "securityRules": [
-          {
-            "name": "Port_8080",
-            "properties": {
-              "priority": 350,
-              "access": "Allow",
-              "direction": "Inbound",
-              "destinationPortRange": "8080",
-              "protocol": "Tcp",
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*"
-            }
-          },
-          {
-            "name": "default-allow-22",
-            "properties": {
-              "priority": 340,
-              "access": "Allow",
-              "direction": "Inbound",
-              "destinationPortRange": "22",
-              "protocol": "Tcp",
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*"
-            }
-          },
-          {
-            "name": "http_9990",
-            "properties": {
-              "priority": 360,
-              "access": "Allow",
-              "direction": "Inbound",
-              "destinationPortRange": "9990",
-              "protocol": "Tcp",
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*"
-            }
-          },
-          {
-            "name": "port_45700",
-            "properties": {
-              "priority": 370,
-              "access": "Allow",
-              "direction": "Inbound",
-              "destinationPortRange": "45700",
-              "protocol": "Tcp",
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*"
-            }
-          },
-          {
-            "name": "Port_7600",
-            "properties": {
-              "priority": 380,
-              "access": "Allow",
-              "direction": "Inbound",
-              "destinationPortRange": "7600",
-              "protocol": "Tcp",
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*"
-            }
-          },
-          {
-            "name": "Port_55200",
-            "properties": {
-              "priority": 390,
-              "access": "Allow",
-              "direction": "Inbound",
-              "destinationPortRange": "55200",
-              "protocol": "Tcp",
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*"
-            }
-          },
-          {
-            "name": "Port_45688",
-            "properties": {
-              "priority": 400,
-              "access": "Allow",
-              "direction": "Inbound",
-              "destinationPortRange": "45688",
-              "protocol": "Tcp",
-              "sourceAddressPrefix": "*",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[variables('virtualNetworkName')]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
-      ],
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[variables('addressPrefix')]"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "[variables('subnet1Name')]",
-            "properties": {
-              "addressPrefix": "[variables('subnet1Prefix')]",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
-              }
-            }
-          },
-          {
-            "name": "[variables('subnet2Name')]",
-            "properties": {
-              "addressPrefix": "[variables('subnet2Prefix')]",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nic1Name')]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddress1Name'))]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-      ],
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddress1Name'))]"
-              },
-              "subnet": {
-                "id": "[variables('subnet1Ref')]"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nic2Name')]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddress2Name'))]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-      ],
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddress2Name'))]"
-              },
-              "subnet": {
-                "id": "[variables('subnet2Ref')]"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "2016-04-30-preview",
-      "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vm1Name')]",
-      "location": "[parameters('location')]",
-      "tags": {
-        "Tag1": "ManagedVM"
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nic1Name'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
-        "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
-      ],
-      "properties": {
-        "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('asName'))]"
-        },
-        "hardwareProfile": {
-          "vmSize": "[variables('vmSize')]"
-        },
-        "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic1Name'))]"
-            }
-          ]
-        },
-        "osProfile": {
-          "computerName": "[variables('vm1Name')]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
-          "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('imageSku')]",
-            "version": "latest"
-          },
-          "osDisk": {
-            "createOption": "FromImage"
-          }
-        }
-      },
-      "resources": [
-        {
-          "type": "extensions",
-          "name": "jbosseap-extension",
-          "apiVersion": "2016-04-30-preview",
-          "location": "[parameters('location')]",
-          "comments": "These VM Extensions are Install JBOSSEAP",
-          "tags": {
-            "displayName": "JBOSSEAPINstall"
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', variables('vm1Name'))]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Azure.Extensions",
-            "type": "CustomScript",
-            "typeHandlerVersion": "2.0",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-              "fileUris": [
-                "[concat(parameters('baseUrl'),'/scripts/', variables('scriptFileName'))]"
-              ]
+          "baseUrl": {
+            "type": "string",
+            "metadata": {
+              "description": "Base URL for Marketplace Deployment",
+              "artifactsBaseUrl": ""
             },
-            "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.2.4',' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value), variables('scriptClose'))]"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "apiVersion": "2016-04-30-preview",
-      "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vm2Name')]",
-      "location": "[parameters('location')]",
-      "tags": {
-        "Tag1": "ManagedVM"
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nic2Name'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
-        "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
-      ],
-      "properties": {
-        "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('asName'))]"
-        },
-        "hardwareProfile": {
-          "vmSize": "[variables('vmSize')]"
-        },
-        "osProfile": {
-          "computerName": "[variables('vm2Name')]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
-          "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('imageSku')]",
-            "version": "latest"
+            "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/jboss-eap-clustered-rhel-VMSS/"
           },
-          "osDisk": {
-            "createOption": "FromImage"
-          }
+          "adminPasswordOrKey": {
+            "type": "securestring",
+            "metadata": {
+              "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+            }
+          },
+      "jbosseapstrgType": {
+        "type": "string",
+        "defaultValue": "Standard_LRS",
+        "allowedValues": [
+          "Standard_LRS",
+          "Standard_ZRS",
+          "Standard_GRS",
+          "Standard_RAGRS",
+          "Premium_LRS"
+        ]
+      }
         },
-        "networkProfile": {
-          "networkInterfaces": [
+    "variables": {
+      "scriptFileName": "deployjbosseap.sh",
+      "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName'))]",
+      "containerName": "azureping",
+      "scriptStart": "su -c'sh ",
+      "customScriptCommand": "[concat(variables('scriptStart'), variables('scriptFileName'), ' ')]",
+      "scriptClose": "'",
+      "loadBalancersName": "jbosseap-lb",
+      "vm1Name": "jbosseap-server-1",
+      "vm2Name": "jbosseap-server-2",
+      "asName": "jbosseap-as",
+      "skuName": "Aligned",
+      "imagePublisher": "RedHat",
+      "imageOffer": "RHEL",
+      "imageSku": "7.7",
+      "nic1Name": "[concat(uniquestring(variables('vm1Name')), 'nic')]",
+      "nic2Name": "[concat(uniquestring(variables('vm2Name')), 'nic')]",
+      "addressPrefix": "10.3.0.0/16",
+      "subnet1Name": "eap-server1-subnet",
+      "subnet1Prefix": "10.3.2.0/24",
+      "subnet2Name": "eap-server2-subnet",
+      "subnet2Prefix": "10.3.3.0/24",
+      "publicIPAddress1Name": "[concat(uniquestring(variables('vm1Name')), 'publicip')]",
+      "publicIPAddress2Name": "[concat(uniquestring(variables('vm2Name')), 'publicip')]",
+      "publicIPAddresslb": "[concat('pip',uniqueString(resourceGroup().id))]",
+      "publicIPAddressType": "Dynamic",
+      "vmSize": "Standard_DS2_v2",
+      "numberOfInstances": 2,
+      "virtualNetworkName": "jbosseap72-vnet",
+      "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet1Name'))]",
+      "subnet2Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet2Name'))]",
+      "dnsNameforLBIP":"[concat('dns',uniqueString(resourceGroup().id))]",
+      "linuxConfiguration": {
+        "disablePasswordAuthentication": true,
+        "ssh": {
+          "publicKeys": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic2Name'))]"
+              "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+              "keyData": "[parameters('adminPasswordOrKey')]"
             }
           ]
         }
       },
-      "resources": [
-        {
-          "type": "extensions",
-          "name": "jbosseap-extension",
-          "apiVersion": "2016-04-30-preview",
-          "location": "[parameters('location')]",
-          "comments": "These VM Extensions are Install JBOSSEAP",
-          "tags": {
-            "displayName": "JBOSSEAPINstall"
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', variables('vm2Name'))]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Azure.Extensions",
-            "type": "CustomScript",
-            "typeHandlerVersion": "2.0",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-              "fileUris": [
-                "[concat(parameters('baseUrl'),'/scripts/', variables('scriptFileName'))]"
-              ]
-            },
-            "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.2.4',' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value), variables('scriptClose'))]"
-            }
-          }
-        }
-      ]
+      "networkSecurityGroupName": "jbosseap-72-nsg",
+      "jbosseapstrgName": "[concat('jbosstrg', uniqueString(resourceGroup().id))]"
     },
-    {
-      "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2019-11-01",
-      "name": "[variables('loadBalancersName')]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresslb'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces', variables('nic1Name'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces', variables('nic2Name'))]"
-      ],
-      "sku": {
-        "name": "Basic"
+    "resources": [
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('publicIPAddress1Name')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+        }
       },
-      "properties": {
-        "frontendIPConfigurations": [
-          {
-            "name": "LoadBalancerFrontEnd",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresslb'))]"
-              },
-              "privateIPAddressVersion": "IPv4"
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('publicIPAddress2Name')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+        }
+      },
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('publicIPAddresslb')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+        }
+      },
+      {
+        "comments": "Default Network Security Group for template",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "apiVersion": "2019-08-01",
+        "name": "[variables('networkSecurityGroupName')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "securityRules": [
+            {
+              "name": "Port_8080",
+              "properties": {
+                "priority": 350,
+                "access": "Allow",
+                "direction": "Inbound",
+                "destinationPortRange": "8080",
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*",
+                "destinationAddressPrefix": "*"
+              }
+            },
+            {
+                "name": "default-allow-22",
+                "properties": {
+                  "priority": 340,
+                  "access": "Allow",
+                  "direction": "Inbound",
+                  "destinationPortRange": "22",
+                  "protocol": "Tcp",
+                  "sourceAddressPrefix": "*",
+                  "sourcePortRange": "*",
+                  "destinationAddressPrefix": "*"
+                }
+            },
+            {
+              "name": "http_9990",
+              "properties": {
+                "priority": 360,
+                "access": "Allow",
+                "direction": "Inbound",
+                "destinationPortRange": "9990",
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*",
+                "destinationAddressPrefix": "*"
+              }
+            },
+            {
+              "name": "port_45700",
+              "properties": {
+                "priority": 370,
+                "access": "Allow",
+                "direction": "Inbound",
+                "destinationPortRange": "45700",
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*",
+                "destinationAddressPrefix": "*"
+              }
+            },
+            {
+              "name": "Port_7600",
+              "properties": {
+                "priority": 380,
+                "access": "Allow",
+                "direction": "Inbound",
+                "destinationPortRange": "7600",
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*",
+                "destinationAddressPrefix": "*"
+              }
+            },
+            {
+              "name": "Port_55200",
+              "properties": {
+                "priority": 390,
+                "access": "Allow",
+                "direction": "Inbound",
+                "destinationPortRange": "55200",
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*",
+                "destinationAddressPrefix": "*"
+              }
+            },
+            {
+              "name": "Port_45688",
+              "properties": {
+                "priority": 400,
+                "access": "Allow",
+                "direction": "Inbound",
+                "destinationPortRange": "45688",
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*",
+                "destinationAddressPrefix": "*"
+              }
             }
-          }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/virtualNetworks",
+        "name": "[variables('virtualNetworkName')]",
+        "location": "[parameters('location')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
         ],
-        "backendAddressPools": [
-          {
-            "name": "jbosseap-servers",
-            "properties": {
-              "backendIPConfigurations": [
-                {
-                  "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', variables('nic1Name')), '/ipConfigurations/ipconfig1')]"
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[variables('addressPrefix')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('subnet1Name')]",
+              "properties": {
+                "addressPrefix": "[variables('subnet1Prefix')]",
+                "networkSecurityGroup": {
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+                }
+              }
+            },
+            {
+              "name": "[variables('subnet2Name')]",
+              "properties": {
+                "addressPrefix": "[variables('subnet2Prefix')]",
+                "networkSecurityGroup": {
+                  "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/networkInterfaces",
+        "name": "[variables('nic1Name')]",
+        "location": "[parameters('location')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddress1Name'))]",
+          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+          "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancersName'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddress1Name'))]"
+                  },
+                "subnet": {
+                  "id": "[variables('subnet1Ref')]"
                 },
-                {
-                  "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', variables('nic2Name')), '/ipConfigurations/ipconfig1')]"
-                }
-              ],
-              "loadBalancingRules": [
-                {
-                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), concat('/loadBalancingRules/', variables('loadBalancersName'), '-rule'))]"
-                }
-              ]
+                "loadBalancerBackendAddressPools": [
+                  {
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/backendAddressPools/jbosseap-servers')]"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/networkInterfaces",
+        "name": "[variables('nic2Name')]",
+        "location": "[parameters('location')]",
+        "dependsOn": [
+          "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddress2Name'))]",
+          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+          "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancersName'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddress2Name'))]"
+                  },
+                "subnet": {
+                  "id": "[variables('subnet2Ref')]"
+                },
+                "loadBalancerBackendAddressPools": [
+                  {
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/backendAddressPools/jbosseap-servers')]"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2016-04-30-preview",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[variables('vm1Name')]",
+        "location": "[parameters('location')]",
+        "tags": {
+          "Tag1": "ManagedVM"
+        },
+        "dependsOn": [
+          "[concat('Microsoft.Network/networkInterfaces/', variables('nic1Name'))]",
+          "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
+          "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
+        ],
+        "properties": {
+          "availabilitySet": {
+            "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('asName'))]"
+          },
+          "hardwareProfile": {
+            "vmSize": "[variables('vmSize')]"
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic1Name'))]"
+              }
+            ]
+          },
+          "osProfile": {
+            "computerName": "[variables('vm1Name')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPasswordOrKey')]",
+            "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "[variables('imagePublisher')]",
+              "offer": "[variables('imageOffer')]",
+              "sku": "[variables('imageSku')]",
+              "version": "latest"
+            },
+            "osDisk": {
+              "createOption": "FromImage"
             }
           }
-        ],
-        "loadBalancingRules": [
+        },
+        "resources": [
           {
-            "name": "[concat(variables('loadBalancersName'), '-rule')]",
+            "type": "extensions",
+            "name": "jbosseap-extension",
+            "apiVersion": "2016-04-30-preview",
+            "location": "[parameters('location')]",
+            "comments": "These VM Extensions are Install JBOSSEAP",
+            "tags": {
+              "displayName": "JBOSSEAPINstall"
+            },
+            "dependsOn": [
+              "[resourceId('Microsoft.Compute/virtualMachines', variables('vm1Name'))]"
+            ],
             "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+              "publisher": "Microsoft.Azure.Extensions",
+              "type": "CustomScript",
+              "typeHandlerVersion": "2.0",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "fileUris": [
+                  "[concat(parameters('baseUrl'),'/scripts/', variables('scriptFileName'))]"
+                ]
               },
-              "frontendPort": 80,
-              "backendPort": 8080,
-              "enableFloatingIP": false,
-              "idleTimeoutInMinutes": 5,
-              "protocol": "Tcp",
-              "enableTcpReset": false,
-              "backendAddressPool": {
-                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/backendAddressPools/jbosseap-servers')]"
-              },
-              "probe": {
-                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/probes/eap-lb-health')]"
+              "protectedSettings": {
+                "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.2.4',' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value), variables('scriptClose'))]"
               }
             }
           }
+        ]
+      },
+      {
+        "apiVersion": "2016-04-30-preview",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[variables('vm2Name')]",
+        "location": "[parameters('location')]",
+        "tags": {
+          "Tag1": "ManagedVM"
+        },
+        "dependsOn": [
+          "[concat('Microsoft.Network/networkInterfaces/', variables('nic2Name'))]",
+          "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
+          "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
         ],
-        "probes": [
+        "properties": {
+          "availabilitySet": {
+            "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('asName'))]"
+          },
+          "hardwareProfile": {
+            "vmSize": "[variables('vmSize')]"
+          },
+          "osProfile": {
+            "computerName": "[variables('vm2Name')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPasswordOrKey')]",
+            "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "[variables('imagePublisher')]",
+              "offer": "[variables('imageOffer')]",
+              "sku": "[variables('imageSku')]",
+              "version": "latest"
+            },
+            "osDisk": {
+              "createOption": "FromImage"
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic2Name'))]"
+              }
+            ]
+          }
+        },
+        "resources": [
           {
-            "name": "eap-lb-health",
+            "type": "extensions",
+            "name": "jbosseap-extension",
+            "apiVersion": "2016-04-30-preview",
+            "location": "[parameters('location')]",
+            "comments": "These VM Extensions are Install JBOSSEAP",
+            "tags": {
+              "displayName": "JBOSSEAPINstall"
+            },
+            "dependsOn": [
+              "[resourceId('Microsoft.Compute/virtualMachines', variables('vm2Name'))]"
+            ],
             "properties": {
-              "protocol": "Tcp",
-              "port": 8080,
-              "intervalInSeconds": 5,
-              "numberOfProbes": 2
+              "publisher": "Microsoft.Azure.Extensions",
+              "type": "CustomScript",
+              "typeHandlerVersion": "2.0",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "fileUris": [
+                  "[concat(parameters('baseUrl'),'/scripts/', variables('scriptFileName'))]"
+                ]
+              },
+              "protectedSettings": {
+                "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('EAPUser'),' ',parameters('EAPPassword'),' ','10.3.3.4',' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value), variables('scriptClose'))]"
+              }
             }
           }
         ]
-      }
-    },
-    {
-      "name": "[Variables('asName')]",
-      "type": "Microsoft.Compute/availabilitySets",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2019-03-01",
-      "tags": {
-        "displayName": "jbosseap-as"
       },
-      "properties": {
-        "platformUpdateDomainCount": 2,
-        "platformFaultDomainCount": 2
-      },
-      "sku": {
-        "name": "[variables('skuName')]"
-      }
-    },
-    {
-      "name": "[variables('jbosseapstrgName')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2018-07-01",
-      "sku": {
-        "name": "[parameters('jbosseapstrgType')]"
-      },
-      "dependsOn": [],
-      "tags": {
-        "displayName": "jbosseapstrg"
-      },
-      "kind": "Storage",
-      "resources": [
-        {
-          "name": "[concat('default/', variables('containerName'))]",
-          "type": "blobServices/containers",
-          "apiVersion": "2018-07-01",
-          "dependsOn": [
-            "[variables('jbosseapstrgName')]"
+      {
+        "type": "Microsoft.Network/loadBalancers",
+        "apiVersion": "2018-06-01",
+        "name": "[variables('loadBalancersName')]",
+        "location": "[parameters('location')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresslb'))]"
+        ],
+        "sku": {
+          "name": "Basic"
+        },
+        "properties": {
+          "frontendIPConfigurations": [
+            {
+              "name": "LoadBalancerFrontEnd",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresslb'))]"
+                },
+                "privateIPAddressVersion": "IPv4"
+              }
+            }
+          ],
+          "backendAddressPools": [
+            {
+              "name": "jbosseap-servers"
+            }
+          ],
+          "loadBalancingRules": [
+            {
+              "name": "[concat(variables('loadBalancersName'), '-rule1')]",
+              "properties": {
+                "frontendIPConfiguration": {
+                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+                },
+                "frontendPort": 80,
+                "backendPort": 8080,
+                "enableFloatingIP": false,
+                "idleTimeoutInMinutes": 5,
+                "protocol": "Tcp",
+                "enableTcpReset": false,
+                "backendAddressPool": {
+                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/backendAddressPools/jbosseap-servers')]"
+                },
+                "probe": {
+                  "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/probes/eap-lb-health')]"
+                }
+              }
+            },
+            {
+                "name": "[concat(variables('loadBalancersName'), '-rule2')]",
+                "properties": {
+                  "frontendIPConfiguration": {
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/frontendIPConfigurations/LoadBalancerFrontEnd')]"
+                  },
+                  "frontendPort": 9990,
+                  "backendPort": 9990,
+                  "enableFloatingIP": false,
+                  "idleTimeoutInMinutes": 5,
+                  "protocol": "Tcp",
+                  "enableTcpReset": false,
+                  "backendAddressPool": {
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/backendAddressPools/jbosseap-servers')]"
+                  },
+                  "probe": {
+                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')), '/probes/eap-jboss-health')]"
+                  }
+                }
+              }
+          ],
+          "probes": [
+            {
+              "name": "eap-lb-health",
+              "properties": {
+                "protocol": "Tcp",
+                "port": 8080,
+                "intervalInSeconds": 5,
+                "numberOfProbes": 2
+              }
+            },
+            {
+                "name": "eap-jboss-health",
+                "properties": {
+                  "protocol": "Tcp",
+                  "port": 9990,
+                  "intervalInSeconds": 5,
+                  "numberOfProbes": 2
+                }
+              }
           ]
         }
-      ]
+      },
+      {
+        "name": "[Variables('asName')]",
+        "type": "Microsoft.Compute/availabilitySets",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2019-03-01",
+        "tags": {
+          "displayName": "jbosseap-as"
+        },
+        "properties": {
+          "platformUpdateDomainCount": 2,
+          "platformFaultDomainCount": 2
+        },
+        "sku": {
+          "name": "[variables('skuName')]"
+        }
+      },
+      {
+        "name": "[variables('jbosseapstrgName')]",
+        "type": "Microsoft.Storage/storageAccounts",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2018-07-01",
+        "sku": {
+          "name": "[parameters('jbosseapstrgType')]"
+        },
+        "dependsOn": [],
+        "tags": {
+          "displayName": "jbosseapstrg"
+        },
+        "kind": "Storage",
+        "resources": [
+          {
+            "name": "[concat('default/', variables('containerName'))]",
+            "type": "blobServices/containers",
+            "apiVersion": "2018-07-01",
+            "dependsOn": [
+              "[variables('jbosseapstrgName')]"
+            ]
+          }
+        ]
+      }
+    ]
     }
-  ]
-  }
