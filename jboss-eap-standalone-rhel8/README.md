@@ -46,7 +46,7 @@ https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_applicati
 
 ## Licenses and Costs
 
-This uses RHEL 8.0 image which is a PAY AS YOU GO image and doesn't require the user to license it, it will be licensed automatically after the instance is launched first time and user will be charged hourly in addition to Microsoft's Linux VM rates.  Click [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/#red-hat) for pricing details. You also need to have a RedHat account to register to Red Hat Subscription Manager (RHSM). Click [here] (https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
+This uses RHEL 8.0 image which is a PAY AS YOU GO image and doesn't require the user to license it, it will be licensed automatically after the instance is launched first time and user will be charged hourly in addition to Microsoft's Linux VM rates.  Click [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/#red-hat) for pricing details. You also need to have a RedHat account to register to Red Hat Subscription Manager (RHSM). Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
 
 ## Prerequisites
 
