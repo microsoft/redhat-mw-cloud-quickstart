@@ -16,6 +16,9 @@
 <!-- /TOC -->
 
 ## Solution Overview
+
+JBoss EAP is an open source platform for highly transactional, web-scale Java applications. EAP combines the familiar and popular Jakarta EE specifications with the latest technologies, like Microprofile, to modernize your applications from traditional Java EE into the new world of DevOps, cloud, containers, and microservices. EAP includes everything needed to build, run, deploy, and manage enterprise Java applications in a variety of environments, including on-premise, virtual environments, and in private, public, and hybrid clouds.
+
 This template creates two JBoss EAP Instances running inside a VNet and each server is in it’s own subnet. Both the servers are added to the backend pool of a Load Balancer.
 
 ## Template Solution Architecture
@@ -50,7 +53,7 @@ This uses RHEL 8.0 image which is a PAY AS YOU GO image and doesn't require the 
     
 ## Deployment Steps
 
-Build your environment with EAP 7.2 on top of RHEL 8.0 on Azure in a few simple steps:  
+Build your environment with EAP 7.2 on top of RHEL 8.0 which is added to the backend pool of the Load Balancer on Azure in a few simple steps:  
 1. Launch the Template by click on Deploy to Azure button.  
 2. Fill in the following parameter values. Then accept the terms and condition before clicking on Purchase.
 
@@ -72,7 +75,7 @@ Build your environment with EAP 7.2 on top of RHEL 8.0 on Azure in a few simple 
     
 ## Deployment Time 
 
-The deployment takes less than 10 minutes to complete.
+The deployment takes approx. 10 minutes to complete.
 
 ## Post Deployment Steps
 
