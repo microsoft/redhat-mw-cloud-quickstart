@@ -90,6 +90,9 @@
       "publicIPAddress1Name": "[concat(uniquestring(variables('vm1Name')), 'publicip')]",
       "publicIPAddress2Name": "[concat(uniquestring(variables('vm2Name')), 'publicip')]",
       "publicIPAddresslb": "[concat('pip',uniqueString(resourceGroup().id))]",
+      "publicIPAddresslbDNSName" : "[concat('piplb-', uniqueString(resourceGroup().id))]",
+      "publicIPAddress1DNSName" : "[concat('pipvm1-', uniqueString(resourceGroup().id))]",
+      "publicIPAddress2DNSName" : "[concat('pipvm2-', uniqueString(resourceGroup().id))]",
       "publicIPAddressType": "Dynamic",
       "vmSize": "Standard_DS2_v2",
       "numberOfInstances": 2,
@@ -118,7 +121,10 @@
         "name": "[variables('publicIPAddress1Name')]",
         "location": "[parameters('location')]",
         "properties": {
-          "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+          "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+          "dnsSettings": {
+          "domainNameLabel": "[concat(variables('publicIPAddress1DNSName'))]"
+        }
         }
       },
       {
@@ -127,7 +133,10 @@
         "name": "[variables('publicIPAddress2Name')]",
         "location": "[parameters('location')]",
         "properties": {
-          "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+          "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+          "dnsSettings": {
+          "domainNameLabel": "[concat(variables('publicIPAddress2DNSName'))]"
+        }
         }
       },
       {
@@ -136,7 +145,10 @@
         "name": "[variables('publicIPAddresslb')]",
         "location": "[parameters('location')]",
         "properties": {
-          "publicIPAllocationMethod": "[variables('publicIPAddressType')]"
+          "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+          "dnsSettings": {
+          "domainNameLabel": "[concat(variables('publicIPAddresslbDNSName'))]"
+        }
         }
       },
       {
@@ -624,5 +636,19 @@
           }
         ]
       }
-    ]
+    ],
+    "outputs": {
+    "sshVM1": {
+      "type": "string",
+      "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddress1Name')).dnsSettings.fqdn)]"
+    },
+    "sshVM2": {
+      "type": "string",
+      "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddress2Name')).dnsSettings.fqdn)]"
+    },
+    "Admin Console UI": {
+      "type": "string",
+      "value": "[concat('http://', reference(variables('publicIPAddresslb')).dnsSettings.fqdn, ':9990/console/')]"
     }
+  }
+}
