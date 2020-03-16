@@ -1,7 +1,7 @@
 #!/bin/sh
 
 /bin/date +%H:%M:%S > /home/$1/install.log
-echo "Red Hat JBoss EAP 8 Cluster Intallation Start"  >> /home/$1/install.log
+echo "Red Hat JBoss EAP 7 Cluster Installation Start"  >> /home/$1/install.log
 
 export JBOSS_HOME="/opt/rh/eap7/root/usr/share/wildfly"
 export NODENAME1="node1"
