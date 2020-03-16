@@ -344,7 +344,7 @@
           "imageReference": {
               "publisher": "RedHat",
               "offer": "RHEL",
-              "sku": "7-RAW",
+              "sku": "8",
               "version": "latest"
           }
         },
