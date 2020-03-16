@@ -97,5 +97,5 @@ The deployment takes less than 10 minutes to complete.
 ## Post Deployment Steps
 
 - Once the deployment is successfull, go the VM and copy the Public IP of the VM.
-- Open a web broser and go to http://<PUBLIC_HOSTNAME>:8080/dukes/ and you should see the applicaiton running
+- Open a web browser and go to http://<PUBLIC_HOSTNAME>:8080/dukes/ and you should see the applicaiton running
 If you want to access the administration console go to http://<PUBLIC_HOSTNAME>:8080 and click on the link Administration Console and enter EAP username and password to see the console.
