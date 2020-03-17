@@ -8,22 +8,11 @@
         "description": "Linux VM user account name"
       }
     },
-    "authenticationType": {	
-      "type": "string",	
-      "defaultValue": "password",	
-      "allowedValues": [	
-        "sshPublicKey",	
-        "password"	
-      ],	
-      "metadata": {	
-        "description": "Type of authentication to use on the Virtual Machine."	
-      }	
-    },
-    "adminPasswordOrKey": {	
-      "type": "securestring",	
-      "metadata": {	
-        "description": "SSH Key or password for the Virtual Machine."	
-      }	
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Administrator password for Linux VM user account"
+      }
     },
     "dnsLabelPrefix": {
       "type": "string",
@@ -61,12 +50,33 @@
         "description": "Red Hat Subscription Manager Pool (must contain JBoss EAP entitlement)."
       }
     },
+    "sshKeyData": {
+      "type": "securestring",
+      "metadata": {
+        "description": "SSH RSA public key file as a string."
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D4_v3",
+      "allowedValues": [
+        "Standard_D4_v3",
+        "Standard_D8_v3",
+        "Standard_DS4_v2",
+        "Standard_DS4_v3",
+        "Standard_DS8_v3",
+        "Standard_DS16_v3"
+      ],
+      "metadata": {
+        "description": "The size of the Virtual Machine."
+      }
+    },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
         "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
       },
-      "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/suraj-rhel77/jboss-eap-standalone-rhel7"
+      "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/jboss-eap-clustered-rhel7/"
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
@@ -86,222 +96,279 @@
   "variables": {
     "singlequote": "'",
     "escapedQuote": "\"",
-    "imagePublisher": "redhat",
-    "imageOffer": "rhel",
-    "imageSKU": "7.7",
     "baseName": "[uniquestring(parameters('dnsLabelPrefix'),resourceGroup().id)]",
-    "nicName": "[concat('myNic8',variables('baseName'))]",
-    "addressPrefix": "10.0.0.0/16",
-    "subnet1Name": "Subnet-1",
-    "subnet1Prefix": "10.0.0.0/24",
+    "networkInterfaceName": "[concat('myNic8',variables('baseName'))]",
+    "addressPrefixes": "10.0.0.0/24",
+    "subnetName": "default",
     "publicIPAddressName": "[concat('myIP8',variables('baseName'))]",
     "publicIPAddressType": "Dynamic",
-    "vmName": "[parameters('dnsLabelPrefix')]",
-    "vmSize": "Standard_F1",
-    "virtualNetworkName": "MyVNET8",
-    "frontEndNSGName": "[concat(parameters('dnsLabelPrefix'),'-nsg8')]",
+    "virtualMachineName": "[parameters('dnsLabelPrefix')]",
+    "virtualNetworkName": "eap-vnet",
+    "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'),'-nsg8')]",
     "storageAccountType": "Standard_LRS",
-    "storageAccountName": "[concat('vsts8',variables('baseName'))]",
+    "sActName": "[concat('eap',uniquestring(parameters('dnsLabelPrefix'),resourceGroup().id))]",
     "ScriptFolder": "scripts",
     "ScriptFileName": "eap-setup-redhat.sh",
-    "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet1Name'))]",
-    "linuxConfiguration": {	
-      "disablePasswordAuthentication": true,	
-      "ssh": {	
-        "publicKeys": [	
-          {	
-            "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",	
-            "keyData": "[parameters('adminPasswordOrKey')]"	
-          }	
-        ]	
-      }	
-    }
+    "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
+    "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]"
   },
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[variables('StorageAccountName')]",
-      "apiVersion": "2016-01-01",
+      "apiVersion": "2018-07-01",
+      "name": "[variables('sActName')]",
       "location": "[parameters('location')]",
+      "tags": {},
       "sku": {
         "name": "[variables('storageAccountType')]"
       },
       "kind": "Storage",
-      "properties": {}
+      "properties": {},
+      "resources": [
+        {
+          "name": "[concat('default/', 'eapblobcontainer')]",  
+          "type": "blobServices/containers",
+          "apiVersion": "2018-07-01",
+          "dependsOn": [
+            "[variables('sActName')]"
+          ],
+          "properties": {
+            "publicAccess": "Container"
+          }
+        }
+      ]
     },
     {
-      "apiVersion": "2017-10-01",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddressName')]",
+      "type": "Microsoft.Network/publicIpAddresses",
+      "apiVersion": "2018-08-01",
+      "name": "[variables('publicIpAddressName')]",
       "location": "[parameters('location')]",
+      "tags": {},
       "properties": {
-        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+        "publicIpAllocationMethod": "[variables('publicIpAddressType')]",
         "dnsSettings": {
           "domainNameLabel": "[parameters('dnsLabelPrefix')]"
         }
       }
     },
     {
-      "apiVersion": "2017-10-01",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[variables('frontEndNSGName')]",
+      "apiVersion": "2018-08-01",
+      "name": "[variables('networkSecurityGroupName')]",
       "location": "[parameters('location')]",
-      "tags": {
-        "displayName": "Custom Network Security Group"
-      },
+      "tags": {},
       "properties": {
         "securityRules": [
           {
-            "name": "default-allow-ssh",
+            "name": "HTTP",
             "properties": {
-              "description": "Allow SSH",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "22",
-              "sourceAddressPrefix": "Internet",
+              "priority": 300,
+              "protocol":"Tcp",
+              "access":"Allow",
+              "direction":"Inbound",
+              "sourceAddressPrefix":"*",
+              "sourcePortRange":"*",
               "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1000,
-              "direction": "Inbound"
+              "destinationPortRange":"80"
             }
           },
           {
-            "name": "default-allow-eap-admin",
-            "properties": {
-              "description": "Allow EAP/ADMIN",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "9990",
-              "sourceAddressPrefix": "Internet",
+            "name":"HTTPS",
+            "properties":{
+              "priority":320,
+              "protocol":"Tcp",
+              "access":"Allow",
+              "direction":"Inbound",
+              "sourceAddressPrefix":"*",
+              "sourcePortRange":"*",
               "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1020,
-              "direction": "Inbound"
+              "destinationPortRange":"443"
             }
           },
           {
-            "name": "default-allow-eap",
-            "properties": {
-              "description": "Allow WEB/EAP",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "8080",
-              "sourceAddressPrefix": "Internet",
+            "name":"SSH",
+            "properties":{
+              "priority":340,
+              "protocol":"Tcp",
+              "access":"Allow",
+              "direction":"Inbound",
+              "sourceAddressPrefix":"*",
+              "sourcePortRange":"*",
               "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1010,
-              "direction": "Inbound"
+              "destinationPortRange":"22"
+            }
+          },
+          {
+            "name":"RDP",
+            "properties":{
+              "priority":360,
+              "protocol":"Tcp",
+              "access":"Allow",
+              "direction":"Inbound",
+              "sourceAddressPrefix":"*",
+              "sourcePortRange":"*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange":"3389"
+            }
+          },
+          {
+            "name": "EAPADMIN1",
+            "properties": {
+              "priority":380,
+              "protocol":"Tcp",
+              "access":"Allow",
+              "direction":"Inbound",
+              "sourceAddressPrefix":"*",
+              "sourcePortRange":"*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange":"9990"
+            }
+          },
+          {
+            "name": "EAPADMIN2",
+            "properties": {
+              "priority":400,
+              "protocol":"Tcp",
+              "access":"Allow",
+              "direction":"Inbound",
+              "sourceAddressPrefix":"*",
+              "sourcePortRange":"*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange":"10090"
+            }
+          },
+          {
+            "name": "EAPAPP1",
+            "properties": {
+              "priority":420,
+              "protocol":"Tcp",
+              "access":"Allow",
+              "direction":"Inbound",
+              "sourceAddressPrefix":"*",
+              "sourcePortRange":"*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange":"8080"
+            }
+          },
+          {
+            "name": "EAPAPP2",
+            "properties": {
+              "priority":440,
+              "protocol":"Tcp",
+              "access":"Allow",
+              "direction":"Inbound",
+              "sourceAddressPrefix":"*",
+              "sourcePortRange":"*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange":"8180"
             }
           }
         ]
       }
     },
     {
-      "apiVersion": "2017-10-01",
       "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2018-08-01",
       "name": "[variables('virtualNetworkName')]",
       "location": "[parameters('location')]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('frontEndNSGName'))]"
-      ],
+      "tags": {},
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
-            "[variables('addressPrefix')]"
+            "[variables('addressPrefixes')]"
           ]
         },
         "subnets": [
           {
-            "name": "[variables('subnet1Name')]",
-            "properties": {
-              "addressPrefix": "[variables('subnet1Prefix')]",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('frontEndNSGName'))]"
-              }
+            "name":"[variables('subnetName')]", 
+            "properties":{
+              "addressPrefix":"10.0.0.0/24"
             }
           }
         ]
       }
     },
     {
-      "apiVersion": "2017-10-01",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nicName')]",
+      "apiVersion": "2018-10-01",
+      "name": "[variables('networkInterfaceName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('frontEndNSGName'))]"
+        "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
       ],
+      "tags": {},
       "properties": {
-        "networkSecurityGroup": {
-          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('frontEndNSGName'))]"
-        },
         "ipConfigurations": [
           {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-              },
-              "subnet": {
-                "id": "[variables('subnet1Ref')]"
+              "name": "ipconfig1",
+              "properties": {
+                  "subnet": {
+                      "id": "[variables('subnetRef')]"
+                  },
+                  "privateIPAllocationMethod": "Dynamic",
+                  "publicIpAddress": {
+                      "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', variables('publicIpAddressName'))]"
+                  }
               }
-            }
           }
-        ]
+        ],
+        "networkSecurityGroup": {
+          "id": "[variables('nsgId')]"
+        }
       }
     },
     {
-      "apiVersion":  "2017-03-30", 
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName')]",
+      "apiVersion": "2018-06-01",
+      "name": "[variables('virtualMachineName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('StorageAccountName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[concat('Microsoft.Storage/storageAccounts/', variables('sActName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
       ],
+      "tags": {},
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[variables('vmSize')]"
-        },
-        "osProfile": {
-          "computerName": "[variables('vmName')]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
-          "customData": "[base64(variables('publicIPAddressName'))]",
-          "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+          "vmSize": "[parameters('vmSize')]"
         },
         "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('imageSKU')]",
-            "version": "latest"
-          },
           "osDisk": {
-            "name": "[concat(variables('vmName'),'_OSDisk')]",
-            "caching": "ReadWrite",
-            "createOption": "FromImage"
+            "createOption": "FromImage",
+            "managedDisk": {
+                "storageAccountType": "StandardSSD_LRS"
+            }
+          },
+          "imageReference": {
+              "publisher": "RedHat",
+              "offer": "RHEL",
+              "sku": "8",
+              "version": "latest"
           }
         },
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
             }
           ]
+        },
+        "osProfile": {
+          "computerName": "[variables('virtualMachineName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
         }
       }
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),'/newuserscript')]",
+      "name": "[concat(variables('virtualMachineName'),'/newuserscript')]",
       "apiVersion": "2017-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -312,9 +379,23 @@
           "fileUris": [
             "[concat(parameters('_artifactsLocation'), '/', variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
-          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('eapUserName'),' ',variables('singlequote'),parameters('eapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'))]"
+          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('eapUserName'),' ',variables('singlequote'),parameters('eapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'),' ',variables('escapedQuote'),parameters('sshKeyData'),variables('escapedQuote'),' ',reference(variables('publicIPAddressName')).dnsSettings.fqdn,' ',reference(concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))).ipConfigurations[0].properties.privateIPAddress,' ',variables('sActName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sActName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "sshCommand": {
+      "type": "string",
+      "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddressName')).dnsSettings.fqdn)]"
+    },
+    "AppUI-1": {
+      "type": "string",
+      "value": "[concat('http://', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ':8080/eap-session-replication/')]"
+    },
+    "AppUI-2": {
+      "type": "string",
+      "value": "[concat('http://', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ':8180/eap-session-replication/')]"
+    }
+  }
 }
