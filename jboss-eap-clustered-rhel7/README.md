@@ -24,14 +24,14 @@
 
 JBoss EAP is an open source platform for highly transactional, web-scale Java applications. EAP combines the familiar and popular Jakarta EE specifications with the latest technologies, like Microprofile, to modernize your applications from traditional Java EE into the new world of DevOps, cloud, containers, and microservices. EAP includes everything needed to build, run, deploy, and manage enterprise Java applications in a variety of environments, including on-premise, virtual environments, and in private, public, and hybrid clouds.
 
-This template deploys a web applicaton deployed on JBoss EAP 7.2 cluster running on RHEL 8.
+Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools. To obtain a rhsm account go to: www.redhat.com and sign in.
 
-To obtain a rhsm account go to: www.redhat.com and sign in.
+This template deploys a web applicaton deployed on JBoss EAP 7.2 cluster running on RHEL 7.7.
 
 ## Template Solution Architecture
-This template creates all of the compute resources to run JBoss EAP 7 on top of RHEL 7.2, deploying the following components:
+This template creates all of the compute resources to run JBoss EAP 7 on top of RHEL 7.7, deploying the following components:
 
-- RHEL 8.0 VM 
+- RHEL 7.7 VM 
 - Public DNS 
 - Private Virtual Network 
 - Security Configuration 
