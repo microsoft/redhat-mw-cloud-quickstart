@@ -68,7 +68,7 @@
             "metadata": {
               "description": "Base URL for script extension"
             },
-            "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/jboss-eap-clustered-multivm-rhel8"
+            "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/jboss-eap-clustered-multivm-rhel8"
         },
       "jbosseapstrgType": {
         "type": "string",

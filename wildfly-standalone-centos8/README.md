@@ -1,8 +1,8 @@
 # WildFly 18.0.1.Final standalone mode
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2Fwildfly-standalone-centos8%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fwildfly-standalone-centos8%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2Fwildfly-standalone-centos8%2Fazuredeploy.json" target="_blank">
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fwildfly-standalone-centos8%2Fazuredeploy.json" target="_blank">
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
@@ -105,9 +105,9 @@ The deployment takes less than 10 minutes to complete.
 
 If you're interested in Red Hat JBoss EAP Azure Quickstart templates, you can find it here:
 
-*  <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/jboss-eap-standalone-rhel7" target="_blank"> [Red Hat JBoss EAP on RHEL 7.7 VM]</a> - Standalone JBoss EAP 7.2 with a sample web app on a RHEL 7.7 Azure VM.
+*  <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/jboss-eap-standalone-rhel7" target="_blank"> [Red Hat JBoss EAP on RHEL 7.7 VM]</a> - Standalone JBoss EAP 7.2 with a sample web app on a RHEL 7.7 Azure VM.
 
-*  <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/jboss-eap-standalone-rhel8" target="_blank"> [Red Hat JBoss EAP on RHEL 8.0 VM]</a> - Standalone JBoss EAP 7.2 with a sample web app on a RHEL 8.0 Azure VM.
+*  <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/jboss-eap-standalone-rhel8" target="_blank"> [Red Hat JBoss EAP on RHEL 8.0 VM]</a> - Standalone JBoss EAP 7.2 with a sample web app on a RHEL 8.0 Azure VM.
 
 ## Support 
 
