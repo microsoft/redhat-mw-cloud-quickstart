@@ -23,8 +23,8 @@ subscription-manager attach --pool=${RHSM_POOL} >> /home/$1/install.progress.txt
 echo "Subscribing the system to get access to EAP 7.2 repos" >> /home/$1/install.progress.txt
 
 # Install EAP7.2 
-subscription-manager repos --enable=jb-eap-7.2-for-rhel-8-x86_64-rpms >> /home/$1/install.out.txt 2>&1
-
+subscription-manager repos --enable=jb-eap-7-for-rhel-7-server-rpms >> /home/$1/install.out.txt 2>&1
+yum-config-manager --disable rhel-7-server-htb-rpms
 
 echo "Installing EAP7.2 repos" >> /home/$1/install.progress.txt
 yum groupinstall -y jboss-eap7 >> /home/$1/install.out.txt 2>&1
