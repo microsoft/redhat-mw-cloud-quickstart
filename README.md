@@ -1,14 +1,20 @@
 
-# Red Hat Middleware Azure Quickstart templates
+# Red Hat Azure Quickstart templates
 
 This project contains the Azure Quickstart templates for Red Hat Middleware products.  They are:
 
-* [Red Hat JBoss EAP Standalone on Azure RHEL VM](jboss-eap-standalone-rhel7/README.md) - This template creates a standalone JBoss EAP 7 with a sample web app on a RHEL 7 Azure VM.
+* [JBoss EAP 7.2 on RHEL 7.7 standalone mode](jboss-eap-standalone-rhel7/README.md) - This Azure template deploys a web application named dukes on JBoss EAP 7.2 running on RHEL 7.7.
 
-* [Red Hat JBoss EAP Standalone on OpenShift on Azure RHEL VM](jboss-eap-standalone-openshift/README.md) - This template a standalone JBoss EAP 7 with a sample web app on OpenShift Container Platfom on a RHEL 7 Azure VM.
+* [JBoss EAP 7.2 on RHEL 8.0 standalone mode](jboss-eap-standalone-rhel8/README.md) - This Azure template deploys a web application named dukes on JBoss EAP 7.2 running on RHEL 8.0.
 
-* [Red Hat JBoss EAP Cluster on Azure RHEL VM](jboss-eap-clustered-rhel7/README.md) - This template creates cluster JBoss EAP 7 with a sample web app on a RHEL 7 Azure VM.
+* [JBoss EAP 7.2 cluster on RHEL 7.7 VM](jboss-eap-clustered-singlevm-rhel7/README.md) - This Azure template deploys a web application called eap-session-replication on JBoss EAP 7.2 cluster running on RHEL 7.7.
 
-* [Red Hat JBoss EAP Cluster on OpenShift on Azure RHEL VM](jboss-eap-clustered-openshift/README.md) - This template cluster JBoss EAP 7 with a sample web app on OpenShift Container Platfom on a RHEL 7 Azure VM.
+* [JBoss EAP 7.2 cluster on RHEL 8.0 VM](jboss-eap-clustered-singlevm-rhel8/README.md) - This Azure quickstart template deploys a web application called eap-session-replication on JBoss EAP 7.2 cluster running on RHEL 8.
 
-* [Red Hat WildFly Standalone on Azure CentOS VM](wildfly-standalone-centos/README.md) - This template a standalone WildFly 16 with a sample web app on a CentOS 7 Azure VM.
+* [JBoss EAP 7.2 on RHEL 7.7 on Azure (clustered, multi-VM)
+](jboss-eap-clustered-multivm-rhel7/README.md) - This Azure template deploys a web application called eap-session-replication on JBoss EAP 7.2 cluster running on 2 RHEL 7.7 VMs which are added to the backend pool of a Load Balancer.
+
+* [JBoss EAP 7.2 on RHEL 8.0 on Azure (clustered, multi-VM)
+](jboss-eap-clustered-multivm-rhel8/README.md) - This Azure template deploys a web application called eap-session-replication on JBoss EAP 7.2 cluster running on 2 RHEL 8.0 VMs which are added to the backend pool of a Load Balancer.
+
+* [WildFly 18.0.1.Final standalone mode](wildfly-standalone-centos8/README.md) - This Azure quickstart template deploys a web application named dukes on WildFly 18.0.1.Final running on CentOS 8.
