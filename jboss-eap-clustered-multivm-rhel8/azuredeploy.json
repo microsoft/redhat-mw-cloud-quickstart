@@ -124,7 +124,7 @@
     "publicIPAddresslbDNSName" : "[concat('piplb-', uniqueString(resourceGroup().id))]",
     "publicIPAddress1DNSName" : "[concat('pipvm1-', uniqueString(resourceGroup().id))]",
     "publicIPAddress2DNSName" : "[concat('pipvm2-', uniqueString(resourceGroup().id))]",
-    "publicIPAddressType": "Dynamic",
+    "publicIPAddressType": "Static",
     "virtualNetworkName": "jbosseap72-vnet",
     "backendPoolName": "jbosseap-servers",
     "frontendName" : "LoadBalancerFrontEnd",
