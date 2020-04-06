@@ -6,7 +6,6 @@ echo "Red Hat JBoss EAP 7.2 Cluster Intallation Start " >> /home/$1/install.log
 /bin/date +%H:%M:%S  >> /home/$1/install.log
 
 export EAP_HOME="/opt/rh/eap7/root/usr/share"
-export EAP_RPM_CONF_STANDALONE="/etc/opt/rh/eap7/wildfly/eap7-standalone.conf"
 export EAP_USER=$2
 export EAP_PASSWORD=$3
 export RHSM_USER=$4
@@ -51,14 +50,6 @@ yum-config-manager --disable rhel-7-server-htb-rpms
 echo "Installing EAP7.2 repos" >> /home/$1/install.log
 yum groupinstall -y jboss-eap7 >> /home/$1/install.log
 
-echo "Enabling EAP7.2 service" >> /home/$1/install.log
-systemctl enable eap7-standalone.service
-
-echo "Configure EAP7.2 RPM file" >> /home/$1/install.log
-
-echo "WILDFLY_SERVER_CONFIG=standalone-full.xml" >> ${EAP_RPM_CONF_STANDALONE}
-echo 'WILDFLY_OPTS="-Djboss.bind.address.management=0.0.0.0"' >> ${EAP_RPM_CONF_STANDALONE}
-
 echo "Copy the standalone-azure-ha.xml from EAP_HOME/doc/wildfly/examples/configs folder to EAP_HOME/wildfly/standalone/configuration folder" >> /home/$1/install.log
 cp $EAP_HOME/doc/wildfly/examples/configs/standalone-azure-ha.xml $EAP_HOME/wildfly/standalone/configuration/
 
@@ -82,7 +73,8 @@ chmod +x /bin/jbossservice.sh
 yum install cronie cronie-anacron
 service crond start
 chkconfig crond on
-echo "@reboot sleep 90 && /bin/jbossservice.sh" >>  /etc/crontab	
+echo "@reboot sleep 90 && /bin/jbossservice.sh" >>  /var/spool/cron/root
+chmod 600 /var/spool/cron/root
 
 echo "deploy an application " >> /home/$1/install.log
 git clone https://github.com/danieloh30/eap-session-replication.git
