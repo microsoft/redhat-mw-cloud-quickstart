@@ -39,7 +39,8 @@ This template creates all of the compute resources to run WildFly 18.0.1.Final o
 - Sample application named dukes deployed on WildFly 18.0.1.Final
 
 Following is the Architecture :
-<img src="images/wildfly.arch.PNG" width="800">
+
+![alt text](images/wildfly-arch.png)
 
 To learn more about WildFly 18.0.0.Final, check out:
 https://docs.wildfly.org/18/
@@ -95,11 +96,11 @@ The deployment takes less than 10 minutes to complete.
 - Once the deployment is successful, go to the VM and copy the DNS Name of the VM.
 - Open a web browser and go to **http://<PUBLIC_HOSTNAME>:8080/dukes/** and you should see the application running:
 
-  <img src="images/app1.png" width="600">
+  ![alt text](images/app.png)
 
 - To access the administration console go to **http://<PUBLIC_HOSTNAME>:8080** and click on the link Administration Console:
 
-  <img src="images/wildfly_console.png" width="800">
+  ![alt text](images/wildfly-console.png)
 
 ## Notes
 

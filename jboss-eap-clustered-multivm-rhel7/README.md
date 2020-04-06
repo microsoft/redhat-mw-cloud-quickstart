@@ -1,10 +1,10 @@
 # JBoss EAP 7.2 on RHEL 7.7 on Azure (clustered, multi-VM)
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-clustered-multivm-rhel7%2Fazuredeploy.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
+    <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
 </a>
 <a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-clustered-multivm-rhel7%2Fazuredeploy.json" target="_blank">
-    <img src="http://armviz.io/visualizebutton.png"/>
+    <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.png"/>
 </a>
 
 `Tags: JBoss, Red Hat, EAP 7.2, CLUSTER, Load Balancer`
@@ -44,7 +44,8 @@ This template creates all of the compute resources to run EAP 7.2 cluster on top
 - Storage Account
 
 Following is the Architecture :
-<img src="images/arch1.png" width="800">
+
+![alt text](images/arch.png)
 
 To learn more about JBoss Enterprise Application Platform, check out:
 https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.2/
@@ -103,23 +104,23 @@ The deployment takes approx. 10 minutes to complete.
 
 - Once the deployment is successful, go to the outputs section of the deployment.
 
-  <img src="images/outputs.png" width="800">
+  ![alt text](images/outputs.png)
 
 - Copy the Public IP of the VM(from VM details page) which is the Public IP of the Load Balancer, Open a web browser and go to http://<PUBLIC_HOSTNAME> and you should see the web page
 
-  <img src="images/eap.png" width="800">
+  ![alt text](images/eap.png)
 
 - To access the administration console, copy the Admin Console link in the output page and paste it in a browser. Now click on the link Administration Console and enter EAP username and password to see the console of the respective VM
 
-  <img src="images/eap-admin-console.png" width="800">
+  ![alt text](images/eap-admin-console.png)
 
 - To access the LB App UI console, copy the AppUI-LB and paste it in a browser. To access the VM App UI console, use the AppUI-1/AppUI-2. This fetches the VM private IP and updates the session counter upon clicking on the Increment counter. Note that the session ID of all the 3 App UI console is different.
 
-  <img src="images/eap-session-rep.png" width="600">
+  ![alt text](images/eap-session-rep.png)
 
-- Note that in the EAP Session Replication page of Load Balancer, the private IP displayed is that of the VM1. When you stop VM1 and click on increment counter, the private IP displayed will be that of VM2.
+- Note that in the EAP Session Replication page of Load Balancer, the private IP displayed is that of the VM1. When you stop VM1 and click on Increment counter, the private IP displayed will be that of VM2 but the session ID remains the same which shows that the session ID got replicated.
 
-  <img src="images/eap-session-rep1.png" width="600"> 
+  ![alt text](images/eap-ses-rep.png)
 
 ## Support
 

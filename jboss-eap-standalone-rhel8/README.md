@@ -1,9 +1,9 @@
 # VM-RedHat - JBoss EAP 7.2 on RHEL 8.0 standalone mode
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-standalone-rhel8%2Fazuredeploy.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
+    <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
 </a>
 <a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-standalone-rhel8%2Fazuredeploy.json" target="_blank">
-    <img src="http://armviz.io/visualizebutton.png"/>
+    <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.png"/>
 </a>
 
 `Tags: JBoss, Red Hat, EAP 7.2`
@@ -41,7 +41,8 @@ This template creates all of the compute resources to run JBoss EAP 7.2 on top o
 - Sample application named dukes deployed on JBoss EAP 7.2
 
 Following is the Architecture :
-<img src="images/RHEL8-Arch.PNG" width="800">
+
+![alt text](images/rhel-arch.png)
 
 To learn more about JBoss Enterprise Application Platform, check out:
 https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.2/
@@ -103,11 +104,11 @@ The deployment takes less than 10 minutes to complete.
 - Once the deployment is successful, go the VM details and copy the DNS Name of the VM.
 - Open a web browser and go to http://<PUBLIC_HOSTNAME>:8080/dukes/ and you should see the application running
 
-  <img src="images/app.png" width="600">
+  ![alt text](images/app.png)
 
 - To access the administration console go to http://<PUBLIC_HOSTNAME>:8080 and click on the link Administration Console and enter the EAP username and password to see the console.
 
-  <img src="images/admin.png" width="800">
+  ![alt text](images/admin.png)
 
 ## Notes
 

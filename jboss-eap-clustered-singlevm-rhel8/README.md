@@ -1,9 +1,9 @@
 # VM-RedHat - JBoss EAP 7.2 cluster on RHEL 8.0 VM
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-clustered-singlevm-rhel8%2Fazuredeploy.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
+    <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
 </a>
 <a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-clustered-singlevm-rhel8%2Fazuredeploy.json" target="_blank">
-    <img src="http://armviz.io/visualizebutton.png"/>
+    <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.png"/>
 </a>
 
 `Tags: JBoss, Red Hat, EAP 7.2, CLUSTER`
@@ -42,7 +42,7 @@ This template creates all of the compute resources to run JBoss EAP 7.2 on top o
 
 Following is the Architecture :
 
-<img src="images/eap-rhel-arch.png" width="800">
+![alt text](images/eap-rhel-arch.png)
 
 To learn more about JBoss Enterprise Application Platform, check out:
 https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.2/
@@ -106,7 +106,7 @@ The deployment takes about 10 minutes to complete.
 
 - Once the deployment is successful, click on the "Outputs" to see the URL of the SSH Command, App WEB URLs:
 
-  <img src="images/templateOutput.png" width="800">
+  ![alt text](images/template-output.png)
 
 - Copy the string from the "sshCommand" field. Open a terminal tool(or cmd window) and paste the string to access a VM on Azure cloud.
 
@@ -114,21 +114,21 @@ The deployment takes about 10 minutes to complete.
 
 - Once you login into the VM, you can go through a server.log on JBoss EAP how Jgroup discovery works for clustering:
 
-  <img src="images/ssh_command.png" width="800">
+  ![alt text](images/ssh-command.png)
 
 - When you look at one of the server logs ( i.e. node1 or node2 ), you should be able to identify the JGroups cluster members being added `Received new cluster view:`
 
-  <img src="images/session-replication-logs.png" width="800">
+  ![alt text](images/session-replication-logs.png)
 
 - Copy the App URL from the output section of the template. Open a web browser and paste the link, You will see Testing EAP Session Replication web page.
 
-  <img src="images/session-application-app0.png" width="800">
+  ![alt text](images/session-application-app.png)
 
 - The web application displays the Session ID, Session `counter` and `timestamp` (these are variables stored in the session that are replicated) and the container name that the web page and session is being hosted from.
 
 - Now, select the **Increment Counter** link. The session variable will increase. Note that the session variable increases simultaneously on both App UIs.
 
-  <img src="images/session-replication-increment.png" width="800">
+  ![alt text](images/session-replication-increment.png)
 
 ## Support
 
