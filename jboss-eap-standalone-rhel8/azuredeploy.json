@@ -31,13 +31,13 @@
         "description": "DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
       }
     },
-    "JBossEapUserName": {
+    "jbossEapUserName": {
       "type": "string",
       "metadata": {
         "description": "User name for JBoss EAP manager"
       }
     },
-    "JBossEapPassword": {
+    "jbossEapPassword": {
       "type": "securestring",
       "metadata": {
         "description": "Password for JBoss EAP manager"
@@ -302,7 +302,7 @@
           "fileUris": [
             "[concat(parameters('_artifactsLocation'), variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
-          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('JBossEapUserName'),' ',variables('singlequote'),parameters('JBossEapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'))]"
+          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEapUserName'),' ',variables('singlequote'),parameters('jbossEapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'))]"
         }
       }
     }
