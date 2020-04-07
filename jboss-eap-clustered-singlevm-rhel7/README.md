@@ -1,4 +1,4 @@
-# VM-RedHat - JBoss EAP 7.2 cluster on RHEL 7.7 VM
+# Red Hat - JBoss EAP 7.2 on RHEL 7.7 VM (single-VM)
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-clustered-singlevm-rhel7%2Fazuredeploy.json" target="_blank">
     <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
 </a>
@@ -6,13 +6,13 @@
     <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.png"/>
 </a>
 
-`Tags: JBoss, Red Hat, EAP 7.2, CLUSTER`
+`Tags: JBoss, Red Hat, EAP 7.2, Azure, Azure VM, JavaEE, RHEL 7.7`
 
 <!-- TOC -->
 
-1. [Solution Overview ](#solution-overview)
-2. [Template Solution Architecture ](#template-solution-architecture)
-3. [Licenses and Costs ](#licenses-and-costs)
+1. [Solution Overview](#solution-overview)
+2. [Template Solution Architecture](#template-solution-architecture)
+3. [Licenses, Subscriptions and Costs](#licenses-subscriptions-and-costs)
 4. [Prerequisites](#prerequisites)
 5. [Deployment Steps](#deployment-steps)
 6. [Deployment Time](#deployment-time)
@@ -23,14 +23,14 @@
 
 ## Solution Overview
 
-JBoss EAP is an open source platform for highly transactional, web-scale Java applications. EAP combines the familiar and popular Jakarta EE specifications with the latest technologies, like Microprofile, to modernize your applications from traditional Java EE into the new world of DevOps, cloud, containers, and microservices. EAP includes everything needed to build, run, deploy, and manage enterprise Java applications in a variety of environments, including on-premise, virtual environments, and in private, public, and hybrid clouds.
+JBoss EAP (Enterprise Application Platform) is an open source platform for highly transactional, web-scale Java applications. EAP combines the familiar and popular Jakarta EE specifications with the latest technologies, like Microprofile, to modernize your applications from traditional Java EE into the new world of DevOps, cloud, containers, and microservices. EAP includes everything needed to build, run, deploy, and manage enterprise Java applications in a variety of environments, including on-premise, virtual environments, and in private, public, and hybrid clouds.
 
-Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools. To obtain an rhsm account go to: www.redhat.com and sign in.
+Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools. To obtain an rhsm account for JBoss EAP, go to: www.redhat.com and sign in.
 
-This Azure quickstart template deploys a web application called eap-session-replication on JBoss EAP 7.2 cluster running on RHEL 7.7.
+This Azure quickstart template deploys a web application called eap-session-replication on JBoss EAP 7.2 running on RHEL 7.7 VM.
 
 ## Template Solution Architecture
-This template creates all of the compute resources to run JBoss EAP 7.2 on top of RHEL 7.7, deploying the following components:
+This template creates all the Azure compute resources to run JBoss EAP 7.2 on top of RHEL 7.7 VM. The following resources are created by this template:
 
 - RHEL 7.7 VM 
 - Public IP 
@@ -40,17 +40,17 @@ This template creates all of the compute resources to run JBoss EAP 7.2 on top o
 - Sample application called eap-session-replication deployed on JBoss EAP 7.2
 - Storage Account
 
-Following is the Architecture :
+Following is the Architecture:
 
 ![alt text](images/eap-rhel-arch.png)
 
-To learn more about JBoss Enterprise Application Platform, check out:
+To learn more about JBoss Enterprise Application Platform, visit:
 https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.2/
 
 
-## Licenses and Costs
+## Licenses, Subscriptions and Costs
 
-This RHEL 7.7 is Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. Total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a RedHat account to register to Red Hat Subscription Manager (RHSM) and install EAP. Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
+The RHEL 7.7 is Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. Total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
 
 
 ## Prerequisites
@@ -61,21 +61,21 @@ This RHEL 7.7 is Pay-As-You-Go image which carries a separate hourly charge that
 
    - Choose an admin username and password for your VM.
     
-   - Choose a name for your VM.
+   - Choose DNS Label Prefix for the public IP which should be unique. Note that this will also be the name of your VM.
 
-   - Choose an EAP username and password to enable the EAP manager UI and deployment method.
+   - Choose JBoss EAP username and password to enable the JBoss EAP manager UI and deployment method.
     
-   - Provide your RHSM Username and Password
+   - Provide your RHSM username and password
 
 ## Deployment Steps
 
-Build your environment with EAP 7.2 on top of RHEL 7.7 on Azure by clicking the Deploy to Azure button and fill in the following parameter values:
+Build your environment with JBoss EAP 7.2 on top of RHEL 7.7 on Azure by clicking the Deploy to Azure button and fill in the following parameter values:
 
-   - **Subscription** - Choose the right subscription where you would like to deploy.
+   - **Subscription** - Choose the appropriate subscription where you would like to deploy.
 
-   - **Resource Group** - Create a new Resource group or you can select an existing one.
+   - **Resource Group** - Create a new Resource Group or you can select an existing one.
 
-   - **Location** - Choose the right location for your deployment.
+   - **Location** - Choose the appropriate location for your deployment.
 
    - **Admin Username** - User account name for logging into your RHEL VM.
 
@@ -85,17 +85,17 @@ Build your environment with EAP 7.2 on top of RHEL 7.7 on Azure by clicking the 
    
    - **DNS Label Prefix** - DNS Label for the Public IP and this is also the name of your VM. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error.
 
-   - **EAP Username** - Username for EAP Console.
+   - **JBoss EAP Username** - Username for JBoss EAP Console.
 
-   - **EAP Password** - User account password for EAP Console.
+   - **JBoss EAP Password** - User account password for JBoss EAP Console.
     
-   - **RHSM Username** - Username for the RedHat account.
+   - **RHSM Username** - Username for the Red Hat account.
 
-   - **RHSM Password** - User account password for the RedHat account.
+   - **RHSM Password** - User account password for the Red Hat account.
    
-   - **RHSM Pool ID** - RedHat subscription Manager Pool ID.
+   - **RHSM Pool ID** - Red Hat subscription Manager Pool ID.
    
-   - **VM Size** - Choose the size of the VM from the options in the dropdown
+   - **VM Size** - Choose the appropriate size of the VM from the dropdown options.
 
    - Leave the rest of the parameter values as it is and accept the terms and conditions before clicking on Purchase.
 
@@ -109,11 +109,11 @@ The deployment takes about 10 minutes to complete.
 
   ![alt text](images/template-output.png)
 
-- Copy the string from the "sshCommand" field. Open a terminal tool(or cmd window) and paste the string to access a VM on Azure cloud.
+- Copy the string from the "sshCommand" field. Open command prompt and paste the string to access the VM.
 
-- Enter the VM Username and Password, the "Admin User" and "Admin Password" you provided before you deployed the template.
+- Enter the VM username and password/ssh key, the "Admin Username" and "Admin Password" you provided before you deployed the template.
 
-- Once you login into the VM, you can go through a server.log on JBoss EAP how Jgroup discovery works for clustering:
+- Once you login into the VM, you can go through the server.log on JBoss EAP how Jgroup discovery works for clustering:
 
   ![alt text](images/ssh-command.png)
 
@@ -121,13 +121,13 @@ The deployment takes about 10 minutes to complete.
 
   ![alt text](images/session-replication-logs.png)
 
-- Copy the App URL from the output section of the template. Open a web browser and paste the link, You will see Testing EAP Session Replication web page.
+- Copy the App URL from the output section of the template. Open a web browser and paste the link, you will see EAP Session Replication web page.
 
   ![alt text](images/session-application-app.png)
 
-- The web application displays the Session ID, Session `counter` and `timestamp` (these are variables stored in the session that are replicated) and the container name that the web page and session is being hosted from.
+- The web application displays the Session ID, `Session counter` and `timestamp` (these are variables stored in the session that are replicated) and the container name that the web page and session is being hosted from.
 
-- Now, select the **Increment Counter** link. The session variable will increase. Note that the session variable increases simultaneously on both App UIs.
+- Now, select the **Increment Counter** link. The session counter will increase. Note that the session counter increases simultaneously on both App UIs.
 
   ![alt text](images/session-replication-increment.png)
 

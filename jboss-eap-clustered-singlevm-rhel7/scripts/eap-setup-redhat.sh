@@ -1,7 +1,7 @@
 #!/bin/sh
 
 /bin/date +%H:%M:%S >> /home/$1/install.log
-echo "Red Hat JBoss EAP 7.2 Cluster Installation Start"  >> /home/$1/install.log
+echo "Red Hat JBoss EAP 7.2 Installation Start"  >> /home/$1/install.log
 
 export JBOSS_HOME="/opt/rh/eap7/root/usr/share/wildfly"
 export NODENAME1="node1"
@@ -38,11 +38,11 @@ echo "JBoss EAP RPM installing..." >> /home/$1/install.log
 yum-config-manager --disable rhel-7-server-htb-rpms 
 yum groupinstall -y jboss-eap7 
 
-echo "Create 2 EAP nodes on Azure..." >> /home/$1/install.log 
+echo "Create 2 JBoss EAP nodes on Azure..." >> /home/$1/install.log 
 /bin/cp  -rL  $JBOSS_HOME/standalone $JBOSS_HOME/$NODENAME1
 /bin/cp  -rL  $JBOSS_HOME/standalone $JBOSS_HOME/$NODENAME2
 
-echo "Eap session replication app deploy..." >> /home/$1/install.log 
+echo "EAP Session Replication app deploy..." >> /home/$1/install.log 
 yum install -y git
 cd /home/$1
 git clone https://github.com/danieloh30/eap-session-replication.git
@@ -53,11 +53,11 @@ git clone https://github.com/danieloh30/eap-session-replication.git
 touch $JBOSS_HOME/$NODENAME1/deployments/eap-session-replication.war.dodeploy
 touch $JBOSS_HOME/$NODENAME2/deployments/eap-session-replication.war.dodeploy
 
-echo "Configuring EAP managment user..." >> /home/$1/install.log 
+echo "Configuring JBoss EAP management user..." >> /home/$1/install.log 
 $JBOSS_HOME/bin/add-user.sh -sc $JBOSS_HOME/$NODENAME1/configuration -u $EAP_USER -p $EAP_PASSWORD -g 'guest,mgmtgroup' 
 $JBOSS_HOME/bin/add-user.sh -sc $JBOSS_HOME/$NODENAME2/configuration -u $EAP_USER -p $EAP_PASSWORD -g 'guest,mgmtgroup' 
 
-echo "Start EAP 7.2 instances..." >> /home/$1/install.log 
+echo "Start JBoss EAP 7.2 instances..." >> /home/$1/install.log 
 $JBOSS_HOME/bin/standalone.sh -Djboss.node.name=$NODENAME1 -Djboss.server.base.dir=$JBOSS_HOME/$NODENAME1 -c $SVR_CONFIG -b $IP_ADDR -bmanagement $IP_ADDR -bprivate $IP_ADDR -Djboss.jgroups.azure_ping.storage_account_name=$STORAGE_ACCOUNT_NAME -Djboss.jgroups.azure_ping.storage_access_key=$STORAGE_ACCESS_KEY -Djboss.jgroups.azure_ping.container=$CONTAINER_NAME > /dev/null 2>&1 &
 $JBOSS_HOME/bin/standalone.sh -Djboss.node.name=$NODENAME2 -Djboss.server.base.dir=$JBOSS_HOME/$NODENAME2 -c $SVR_CONFIG -b $IP_ADDR -bmanagement $IP_ADDR -bprivate $IP_ADDR -Djboss.jgroups.azure_ping.storage_account_name=$STORAGE_ACCOUNT_NAME -Djboss.jgroups.azure_ping.storage_access_key=$STORAGE_ACCESS_KEY -Djboss.jgroups.azure_ping.container=$CONTAINER_NAME -Djboss.socket.binding.port-offset=$PORT_OFFSET > /dev/null 2>&1 &
 
@@ -75,5 +75,5 @@ firewall-cmd --reload
 # Seeing a race condition timing error so sleep to delay
 sleep 20
 
-echo "Red Hat JBoss EAP 7.2 Cluster Intallation End " >> /home/$1/install.log
+echo "Red Hat JBoss EAP 7.2 Intallation End " >> /home/$1/install.log
 /bin/date +%H:%M:%S  >> /home/$1/install.log

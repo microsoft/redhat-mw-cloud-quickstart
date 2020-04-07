@@ -29,20 +29,20 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Location for all resources."
+        "description": "Location for all resources"
       }
     },
-    "eapUserName": {
+    "jbossEapUserName": {
       "type": "string",
       "metadata": {
-        "description": "User name for the JBOSS EAP."
+        "description": "User name for the JBoss EAP Manager"
       }
     },
-    "eapPassword": {
+    "jbossEapPassword": {
       "type": "securestring",
       "minLength": 10,
       "metadata": {
-        "description": "Password for the JBOSS EAP"
+        "description": "Password for the JBoss EAP Manager"
       }
     },
     "rhsmUserName": {
@@ -54,7 +54,7 @@
     "rhsmPassword": {
       "type": "securestring",
       "metadata": {
-        "description": "Password for Red Hat subscription  manager"
+        "description": "Password for Red Hat subscription manager"
       }
     },
     "rhsmPool": {
@@ -452,7 +452,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('eapUserName'),' ',variables('singlequote'),parameters('eapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'),' ',reference(variables('nic1Name')).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEapUserName'),' ',variables('singlequote'),parameters('jbossEapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'),' ',reference(variables('nic1Name')).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
             }
           }
         }
@@ -527,7 +527,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('eapUserName'),' ',variables('singlequote'),parameters('eapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'),' ',reference(variables('nic2Name')).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEapUserName'),' ',variables('singlequote'),parameters('jbossEapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'),' ',reference(variables('nic2Name')).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
             }
           }
         }

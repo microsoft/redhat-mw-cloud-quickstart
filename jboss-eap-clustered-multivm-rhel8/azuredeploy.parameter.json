@@ -8,10 +8,10 @@
     "adminPasswordOrKey": {
       "value": "GEN-PASSWORD"
     },
-    "eapUserName": {
+    "jbossEapUserName": {
       "value": "GEN-UNIQUE"
     },
-    "eapPassword": {
+    "jbossEapPassword": {
       "value": "GEN-PASSWORD"
     }
   }

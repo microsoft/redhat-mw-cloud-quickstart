@@ -38,15 +38,15 @@ sudo iptables-save
 echo "Install openjdk, wget, git, unzip, vim"  >> /home/$1/install.log 
 sudo yum install java-1.8.0-openjdk wget unzip vim git -y
 
-echo "Initial EAP7.2 setup" >> /home/$1/install.log
+echo "Initial JBoss EAP 7.2 setup" >> /home/$1/install.log
 subscription-manager register --username $RHSM_USER --password $RHSM_PASSWORD
 subscription-manager attach --pool=${RHSM_POOL}
-echo "Subscribing the system to get access to EAP 7.2 repos" >> /home/$1/install.log
+echo "Subscribing the system to get access to JBoss EAP 7.2 repos" >> /home/$1/install.log
 
-# Install EAP7.2 	
+# Install JBoss EAP 7.2 	
 subscription-manager repos --enable=jb-eap-7.2-for-rhel-8-x86_64-rpms >> /home/$1/install.log
 
-echo "Installing EAP7.2 repos" >> /home/$1/install.log
+echo "Installing JBoss EAP 7.2 repos" >> /home/$1/install.log
 yum groupinstall -y jboss-eap7 >> /home/$1/install.log
 
 echo "Copy the standalone-azure-ha.xml from EAP_HOME/doc/wildfly/examples/configs folder to EAP_HOME/wildfly/standalone/configuration folder" >> /home/$1/install.log
@@ -61,7 +61,7 @@ sed -i 's/jboss.bind.address.management:127.0.0.1/jboss.bind.address.management:
 sed -i 's/jboss.bind.address:127.0.0.1/jboss.bind.address:0.0.0.0/g'  $EAP_HOME/wildfly/standalone/configuration/standalone-azure-ha.xml
 sed -i 's/jboss.bind.address.private:127.0.0.1/jboss.bind.address.private:0.0.0.0/g'  $EAP_HOME/wildfly/standalone/configuration/standalone-azure-ha.xml
 
-echo "start jboss server" >> /home/$1/install.log
+echo "Start JBoss server" >> /home/$1/install.log
 
 $EAP_HOME/wildfly/bin/standalone.sh -bprivate $IP_ADDR --server-config=standalone-azure-ha.xml -Djboss.jgroups.azure_ping.storage_account_name=$STORAGE_ACCOUNT_NAME -Djboss.jgroups.azure_ping.storage_access_key=$STORAGE_ACCESS_KEY -Djboss.jgroups.azure_ping.container=$CONTAINER_NAME -Djava.net.preferIPv4Stack=true &
 
@@ -75,12 +75,12 @@ chkconfig crond on
 echo "@reboot sleep 90 && /bin/jbossservice.sh" >>  /var/spool/cron/root
 chmod 600 /var/spool/cron/root
 
-echo "deploy an application " >> /home/$1/install.log
+echo "Deploy an application " >> /home/$1/install.log
 git clone https://github.com/danieloh30/eap-session-replication.git
 cp eap-session-replication/target/eap-session-replication.war $EAP_HOME/wildfly/standalone/deployments/
 touch $EAP_HOME/wildfly/standalone/deployments/eap-session-replication.war.dodeploy
 
-echo "Configuring EAP managment user..." >> /home/$1/install.log 
+echo "Configuring JBoss EAP management user..." >> /home/$1/install.log 
 $EAP_HOME/wildfly/bin/add-user.sh  -u $EAP_USER -p $EAP_PASSWORD -g 'guest,mgmtgroup'
 
 # Seeing a race condition timing error so sleep to deplay
