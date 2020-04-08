@@ -22,7 +22,7 @@
     "adminPasswordOrKey": {
           "type": "securestring",
           "metadata": {
-            "description": "SSH Key or password for the Virtual Machine"
+            "description": "SSH Key or password for the Virtual Machine."
           }
     },
     "location": {
@@ -38,11 +38,11 @@
         "description": "User name for the JBoss EAP Manager"
       }
     },
-     "jbossEapPassword": {
-       "type": "securestring",
-       "minLength": 10,
-       "metadata": {
-         "description": "Password for the JBoss EAP Manager"
+    "jbossEapPassword": {
+      "type": "securestring",
+      "minLength": 10,
+      "metadata": {
+        "description": "Password for the JBoss EAP Manager"
       }
     },
     "rhsmUserName": {
@@ -54,29 +54,29 @@
     "rhsmPassword": {
       "type": "securestring",
       "metadata": {
-        "description": "Password for Red Hat subscription  manager"
+        "description": "Password for Red Hat subscription manager"
       }
     },
     "rhsmPool": {
       "type": "string",
       "metadata": {
-        "description": "Red Hat Subscription Manager Pool"
+       "description": "Red Hat Subscription Manager Pool"
       }
     },
     "_artifactsLocation": {
-       "type": "string",
-       "metadata": {
-        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
-      },
-      "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/jboss-eap-clustered-multivm-rhel7/"
+      "type": "string",
+      "metadata": {
+       "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+     },
+     "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/jboss-eap-clustered-multivm-rhel7/"
     },
     "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-      },
-      "defaultValue": ""
-    },
+     "type": "securestring",
+     "metadata": {
+       "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+     },
+     "defaultValue": ""
+    },  
     "jbosseapstrgType": {
       "type": "string",
       "defaultValue": "Standard_LRS",
@@ -91,40 +91,67 @@
     "vmSize": {
       "type": "string",
       "defaultValue": "Standard_DS2_v2",
+      "allowedValues": [
+        "Standard_DS1_v2",
+        "Standard_DS2_v2",
+        "Standard_DS3_v2",
+        "Standard_DS4_v2",
+        "Standard_DS5_v2",
+        "Standard_D2_v3",
+        "Standard_D4_v3",
+        "Standard_D8_v3",
+        "Standard_D16_v3",
+        "Standard_D32_v3",
+        "Standard_D48_v3",
+        "Standard_D64_v3",
+        "Standard_D2S_v3",
+        "Standard_D4S_v3",
+        "Standard_D8S_v3",
+        "Standard_D16S_v3",
+        "Standard_D32S_v3",
+        "Standard_D48S_v3",
+        "Standard_D64S_v3",
+        "Standard_F1",
+        "Standard_F2",
+        "Standard_F4",
+        "Standard_F8",
+        "Standard_F16"
+      ],
       "metadata": {
         "description": "The size of the Virtual Machine."
+      }
+    },
+    "numberOfInstances": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Number of VMs to deploy"
       }
     }
   },
   "variables": {
     "scriptFileName": "deployjbosseap.sh",
-    "scriptClose": "'",
     "containerName": "azureping",
+    "singlequote": "'",
     "scriptStart": "su -c'sh ",
     "customScriptCommand": "[concat(variables('scriptStart'), variables('scriptFileName'), ' ')]",
-    "singlequote": "'",
+    "scriptClose": "'",
     "loadBalancersName": "jbosseap-lb",
-    "vm1Name": "jbosseap-server-1",
-    "vm2Name": "jbosseap-server-2",
+    "vmName": "jbosseap-server",
     "asName": "jbosseap-as",
     "skuName": "Aligned",
     "imagePublisher": "RedHat",
     "imageOffer": "RHEL",
     "imageSku": "7.7",
-    "nic1Name": "[concat(uniquestring(variables('vm1Name')), 'nic')]",
-    "nic2Name": "[concat(uniquestring(variables('vm2Name')), 'nic')]",
+    "nicName": "[concat(uniquestring(variables('vmName')), 'nic')]",
     "addressPrefix": "10.3.0.0/16",
-    "subnet1Name": "eap-server1-subnet",
-    "subnet1Prefix": "10.3.2.0/24",
-    "subnet2Name": "eap-server2-subnet",
-    "subnet2Prefix": "10.3.3.0/24",
-    "publicIPAddress1Name": "[concat(uniquestring(variables('vm1Name')), 'publicip')]",
-    "publicIPAddress2Name": "[concat(uniquestring(variables('vm2Name')), 'publicip')]",
+    "subnetName": "eap-server1-subnet",
+    "subnetPrefix": "10.3.2.0/24",
+    "publicIPAddressName": "[concat(uniquestring(variables('vmName')), 'publicip')]",
     "publicIPAddresslb": "[concat('pip',uniqueString(resourceGroup().id))]",
     "publicIPAddresslbDNSName" : "[concat('piplb-', uniqueString(resourceGroup().id))]",
-    "publicIPAddress1DNSName" : "[concat('pipvm1-', uniqueString(resourceGroup().id))]",
-    "publicIPAddress2DNSName" : "[concat('pipvm2-', uniqueString(resourceGroup().id))]",
-    "publicIPAddressType": "Dynamic",
+    "publicIPAddressDNSName" : "[concat('pipvm-', uniqueString(resourceGroup().id))]",
+    "publicIPAddressType": "Static",
     "virtualNetworkName": "jbosseap72-vnet",
     "backendPoolName": "jbosseap-servers",
     "frontendName" : "LoadBalancerFrontEnd",
@@ -148,25 +175,17 @@
     {
       "apiVersion": "2019-11-01",
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddress1Name')]",
+      "name": "[concat(variables('publicIPAddressName'), copyIndex())]",
       "location": "[parameters('location')]",
+      "copy": {
+          "name": "pipLoop",
+          "count": "[parameters('numberOfInstances')]"
+      },
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
         "dnsSettings": {
-        "domainNameLabel": "[concat(variables('publicIPAddress1DNSName'))]"
-      }
-      }
-    },
-    {
-      "apiVersion": "2019-11-01",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddress2Name')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
-        "dnsSettings": {
-        "domainNameLabel": "[concat(variables('publicIPAddress2DNSName'))]"
-      }
+        "domainNameLabel": "[concat(variables('publicIPAddressDNSName'), copyIndex())]"
+       }
       }
     },
     {
@@ -299,18 +318,9 @@
         },
         "subnets": [
           {
-            "name": "[variables('subnet1Name')]",
+            "name": "[variables('subnetName')]",
             "properties": {
-              "addressPrefix": "[variables('subnet1Prefix')]",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
-              }
-            }
-          },
-          {
-            "name": "[variables('subnet2Name')]",
-            "properties": {
-              "addressPrefix": "[variables('subnet2Prefix')]",
+              "addressPrefix": "[variables('subnetPrefix')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
               }
@@ -322,10 +332,14 @@
     {
       "apiVersion": "2019-11-01",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nic1Name')]",
+      "name": "[concat(variables('nicName'), copyIndex())]",
       "location": "[parameters('location')]",
+      "copy": {
+          "name": "nicLoop",
+          "count": "[parameters('numberOfInstances')]"
+      },
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddress1Name'))]",
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'), copyIndex())]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
         "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancersName'))]"
       ],
@@ -336,47 +350,15 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
-                  "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddress1Name'))]"
-                },
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName'), copyIndex()))]"
+              },
               "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet1Name'))]"
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
               },
               "loadBalancerBackendAddressPools": [
-                {
+               {
                   "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancersName'), variables('backendPoolName'))]"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "2019-11-01",
-      "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nic2Name')]",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddress2Name'))]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancersName'))]"
-      ],
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                  "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddress2Name'))]"
-                },
-              "subnet": {
-                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet2Name'))]"
-              },
-              "loadBalancerBackendAddressPools": [
-                {
-                  "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancersName'), variables('backendPoolName'))]"
-                }
+               }
               ]
             }
           }
@@ -386,13 +368,17 @@
     {
       "apiVersion": "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vm1Name')]",
+      "name": "[concat(variables('vmName'), copyIndex())]",
       "location": "[parameters('location')]",
+      "copy": {
+          "name": "virtualMachineLoop",
+          "count": "[parameters('numberOfInstances')]"
+      },
       "tags": {
         "Tag1": "ManagedVM"
       },
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nic1Name'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
         "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
       ],
@@ -406,12 +392,12 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic1Name'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), copyIndex()))]"
             }
           ]
         },
         "osProfile": {
-          "computerName": "[variables('vm1Name')]",
+          "computerName": "[concat(variables('vmName'), copyIndex())]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -431,15 +417,15 @@
       "resources": [
         {
           "type": "extensions",
-          "name": "jbosseap-extension",
+          "name": "[concat('jbosseap-extension-', copyIndex())]",
           "apiVersion": "2019-12-01",
           "location": "[parameters('location')]",
-          "comments": "These VM Extensions are Install JBOSSEAP",
+          "comments": "This VM Extension Install JBoss EAP",
           "tags": {
-            "displayName": "JBOSSEAPINstall"
+            "displayName": "JBossEAPInstall"
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', variables('vm1Name'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName'), copyIndex()))]"
           ],
           "properties": {
             "publisher": "Microsoft.Azure.Extensions",
@@ -452,82 +438,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEapUserName'),' ',variables('singlequote'),parameters('jbossEapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'),' ',reference(variables('nic1Name')).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "apiVersion": "2019-12-01",
-      "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vm2Name')]",
-      "location": "[parameters('location')]",
-      "tags": {
-        "Tag1": "ManagedVM"
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nic2Name'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
-        "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
-      ],
-      "properties": {
-        "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('asName'))]"
-        },
-        "hardwareProfile": {
-          "vmSize": "[parameters('vmSize')]"
-        },
-        "osProfile": {
-          "computerName": "[variables('vm2Name')]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
-          "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('imageSku')]",
-            "version": "latest"
-          },
-          "osDisk": {
-            "createOption": "FromImage"
-          }
-        },
-        "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic2Name'))]"
-            }
-          ]
-        }
-      },
-      "resources": [
-        {
-          "type": "extensions",
-          "name": "jbosseap-extension",
-          "apiVersion": "2019-12-01",
-          "location": "[parameters('location')]",
-          "comments": "These VM Extensions are Install JBOSSEAP",
-          "tags": {
-            "displayName": "JBOSSEAPINstall"
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', variables('vm2Name'))]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Azure.Extensions",
-            "type": "CustomScript",
-            "typeHandlerVersion": "2.0",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-              "fileUris": [
-                "[concat(parameters('_artifactsLocation'),'scripts/', variables('scriptFileName'), parameters('_artifactsLocationSasToken'))]"
-              ]
-            },
-            "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEapUserName'),' ',variables('singlequote'),parameters('jbossEapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'),' ',reference(variables('nic2Name')).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEapUserName'),' ',variables('singlequote'),parameters('jbossEapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'),' ',reference(concat(variables('nicName'), copyIndex())).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
             }
           }
         }
@@ -667,33 +578,9 @@
     }
   ],
   "outputs": {
-  "sshVM1": {
-    "type": "string",
-    "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddress1Name')).dnsSettings.fqdn)]"
-  },
-  "sshVM2": {
-    "type": "string",
-    "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddress2Name')).dnsSettings.fqdn)]"
-  },
-  "Admin Console VM1": {
-    "type": "string",
-    "value": "[concat('http://', reference(variables('publicIPAddress1Name')).dnsSettings.fqdn, ':9990/console/')]"
-  },
-  "Admin Console VM2": {
-    "type": "string",
-    "value": "[concat('http://', reference(variables('publicIPAddress2Name')).dnsSettings.fqdn, ':9990/console/')]"
-  },
-  "AppUI-LB": {
-    "type": "string",
-    "value": "[concat('http://', reference(variables('publicIPAddresslb')).dnsSettings.fqdn, '/eap-session-replication/')]"
-  },
-  "AppUI-1": {
-    "type": "string",
-    "value": "[concat('http://', reference(variables('publicIPAddress1Name')).dnsSettings.fqdn, ':8080/eap-session-replication/')]"
-  },
-  "AppUI-2": {
-    "type": "string",
-    "value": "[concat('http://', reference(variables('publicIPAddress2Name')).dnsSettings.fqdn, ':8080/eap-session-replication/')]"
-  }
-}
+      "AppUI-LB": {
+        "type": "string",
+        "value": "[concat('http://', reference(variables('publicIPAddresslb')).dnsSettings.fqdn, '/eap-session-replication/')]"
+      }
+    }
 }
