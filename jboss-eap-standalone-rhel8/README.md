@@ -28,7 +28,7 @@ JBoss EAP (Enterprise Application Platform) is an open source platform for highl
 
 Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools. To obtain an rhsm account for JBoss EAP, go to: www.redhat.com.
 
-This Azure quickstart template deploys a web application named dukes on JBoss EAP 7.2 running on RHEL 8.0 VM. 
+This Azure quickstart template deploys a web application named dukes on JBoss EAP 7.2 running on top of RHEL 8.0 VM. 
 
 ## Template Solution Architecture
 This template creates all the Azure compute resources to run JBoss EAP 7.2 on top of RHEL 8.0 VM. The following resources are created by this template:
