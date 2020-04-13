@@ -17,8 +17,8 @@ wget https://download.jboss.org/wildfly/$WILDFLY_RELEASE.Final/wildfly-$WILDFLY_
 tar xvf wildfly-$WILDFLY_RELEASE.Final.tar.gz
 
 echo "Sample app deploy..." >> /home/$1/install.log 
-git clone https://github.com/danieloh30/dukes.git
-/bin/cp -rf /home/$1/dukes/target/dukes.war /home/$1/wildfly-$WILDFLY_RELEASE.Final/standalone/deployments/
+git clone https://github.com/Suraj2093/dukes.git
+/bin/cp -rf /home/$1/dukes/target/JBoss-EAP_on_Azure.war /home/$1/wildfly-$WILDFLY_RELEASE.Final/standalone/deployments/
 
 echo "Configuring WILDFLY managment user..." >> /home/$1/install.log 
 /home/$1/wildfly-$WILDFLY_RELEASE.Final/bin/add-user.sh -u $WILDFLY_USER -p $WILDFLY_PASSWORD -g 'guest,mgmtgroup' 
