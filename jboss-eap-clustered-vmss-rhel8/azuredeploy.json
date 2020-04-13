@@ -20,10 +20,10 @@
       }
     },
     "adminPasswordOrKey": {
-        "type": "securestring",
-        "metadata": {
-          "description": "SSH Key or password for the Virtual Machine."
-        }
+          "type": "securestring",
+          "metadata": {
+            "description": "SSH Key or password for the Virtual Machine."
+          }
     },
     "location": {
       "type": "string",
@@ -71,11 +71,11 @@
      "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/jboss-eap-clustered-vmss-rhel8/"
     },
     "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-      },
-      "defaultValue": ""
+     "type": "securestring",
+     "metadata": {
+       "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+     },
+     "defaultValue": ""
     },  
     "jbosseapstrgType": {
       "type": "string",
@@ -144,10 +144,9 @@
     "customScriptCommand": "[concat(variables('scriptStart'), variables('scriptFileName'), ' ')]",
     "scriptClose": "'",
     "loadBalancersName": "jbosseap-lb",
-    "namingInfix": "[toLower(substring(concat(parameters('vmssName'), uniqueString(resourceGroup().id)), 0, 9))]",
     "imagePublisher": "RedHat",
     "imageOffer": "RHEL",
-    "imageSku": "7.7",
+    "imageSku": "8",
     "nicName": "[concat(parameters('vmssName'), 'nic')]",
     "addressPrefix": "10.3.0.0/16",
     "subnetName": "eap-server-subnet",
@@ -190,7 +189,7 @@
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
         "dnsSettings": {
         "domainNameLabel": "[concat(variables('publicIPAddresslbDNSName'))]"
-        }
+      }
       }
     },
     {
@@ -230,6 +229,7 @@
         "capacity": "[parameters('instanceCount')]"
       },
       "properties": {
+        "overprovision": "true",
         "upgradePolicy": {
           "mode": "Manual"
         },
@@ -260,11 +260,11 @@
                   "primary": true,
                   "ipConfigurations": [
                     {
-                     "name": "ipconfig",
-                     "properties": {
-                       "subnet": {
-                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
-                       },
+                      "name": "ipconfig",
+                      "properties": {
+                        "subnet": {
+                          "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
+                        },
                         "loadBalancerBackendAddressPools": [
                           {
                             "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancersName'), variables('backendPoolName'))]"
@@ -303,131 +303,130 @@
                     "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ', parameters('jbossEapUserName'),' ', variables('singlequote'), parameters('jbossEapPassword'), variables('singlequote'),' ', parameters('rhsmUserName'),' ', variables('singlequote'), parameters('rhsmPassword'), variables('singlequote'),' ', parameters('rhsmPool'),' ', variables('jbosseapstrgName'),' ', variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
                   }
                 }
-             }
+              }
             ]
           }
         }
       }
     },
     {
-     "type": "Microsoft.Network/loadBalancers",
-     "apiVersion": "2018-06-01",
-     "name": "[variables('loadBalancersName')]",
-     "location": "[parameters('location')]",
-     "dependsOn": [
-       "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresslb'))]"
-     ],
-     "sku": {
-       "name": "Basic"
-     },
-     "properties": {
-       "frontendIPConfigurations": [
-         {
-          "name": "[variables('frontendName')]",
-          "properties": {
-            "privateIPAllocationMethod": "Dynamic",
-            "publicIPAddress": {
-              "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresslb'))]"
-            },
-            "privateIPAddressVersion": "IPv4"
-          }
- 
-        }
-       ],
-     "backendAddressPools": [
-      {
-       "name": "[variables('backendPoolName')]"
-      }
-     ],
-     "inboundNatPools": [
-      {
-       "name": "[variables('natPoolName1')]",
-       "properties": {
-        "frontendIPConfiguration": {
-         "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('loadBalancersName'), variables('frontendName'))]"
-        },
-        "protocol": "Tcp",
-        "frontendPortRangeStart": "[variables('natStartPort1')]",
-        "frontendPortRangeEnd": "[variables('natEndPort1')]",
-        "backendPort": "[variables('natBackendPort')]"
-       }
+      "type": "Microsoft.Network/loadBalancers",
+      "apiVersion": "2018-06-01",
+      "name": "[variables('loadBalancersName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresslb'))]"
+      ],
+      "sku": {
+        "name": "Basic"
       },
-      {
-       "name": "[variables('natPoolName2')]",
-       "properties": {
-         "frontendIPConfiguration": {
-          "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('loadBalancersName'), variables('frontendName'))]"
-         },
-         "protocol": "Tcp",
-         "frontendPortRangeStart": "[variables('natStartPort2')]",
-         "frontendPortRangeEnd": "[variables('natEndPort2')]",
-         "backendPort": "[variables('adminBackendPort')]"
-       }
-      }
-     ],
-     "loadBalancingRules": [
-      {
-       "name": "[concat(variables('loadBalancersName'), '-rule')]",
-       "properties": {
-        "frontendIPConfiguration": {
-         "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('loadBalancersName'), variables('frontendName'))]"
-        },
-        "frontendPort": 80,
-        "backendPort": 8080,
-        "enableFloatingIP": false,
-        "idleTimeoutInMinutes": 5,
-        "protocol": "Tcp",
-        "enableTcpReset": false,
-        "backendAddressPool": {
-          "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancersName'), variables('backendPoolName'))]"
-         },
-         "probe": {
-          "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadBalancersName'), variables('healthProbe'))]"
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "[variables('frontendName')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresslb'))]"
+              },
+              "privateIPAddressVersion": "IPv4"
+            }
           }
-        }
-       }
-     ],
-     "probes": [
-       {
-        "name": "[variables('healthProbe')]",
-        "properties": {
-          "protocol": "Tcp",
-          "port": 8080,
-          "intervalInSeconds": 5,
-          "numberOfProbes": 2
-        }
-       }
-     ]
-    }
-   },
-   {
-    "name": "[variables('jbosseapstrgName')]",
-    "type": "Microsoft.Storage/storageAccounts",
-    "location": "[parameters('location')]",
-    "apiVersion": "2019-04-01",
-    "sku": {
-      "name": "[parameters('jbosseapstrgType')]"
-    },
-    "tags": {
-      "displayName": "jbosseapstrg"
-    },
-    "kind": "Storage",
-      "resources": [
-       {
-        "name": "[concat('default/', variables('containerName'))]",
-        "type": "blobServices/containers",
-        "apiVersion": "2018-07-01",
-        "dependsOn": [
-          "[variables('jbosseapstrgName')]"
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[variables('backendPoolName')]"
+          }
+        ],
+        "inboundNatPools": [
+          {
+            "name": "[variables('natPoolName1')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('loadBalancersName'), variables('frontendName'))]"
+              },
+              "protocol": "Tcp",
+              "frontendPortRangeStart": "[variables('natStartPort1')]",
+              "frontendPortRangeEnd": "[variables('natEndPort1')]",
+              "backendPort": "[variables('natBackendPort')]"
+            }
+          },
+          {
+            "name": "[variables('natPoolName2')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('loadBalancersName'), variables('frontendName'))]"
+              },
+              "protocol": "Tcp",
+              "frontendPortRangeStart": "[variables('natStartPort2')]",
+              "frontendPortRangeEnd": "[variables('natEndPort2')]",
+              "backendPort": "[variables('adminBackendPort')]"
+            }
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "[concat(variables('loadBalancersName'), '-rule')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('loadBalancersName'), variables('frontendName'))]"
+              },
+              "frontendPort": 80,
+              "backendPort": 8080,
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 5,
+              "protocol": "Tcp",
+              "enableTcpReset": false,
+              "backendAddressPool": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancersName'), variables('backendPoolName'))]"
+              },
+              "probe": {
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadBalancersName'), variables('healthProbe'))]"
+              }
+            }
+          }
+        ],
+        "probes": [
+          {
+            "name": "[variables('healthProbe')]",
+            "properties": {
+              "protocol": "Tcp",
+              "port": 8080,
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            }
+          }
         ]
-       }
+      }
+    },
+    {
+      "name": "[variables('jbosseapstrgName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[parameters('location')]",
+      "apiVersion": "2019-04-01",
+      "sku": {
+        "name": "[parameters('jbosseapstrgType')]"
+      },
+      "tags": {
+        "displayName": "jbosseapstrg"
+      },
+      "kind": "Storage",
+      "resources": [
+        {
+          "name": "[concat('default/', variables('containerName'))]",
+          "type": "blobServices/containers",
+          "apiVersion": "2018-07-01",
+          "dependsOn": [
+            "[variables('jbosseapstrgName')]"
+          ]
+        }
       ]
     }
-   ],
-   "outputs": {
-     "AppUI-LB": {
-      "type": "string",
-      "value": "[concat('http://', reference(variables('publicIPAddresslb')).dnsSettings.fqdn, '/eap-session-replication/')]"
-     }
+  ],
+  "outputs": {
+      "AppUI-LB": {
+        "type": "string",
+        "value": "[concat('http://', reference(variables('publicIPAddresslb')).dnsSettings.fqdn, '/eap-session-replication/')]"
+      }
     }
- }
+}
