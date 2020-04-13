@@ -8,12 +8,12 @@ echo "Red Hat JBoss EAP 7.2 Cluster Intallation Start " >> /home/$1/install.log
 export EAP_HOME="/opt/rh/eap7/root/usr/share"
 export EAP_USER=$2
 export EAP_PASSWORD=$3
-export RHSM_USER=$4
-export RHSM_PASSWORD=$5
-export RHSM_POOL=$6
+export RHSM_USER=$4	
+export RHSM_PASSWORD=$5	
+export RHSM_POOL=$6	
 export IP_ADDR=$(hostname -I)
-export STORAGE_ACCOUNT_NAME=${7}
-export CONTAINER_NAME=$8
+export STORAGE_ACCOUNT_NAME=${7}	
+export CONTAINER_NAME=$8	
 export STORAGE_ACCESS_KEY=$(echo "${9}" | openssl enc -d -base64)
 
 echo "EAP admin user"+${EAP_USER} >> /home/$1/install.log
@@ -21,7 +21,7 @@ echo "Private IP Address of VM"+${IP_ADDR} >> /home/$1/install.log
 echo "Storage Account Name"+${STORAGE_ACCOUNT_NAME} >> /home/$1/install.log
 echo "Storage Container Name"+${CONTAINER_NAME} >> /home/$1/install.log
 echo "Storage Account Access Key"+${STORAGE_ACCESS_KEY} >> /home/$1/install.log
-echo "RHSM_USER: " ${RHSM_USER} >> /home/$1/install.log
+echo "RHSM_USER: " ${RHSM_USER} >> /home/$1/install.log	
 echo "RHSM_POOL: " ${RHSM_POOL} >> /home/$1/install.log
 
 echo "Configure firewall for ports 8080, 8180, 9990, 10090..." >> /home/$1/install.log 
@@ -35,7 +35,7 @@ sudo firewall-cmd --zone=public --add-port=45688/tcp --permanent
 sudo firewall-cmd --reload
 sudo iptables-save
 
-echo "Install openjdk, wget, git, unzip, vim"  >> /home/$1/install.log
+echo "Install openjdk, wget, git, unzip, vim"  >> /home/$1/install.log 
 sudo yum install java-1.8.0-openjdk wget unzip vim git -y
 
 echo "Initial JBoss EAP 7.2 setup" >> /home/$1/install.log
@@ -43,9 +43,8 @@ subscription-manager register --username $RHSM_USER --password $RHSM_PASSWORD
 subscription-manager attach --pool=${RHSM_POOL}
 echo "Subscribing the system to get access to JBoss EAP 7.2 repos" >> /home/$1/install.log
 
-# Install JBoss EAP 7.2 
-subscription-manager repos --enable=jb-eap-7-for-rhel-7-server-rpms >> /home/$1/install.log
-yum-config-manager --disable rhel-7-server-htb-rpms
+# Install JBoss EAP 7.2 	
+subscription-manager repos --enable=jb-eap-7.2-for-rhel-8-x86_64-rpms >> /home/$1/install.log
 
 echo "Installing JBoss EAP 7.2 repos" >> /home/$1/install.log
 yum groupinstall -y jboss-eap7 >> /home/$1/install.log
