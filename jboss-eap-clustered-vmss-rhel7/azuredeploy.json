@@ -229,6 +229,7 @@
         "capacity": "[parameters('instanceCount')]"
       },
       "properties": {
+        "overprovision": "false",
         "upgradePolicy": {
           "mode": "Manual"
         },
