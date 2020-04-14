@@ -144,7 +144,6 @@
     "customScriptCommand": "[concat(variables('scriptStart'), variables('scriptFileName'), ' ')]",
     "scriptClose": "'",
     "loadBalancersName": "jbosseap-lb",
-    "namingInfix": "[toLower(substring(concat(parameters('vmssName'), uniqueString(resourceGroup().id)), 0, 9))]",
     "imagePublisher": "RedHat",
     "imageOffer": "RHEL",
     "imageSku": "7.7",
