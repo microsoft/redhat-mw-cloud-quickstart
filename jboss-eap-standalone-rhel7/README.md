@@ -28,7 +28,7 @@ JBoss EAP (Enterprise Application Platform) is an open source platform for highl
 
 Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools. To obtain an rhsm account for JBoss EAP, go to: www.redhat.com.
 
-This Azure quickstart template deploys a web application named dukes on JBoss EAP 7.2 running on top of RHEL 7.7 VM.
+This Azure quickstart template deploys a web application named JBoss-EAP on Azure on JBoss EAP 7.2 running on top of RHEL 7.7 VM.
 
 ## Template Solution Architecture
 This template creates all the Azure compute resources to run JBoss EAP 7.2 on top of RHEL 7.7 VM. The following resources are created by this template:
@@ -38,7 +38,7 @@ This template creates all the Azure compute resources to run JBoss EAP 7.2 on to
 - Virtual Network 
 - Network Security Group 
 - JBoss EAP 7.2
-- Sample application named dukes deployed on JBoss EAP 7.2
+- Sample Java application named JBoss-EAP on Azure deployed on JBoss EAP 7.2
 
 Following is the Architecture:
 
@@ -104,7 +104,7 @@ The deployment takes less than 10 minutes to complete.
 ## Validation Steps
 
 - Once the deployment is successful, go to the VM details and copy the DNS Name of the VM.
-- Open a web browser and go to http://<PUBLIC_HOSTNAME>:8080/dukes/ and you should see the application running.
+- Open a web browser and go to http://<PUBLIC_HOSTNAME>:8080/JBoss-EAP_on_Azure/ and you should see the application running.
 
   ![alt text](images/app.png)
 

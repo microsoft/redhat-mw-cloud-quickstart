@@ -7,7 +7,7 @@
     <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.png"/>
 </a>
 
-`Tags: JBoss, Red Hat, EAP 7.2, Cluster, Load Balancer, RHEL 8.0, Azure, Azure VM, Java EE`
+`Tags: JBoss, Red Hat, EAP 7.2, Cluster, Load Balancer, RHEL 7.7, Azure, Azure VM, Java EE`
 
 <!-- TOC -->
 

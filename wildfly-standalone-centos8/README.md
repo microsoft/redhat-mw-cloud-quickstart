@@ -25,9 +25,9 @@
 ## Solution Overview
 WildFly 18 is the latest release in a series of JBoss open-source application server offerings. WildFly 18 is an exceptionally fast, lightweight and powerful implementation of the Jakarta Platform specifications. The state-of-the-art architecture built on the Modular Service Container enables services on-demand when your application requires them.
 
-The technology behind WildFly is also available in Red Hat JBoss Enterprise Application Platform (EAP), a hardended enterprise subscription with Red Hat's world-class support, long multi-year maintenance cycles and exclusive content. To obtain a Red Hat Subscription Management (RHSM) account for JBoss EAP, go to: www.redhat.com. Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools.
+The technology behind WildFly is also available in Red Hat JBoss Enterprise Application Platform (EAP), a hardended enterprise subscription with Red Hat's world-class support, long multi-year maintenance cycles and exclusive content. JBoss EAP is an open-soure application server that you can download for free, for developement use. To obtain a Red Hat Subscription Management (RHSM) account for JBoss EAP, go to: www.redhat.com. Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools.
 
-This Azure quickstart template deploys a web application named JBoss-EAP on Azure on a standalone node of WildFly 18.0.1.Final running on CentOS 8 VM.
+This Azure quickstart template deploys a web application named JBoss-EAP on Azure on a standalone node of WildFly 18.0.1.Final running on CentOS 8 VM. It is ideal for development and testing of enterprise Java applications on Azure.
 
 ## Template Solution Architecture 
 
@@ -98,7 +98,7 @@ The deployment takes less than 10 minutes to complete.
 ## Validation Steps
 
 - Once the deployment is successful, go to the VM and copy the DNS Name of the VM.
-- Open a web browser and go to **http://<PUBLIC_HOSTNAME>:8080/dukes/** and you should see the application running:
+- Open a web browser and go to **http://<PUBLIC_HOSTNAME>:8080/JBoss-EAP_on_Azure/** and you should see the application running:
 
   ![alt text](images/app.png)
 
