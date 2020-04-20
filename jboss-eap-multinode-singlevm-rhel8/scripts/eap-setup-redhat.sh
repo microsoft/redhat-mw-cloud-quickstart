@@ -36,7 +36,7 @@ subscription-manager attach --pool=${RHSM_POOL}
 if [ $OFFER == "BYOS" ]
 then 
     echo "Attaching Pool ID for RHEL OS" >> /home/$1/install.log
-    subscription-manager attach --pool=${12} >>
+    subscription-manager attach --pool=${12}
 fi
 subscription-manager repos --enable=jb-eap-7.2-for-rhel-8-x86_64-rpms 
 
