@@ -8,13 +8,14 @@ echo "Red Hat JBoss EAP 7.2 Cluster Intallation Start " >> /home/$1/install.log
 export EAP_HOME="/opt/rh/eap7/root/usr/share"
 export JBOSS_EAP_USER=$2
 export JBOSS_EAP_PASSWORD=$3
-export RHSM_USER=$4
-export RHSM_PASSWORD=$5
-export RHSM_POOL=$6
-export IP_ADDR=$7
-export STORAGE_ACCOUNT_NAME=${8}
-export CONTAINER_NAME=$9
-export STORAGE_ACCESS_KEY=$(echo "${10}" | openssl enc -d -base64)
+OFFER=$4
+export RHSM_USER=$5
+export RHSM_PASSWORD=$6
+export RHSM_POOL=$7
+export IP_ADDR=$8
+export STORAGE_ACCOUNT_NAME=${9}
+export CONTAINER_NAME=${10}
+export STORAGE_ACCESS_KEY=$(echo "${11}" | openssl enc -d -base64)
 
 echo "JBoss EAP admin user"+${JBOSS_EAP_USER} >> /home/$1/install.log
 echo "Private IP Address of VM"+${IP_ADDR} >> /home/$1/install.log
@@ -35,13 +36,18 @@ sudo firewall-cmd --zone=public --add-port=45688/tcp --permanent
 sudo firewall-cmd --reload
 sudo iptables-save
 
-echo "Install openjdk, wget, git, unzip, vim"  >> /home/$1/install.log
-sudo yum install java-1.8.0-openjdk wget unzip vim git -y
-
 echo "Initial JBoss EAP 7.2 setup" >> /home/$1/install.log
 subscription-manager register --username $RHSM_USER --password $RHSM_PASSWORD
 subscription-manager attach --pool=${RHSM_POOL}
+if [ $OFFER == "BYOS" ]
+then
+    echo "Attaching Pool ID for RHEL OS" >> /home/$1/install.log
+    subscription-manager attach --pool=${12}
+fi
 echo "Subscribing the system to get access to JBoss EAP 7.2 repos" >> /home/$1/install.log
+
+echo "Install openjdk, wget, git, unzip, vim"  >> /home/$1/install.log
+sudo yum install java-1.8.0-openjdk wget unzip vim git -y
 
 # Install JBoss EAP 7.2 
 subscription-manager repos --enable=jb-eap-7-for-rhel-7-server-rpms >> /home/$1/install.log
@@ -84,7 +90,7 @@ touch $EAP_HOME/wildfly/standalone/deployments/eap-session-replication.war.dodep
 echo "Configuring JBoss EAP management user..." >> /home/$1/install.log 
 $EAP_HOME/wildfly/bin/add-user.sh  -u $JBOSS_EAP_USER -p $JBOSS_EAP_PASSWORD -g 'guest,mgmtgroup'
 
-# Seeing a race condition timing error so sleep to deplay
+# Seeing a race condition timing error so sleep to delay
 sleep 20
 
 echo "Red Hat JBoss EAP 7.2 Cluster Intallation End " >> /home/$1/install.log

@@ -51,7 +51,7 @@
         "BYOS"
       ],	
       "metadata": {	
-        "description": "Type of offer for deploying your virtual machine Virtual Machine."	
+        "description": "Type of offer for deploying your Virtual Machine."	
       }	
     },
     "rhsmUserName": {

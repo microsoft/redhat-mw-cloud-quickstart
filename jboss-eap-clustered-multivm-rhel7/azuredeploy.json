@@ -45,6 +45,17 @@
         "description": "Password for the JBoss EAP Manager"
       }
     },
+    "offer": {	
+      "type": "string",	
+      "defaultValue": "Pay-As-You-Go",	
+      "allowedValues": [	
+        "Pay-As-You-Go",		
+        "BYOS"
+      ],	
+      "metadata": {	
+        "description": "Type of offer for deploying your Virtual Machine."	
+      }	
+    },
     "rhsmUserName": {
       "type": "string",
       "metadata": {
@@ -57,11 +68,18 @@
         "description": "Password for Red Hat subscription manager"
       }
     },
-    "rhsmPool": {
+    "rhsmPoolEAP": {
       "type": "string",
       "metadata": {
-       "description": "Red Hat Subscription Manager Pool"
+        "description": "Red Hat Subscription Manager Pool ID (Should have EAP entitlement)"
       }
+    },
+    "rhsmPoolRHEL": {
+      "type": "string",
+      "metadata": {
+        "description": "Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS offer"
+      },
+      "defaultValue": ""
     },
     "_artifactsLocation": {
       "type": "string",
@@ -137,17 +155,20 @@
     "customScriptCommand": "[concat(variables('scriptStart'), variables('scriptFileName'), ' ')]",
     "scriptClose": "'",
     "loadBalancersName": "jbosseap-lb",
-    "vmName": "jbosseap-server",
+    "vmName1": "jbosseap-payg-server",
+    "vmName2": "jbosseap-byos-server",
     "asName": "jbosseap-as",
     "skuName": "Aligned",
-    "imagePublisher": "RedHat",
-    "imageOffer": "RHEL",
-    "imageSku": "7.7",
-    "nicName": "[concat(uniquestring(variables('vmName')), 'nic')]",
+    "imagePublisher": "redhat",
+    "imageOffer1": "RHEL",
+    "imageSKU1": "7.7",
+    "imageOffer2": "rhel-byos",
+    "imageSKU2": "rhel-lvm77",
+    "nicName": "[concat(uniquestring(resourceGroup().id), '-nic')]",
     "addressPrefix": "10.3.0.0/16",
     "subnetName": "eap-server1-subnet",
     "subnetPrefix": "10.3.2.0/24",
-    "publicIPAddressName": "[concat(uniquestring(variables('vmName')), 'publicip')]",
+    "publicIPAddressName": "[concat(uniquestring(resourceGroup().id), '-publicip')]",
     "publicIPAddresslb": "[concat('pip',uniqueString(resourceGroup().id))]",
     "publicIPAddresslbDNSName" : "[concat('piplb-', uniqueString(resourceGroup().id))]",
     "publicIPAddressDNSName" : "[concat('pipvm-', uniqueString(resourceGroup().id))]",
@@ -366,9 +387,10 @@
       }
     },
     {
+      "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
       "apiVersion": "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('vmName'), copyIndex())]",
+      "name": "[concat(variables('vmName1'), copyIndex())]",
       "location": "[parameters('location')]",
       "copy": {
           "name": "virtualMachineLoop",
@@ -397,7 +419,7 @@
           ]
         },
         "osProfile": {
-          "computerName": "[concat(variables('vmName'), copyIndex())]",
+          "computerName": "[concat(variables('vmName1'), copyIndex())]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -405,8 +427,8 @@
         "storageProfile": {
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('imageSku')]",
+            "offer": "[variables('imageOffer1')]",
+            "sku": "[variables('imageSku1')]",
             "version": "latest"
           },
           "osDisk": {
@@ -416,6 +438,7 @@
       },
       "resources": [
         {
+          "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
           "type": "extensions",
           "name": "[concat('jbosseap-extension-', copyIndex())]",
           "apiVersion": "2019-12-01",
@@ -425,7 +448,7 @@
             "displayName": "JBossEAPInstall"
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName'), copyIndex()))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName1'), copyIndex()))]"
           ],
           "properties": {
             "publisher": "Microsoft.Azure.Extensions",
@@ -438,7 +461,93 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'),' ',reference(concat(variables('nicName'), copyIndex())).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('offer'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(concat(variables('nicName'), copyIndex())).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), ' ', parameters('rhsmPoolRHEL'),' ', variables('scriptClose'))]"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "condition": "[equals(parameters('Offer'),'BYOS')]",
+      "apiVersion": "2019-12-01",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('vmName2'), copyIndex())]",
+      "location": "[parameters('location')]",
+      "copy": {
+          "name": "virtualMachineLoop",
+          "count": "[parameters('numberOfInstances')]"
+      },
+      "tags": {
+        "Tag1": "ManagedVM"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
+      ],
+      "plan": {
+          "name": "rhel-lvm77",
+          "publisher": "redhat",
+          "product": "rhel-byos"
+      },
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets',variables('asName'))]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), copyIndex()))]"
+            }
+          ]
+        },
+        "osProfile": {
+          "computerName": "[concat(variables('vmName2'), copyIndex())]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer2')]",
+            "sku": "[variables('imageSku2')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          }
+        }
+      },
+      "resources": [
+        {
+          "condition": "[equals(parameters('Offer'),'BYOS')]",
+          "type": "extensions",
+          "name": "[concat('jbosseap-extension-', copyIndex())]",
+          "apiVersion": "2019-12-01",
+          "location": "[parameters('location')]",
+          "comments": "This VM Extension Install JBoss EAP",
+          "tags": {
+            "displayName": "JBossEAPInstall"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName2'), copyIndex()))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Azure.Extensions",
+            "type": "CustomScript",
+            "typeHandlerVersion": "2.0",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "fileUris": [
+                "[concat(parameters('_artifactsLocation'),'scripts/', variables('scriptFileName'), parameters('_artifactsLocationSasToken'))]"
+              ]
+            },
+            "protectedSettings": {
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('offer'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(concat(variables('nicName'), copyIndex())).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), ' ', parameters('rhsmPoolRHEL'),' ', variables('scriptClose'))]"
             }
           }
         }
