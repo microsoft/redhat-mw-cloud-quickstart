@@ -10,14 +10,15 @@ export SVR_CONFIG="standalone-ha.xml"
 export PORT_OFFSET=100
 export JBOSS_EAP_USER=$2
 export JBOSS_EAP_PASSWORD=$3
-export RHSM_USER=$4
-export RHSM_PASSWORD=$5
-export RHSM_POOL=$6
-export IP_ADDR_NAME=$7
-export IP_ADDR=$8
+OFFER=$4
+export RHSM_USER=$5
+export RHSM_PASSWORD=$6
+export RHSM_POOL=$7
+export IP_ADDR_NAME=$8
+export IP_ADDR=$9
 
-export STORAGE_ACCOUNT_NAME=${9}
-export STORAGE_ACCESS_KEY=${10}
+export STORAGE_ACCOUNT_NAME=${10}
+export STORAGE_ACCESS_KEY=${11}
 export CONTAINER_NAME="eapblobcontainer"
 
 echo "JBOSS_EAP_USER: " ${JBOSS_EAP_USER} >> /home/$1/install.log
@@ -32,6 +33,11 @@ echo "IP_ADDR: " ${IP_ADDR} >> /home/$1/install.log
 echo "subscription-manager register..." >> /home/$1/install.log
 subscription-manager register --username ${RHSM_USER} --password ${RHSM_PASSWORD} 
 subscription-manager attach --pool=${RHSM_POOL}
+if [ $OFFER == "BYOS" ] 
+then 
+    echo "Attaching Pool ID for RHEL OS" >> /home/$1/install.log
+    subscription-manager attach --pool=${12} >>
+fi
 subscription-manager repos --enable=jb-eap-7-for-rhel-7-server-rpms 
 
 echo "JBoss EAP RPM installing..." >> /home/$1/install.log
@@ -42,7 +48,7 @@ echo "Create 2 JBoss EAP nodes on Azure..." >> /home/$1/install.log
 /bin/cp  -rL  $JBOSS_HOME/standalone $JBOSS_HOME/$NODENAME1
 /bin/cp  -rL  $JBOSS_HOME/standalone $JBOSS_HOME/$NODENAME2
 
-echo "EAP Session Replication app deploy..." >> /home/$1/install.log 
+echo "JBoss-EAP on Azure app deploy..." >> /home/$1/install.log 
 yum install -y git
 cd /home/$1
 git clone https://github.com/danieloh30/eap-session-replication.git
