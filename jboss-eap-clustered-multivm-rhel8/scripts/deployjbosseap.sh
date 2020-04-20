@@ -6,8 +6,8 @@ echo "Red Hat JBoss EAP 7.2 Cluster Intallation Start " >> /home/$1/install.log
 /bin/date +%H:%M:%S  >> /home/$1/install.log
 
 export EAP_HOME="/opt/rh/eap7/root/usr/share"
-export EAP_USER=$2
-export EAP_PASSWORD=$3
+export JBOSS_EAP_USER=$2
+export JBOSS_EAP_PASSWORD=$3
 export RHSM_USER=$4	
 export RHSM_PASSWORD=$5	
 export RHSM_POOL=$6	
@@ -16,7 +16,7 @@ export STORAGE_ACCOUNT_NAME=${8}
 export CONTAINER_NAME=$9	
 export STORAGE_ACCESS_KEY=$(echo "${10}" | openssl enc -d -base64)
 
-echo "EAP admin user"+${EAP_USER} >> /home/$1/install.log
+echo "JBoss EAP admin user"+${JBOSS_EAP_USER} >> /home/$1/install.log
 echo "Private IP Address of VM"+${IP_ADDR} >> /home/$1/install.log
 echo "Storage Account Name"+${STORAGE_ACCOUNT_NAME} >> /home/$1/install.log
 echo "Storage Container Name"+${CONTAINER_NAME} >> /home/$1/install.log
@@ -81,7 +81,7 @@ cp eap-session-replication/target/eap-session-replication.war $EAP_HOME/wildfly/
 touch $EAP_HOME/wildfly/standalone/deployments/eap-session-replication.war.dodeploy
 
 echo "Configuring JBoss EAP management user..." >> /home/$1/install.log 
-$EAP_HOME/wildfly/bin/add-user.sh  -u $EAP_USER -p $EAP_PASSWORD -g 'guest,mgmtgroup'
+$EAP_HOME/wildfly/bin/add-user.sh  -u $JBOSS_EAP_USER -p $JBOSS_EAP_PASSWORD -g 'guest,mgmtgroup'
 
 # Seeing a race condition timing error so sleep to deplay
 sleep 20

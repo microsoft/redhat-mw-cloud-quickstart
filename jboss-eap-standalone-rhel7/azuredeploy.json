@@ -31,17 +31,28 @@
         "description": "DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
       }
     },
-    "jbossEapUserName": {
+    "jbossEAPUserName": {
       "type": "string",
       "metadata": {
         "description": "User name for JBoss EAP manager"
       }
     },
-    "jbossEapPassword": {
+    "jbossEAPPassword": {
       "type": "securestring",
       "metadata": {
         "description": "Password for JBoss EAP manager"
       }
+    },
+    "offer": {	
+      "type": "string",	
+      "defaultValue": "Pay-As-You-Go",	
+      "allowedValues": [	
+        "Pay-As-You-Go",		
+        "BYOS"
+      ],	
+      "metadata": {	
+        "description": "Type of offer for deploying your virtual machine Virtual Machine."	
+      }	
     },
     "rhsmUserName": {
       "type": "string",
@@ -55,11 +66,18 @@
         "description": "Password for Red Hat subscription  manager"
       }
     },
-    "rhsmPool": {
+    "rhsmPoolEAP": {
       "type": "string",
       "metadata": {
-        "description": "Red Hat Subscription Manager Pool"
+        "description": "Red Hat Subscription Manager Pool ID (Should have EAP entitlement)"
       }
+    },
+    "rhsmPoolRHEL": {
+      "type": "string",
+      "metadata": {
+        "description": "Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS offer"
+      },
+      "defaultValue": ""
     },
     "_artifactsLocation": {
       "type": "string",
@@ -119,8 +137,10 @@
   "variables": {
     "singlequote": "'",
     "imagePublisher": "redhat",
-    "imageOffer": "rhel",
-    "imageSKU": "7.7",
+    "imageOffer1": "rhel",
+    "imageSKU1": "7.7",
+    "imageOffer2": "rhel-byos",
+    "imageSKU2": "rhel-lvm77",
     "baseName": "[uniquestring(parameters('dnsLabelPrefix'),resourceGroup().id)]",
     "nicName": "[concat('myNic8',variables('baseName'))]",
     "addressPrefix": "10.0.0.0/16",
@@ -128,7 +148,8 @@
     "subnet1Prefix": "10.0.0.0/24",
     "publicIPAddressName": "[concat('myIP8',variables('baseName'))]",
     "publicIPAddressType": "Dynamic",
-    "vmName": "[parameters('dnsLabelPrefix')]",
+    "vmName-payg": "[concat('vm-payg-',parameters('dnsLabelPrefix'))]",
+    "vmName-byos": "[concat('vm-byos-',parameters('dnsLabelPrefix'))]",
     "virtualNetworkName": "MyVNET8",
     "frontEndNSGName": "[concat(parameters('dnsLabelPrefix'),'-nsg8')]",
     "ScriptFolder": "scripts",
@@ -272,9 +293,10 @@
       }
     },
     {
+      "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
       "apiVersion":  "2019-12-01", 
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName')]",
+      "name": "[variables('vmName-payg')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
@@ -284,7 +306,7 @@
           "vmSize": "[parameters('vmSize')]"
         },
         "osProfile": {
-          "computerName": "[variables('vmName')]",
+          "computerName": "[variables('vmName-payg')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -292,12 +314,12 @@
         "storageProfile": {
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[variables('imageSKU')]",
+            "offer": "[variables('imageOffer1')]",
+            "sku": "[variables('imageSKU1')]",
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(variables('vmName'),'_OSDisk')]",
+            "name": "[concat(variables('vmName-payg'),'_OSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           }
@@ -312,12 +334,13 @@
       }
     },
     {
+      "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),'/newuserscript')]",
+      "name": "[concat(variables('vmName-payg'),'/newuserscript')]",
       "apiVersion": "2019-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName-payg'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -328,7 +351,75 @@
           "fileUris": [
             "[concat(parameters('_artifactsLocation'), variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
-          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEapUserName'),' ',variables('singlequote'),parameters('jbossEapPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPool'))]"
+          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ',parameters('offer'),' ', parameters('rhsmPoolEAP'))]"
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('Offer'),'BYOS')]",
+      "apiVersion":  "2019-12-01",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vmName-byos')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+      ],
+      "plan": {
+        "name": "rhel-lvm77",
+        "publisher": "redhat",
+        "product": "rhel-byos"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('vmName-byos')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer2')]",
+            "sku": "[variables('imageSKU2')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "[concat(variables('vmName-byos'),'_OSDisk')]",
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('Offer'),'BYOS')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('vmName-byos'),'/newuserscript')]",
+      "apiVersion": "2019-12-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName-byos'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[concat(parameters('_artifactsLocation'), variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
+          ],
+          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ',parameters('offer'),' ', parameters('rhsmPoolEAP'),' ', parameters('rhsmPoolRHEL'))]"
         }
       }
     }

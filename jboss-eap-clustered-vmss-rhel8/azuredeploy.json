@@ -32,13 +32,13 @@
         "description": "Location for all resources"
       }
     },
-    "jbossEapUserName": {
+    "jbossEAPUserName": {
       "type": "string",
       "metadata": {
         "description": "User name for the JBoss EAP Manager"
       }
     },
-    "jbossEapPassword": {
+    "jbossEAPPassword": {
       "type": "securestring",
       "minLength": 10,
       "metadata": {
@@ -300,7 +300,7 @@
                     ]
                   },
                   "protectedSettings": {
-                    "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ', parameters('jbossEapUserName'),' ', variables('singlequote'), parameters('jbossEapPassword'), variables('singlequote'),' ', parameters('rhsmUserName'),' ', variables('singlequote'), parameters('rhsmPassword'), variables('singlequote'),' ', parameters('rhsmPool'),' ', variables('jbosseapstrgName'),' ', variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
+                    "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ', parameters('jbossEAPUserName'),' ', variables('singlequote'), parameters('jbossEAPPassword'), variables('singlequote'),' ', parameters('rhsmUserName'),' ', variables('singlequote'), parameters('rhsmPassword'), variables('singlequote'),' ', parameters('rhsmPool'),' ', variables('jbosseapstrgName'),' ', variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), variables('scriptClose'))]"
                   }
                 }
               }

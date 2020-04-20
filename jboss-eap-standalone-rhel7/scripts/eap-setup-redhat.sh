@@ -7,19 +7,23 @@ echo "ooooo      RED HAT JBoss EAP7.2 RPM INSTALL      ooooo" >> /home/$1/instal
 
 export EAP_HOME="/opt/rh/eap7/root/usr/share/wildfly"
 export EAP_RPM_CONF_STANDALONE="/etc/opt/rh/eap7/wildfly/eap7-standalone.conf"
-export EAP_RPM_CONF_DOMAIN="/etc/opt/rh/eap7/wildfly/eap7-domain.conf"
 
-EAP_USER=$2
-EAP_PASSWORD=$3
+JBOSS_EAP_USER=$2
+JBOSS_EAP_PASSWORD=$3
 RHSM_USER=$4
 RHSM_PASSWORD=$5
-export RHSM_POOL=$6
+OFFER=$6
+export RHSM_POOL=$7
 
-PROFILE=standalone 
-echo "JBoss EAP admin user"+${EAP_USER} >> /home/$1/install.progress.txt
+echo "JBoss EAP admin user"+${JBOSS_EAP_USER} >> /home/$1/install.progress.txt
 echo "Initial JBoss EAP 7.2 setup" >> /home/$1/install.progress.txt
 subscription-manager register --username $RHSM_USER --password $RHSM_PASSWORD  >> /home/$1/install.progress.txt 2>&1
 subscription-manager attach --pool=${RHSM_POOL} >> /home/$1/install.progress.txt 2>&1
+if [ $OFFER == "BYOS" ] 
+then 
+    echo "Attaching Pool ID for RHEL OS" >> /home/$1/install.progress.txt
+    subscription-manager attach --pool=$8 >> /home/$1/install.progress.txt 2>&1
+fi
 echo "Subscribing the system to get access to EAP 7.2 repos" >> /home/$1/install.progress.txt
 
 # Install JBoss EAP 7.2 
@@ -47,7 +51,7 @@ mv /home/$1/dukes/target/dukes.war $EAP_HOME/standalone/deployments/dukes.war
 cat > $EAP_HOME/standalone/deployments/dukes.war.dodeploy
 
 echo "Configuring JBoss EAP management user" >> /home/$1/install.progress.txt
-$EAP_HOME/bin/add-user.sh -u $EAP_USER -p $EAP_PASSWORD -g 'guest,mgmtgroup'
+$EAP_HOME/bin/add-user.sh -u $JBOSS_EAP_USER -p $JBOSS_EAP_PASSWORD -g 'guest,mgmtgroup'
 
 echo "Start JBoss EAP 7.2" >> /home/$1/install.progress.txt
 systemctl restart eap7-standalone.service 

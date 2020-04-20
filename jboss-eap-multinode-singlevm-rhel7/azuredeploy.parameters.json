@@ -11,10 +11,10 @@
       "dnsLabelPrefix": {
           "value": "GEN-UNIQUE"
       },
-      "jbossEapUserName": {
+      "jbossEAPUserName": {
         "value": "GEN-UNIQUE"
       },
-      "jbossEapPassword": {
+      "jbossEAPPassword": {
         "value": "GEN-PASSWORD"
       }
   }

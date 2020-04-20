@@ -1,12 +1,12 @@
-# Red Hat - JBoss EAP 7.2 on RHEL 7.7 VM (single-VM)
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-clustered-singlevm-rhel7%2Fazuredeploy.json" target="_blank">
+# Red Hat - JBoss EAP 7.2 MultiNode on RHEL 8.0 single-VM
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-multinode-singlevm-rhel8%2Fazuredeploy.json" target="_blank">
     <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
 </a>
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-clustered-singlevm-rhel7%2Fazuredeploy.json" target="_blank">
+<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-multinode-singlevm-rhel8%2Fazuredeploy.json" target="_blank">
     <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/visualizebutton.png"/>
 </a>
 
-`Tags: JBoss, Red Hat, EAP 7.2, Azure, Azure VM, JavaEE, RHEL 7.7`
+`Tags: JBoss, Red Hat, EAP 7.2, Azure, Azure VM, JavaEE, RHEL 8.0`
 
 <!-- TOC -->
 
@@ -25,14 +25,14 @@
 
 JBoss EAP (Enterprise Application Platform) is an open source platform for highly transactional, web-scale Java applications. EAP combines the familiar and popular Jakarta EE specifications with the latest technologies, like Microprofile, to modernize your applications from traditional Java EE into the new world of DevOps, cloud, containers, and microservices. EAP includes everything needed to build, run, deploy, and manage enterprise Java applications in a variety of environments, including on-premise, virtual environments, and in private, public, and hybrid clouds.
 
-Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools. To obtain an rhsm account for JBoss EAP, go to: www.redhat.com and sign in.
+Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools. To obtain an rhsm account for JBoss EAP, go to: www.redhat.com.
 
-This Azure quickstart template deploys a web application called eap-session-replication on JBoss EAP 7.2 running on RHEL 7.7 VM.
+This Azure quickstart template deploys a web application called eap-session-replication on JBoss EAP 7.2 running on RHEL 8.0 VM.
 
 ## Template Solution Architecture
-This template creates all the Azure compute resources to run JBoss EAP 7.2 on top of RHEL 7.7 VM. The following resources are created by this template:
+This template creates all the Azure compute resources to run JBoss EAP 7.2 on top of RHEL 8.0 VM. The following resources are created by this template:
 
-- RHEL 7.7 VM 
+- RHEL 8.0 VM 
 - Public IP 
 - Virtual Network 
 - Network Security Group 
@@ -50,12 +50,11 @@ https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_applicati
 
 ## Licenses, Subscriptions and Costs
 
-The RHEL 7.7 is Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. Total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
-
+The RHEL 8.0 is Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. Total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
 
 ## Prerequisites
 
-1. Azure Subscription with the specified payment method (RHEL 7.7 is an [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/RedHat.RedHatEnterpriseLinux77-ARM?tab=Overview) product and requires the payment method to be specified in Azure Subscription)
+1. Azure Subscription with the specified payment method (RHEL 8 is an [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/RedHat.RedHatEnterpriseLinux80-ARM?tab=Overview) product and requires the payment method to be specified in Azure Subscription)
 
 2. To deploy the template, you will need to:
 
@@ -65,11 +64,11 @@ The RHEL 7.7 is Pay-As-You-Go image which carries a separate hourly charge that 
 
    - Choose JBoss EAP username and password to enable the JBoss EAP manager UI and deployment method.
     
-   - Provide your RHSM username and password
+   - Provide your RHSM username and password.
 
 ## Deployment Steps
 
-Build your environment with JBoss EAP 7.2 on top of RHEL 7.7 on Azure by clicking the Deploy to Azure button and fill in the following parameter values:
+Build your environment with JBoss EAP 7.2 on top of RHEL 8.0 on Azure by clicking the Deploy to Azure button and fill in the following parameter values:
 
    - **Subscription** - Choose the appropriate subscription where you would like to deploy.
 
@@ -94,10 +93,10 @@ Build your environment with JBoss EAP 7.2 on top of RHEL 7.7 on Azure by clickin
    - **RHSM Password** - User account password for the Red Hat account.
    
    - **RHSM Pool ID** - Red Hat subscription Manager Pool ID.
-   
+
    - **VM Size** - Choose the appropriate size of the VM from the dropdown options.
 
-   - Leave the rest of the parameter values as it is and accept the terms and conditions before clicking on Purchase.
+   - Leave the rest of the parameter values as is and accept the terms and conditions before clicking on Purchase.
 
 ## Deployment Time 
 
