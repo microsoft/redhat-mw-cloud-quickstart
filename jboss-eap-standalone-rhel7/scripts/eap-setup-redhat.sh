@@ -14,6 +14,7 @@ RHSM_USER=$4
 RHSM_PASSWORD=$5
 OFFER=$6
 export RHSM_POOL=$7
+export IP_ADDR=$(hostname -I)
 
 echo "JBoss EAP admin user"+${JBOSS_EAP_USER} >> /home/$1/install.progress.txt
 echo "Initial JBoss EAP 7.2 setup" >> /home/$1/install.progress.txt
@@ -29,6 +30,8 @@ echo "Subscribing the system to get access to EAP 7.2 repos" >> /home/$1/install
 # Install JBoss EAP 7.2 
 subscription-manager repos --enable=jb-eap-7-for-rhel-7-server-rpms >> /home/$1/install.out.txt 2>&1
 yum-config-manager --disable rhel-7-server-htb-rpms
+
+sed -i 's/WILDFLY_BIND=0.0.0.0/WILDFLY_BIND=$IP_ADDR/g'  /usr/lib/systemd/system/eap7-standalone.service
 
 echo "Installing JBoss EAP 7.2 repos" >> /home/$1/install.progress.txt
 yum groupinstall -y jboss-eap7 >> /home/$1/install.out.txt 2>&1
