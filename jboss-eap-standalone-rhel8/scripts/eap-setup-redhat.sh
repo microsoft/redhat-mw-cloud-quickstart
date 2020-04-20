@@ -45,10 +45,10 @@ echo "Installing GIT" >> /home/$1/install.progress.txt
 yum install -y git >> /home/$1/install.out.txt 2>&1
 
 cd /home/$1
-echo "Getting the sample dukes app to install" >> /home/$1/install.progress.txt
-git clone https://github.com/MyriamFentanes/dukes.git >> /home/$1/install.out.txt 2>&1
-mv /home/$1/dukes/target/dukes.war $EAP_HOME/standalone/deployments/dukes.war
-cat > $EAP_HOME/standalone/deployments/dukes.war.dodeploy
+echo "Getting the sample JBoss-EAP on Azure app to install" >> /home/$1/install.progress.txt
+git clone https://github.com/Suraj2093/dukes.git >> /home/$1/install.out.txt 2>&1
+mv /home/$1/dukes/target/JBoss-EAP_on_Azure.war $EAP_HOME/standalone/deployments/JBoss-EAP_on_Azure.war
+cat > $EAP_HOME/standalone/deployments/JBoss-EAP_on_Azure.war.dodeploy
 
 echo "Configuring JBoss EAP management user" >> /home/$1/install.progress.txt
 $EAP_HOME/bin/add-user.sh -u $JBOSS_EAP_USER -p $JBOSS_EAP_PASSWORD -g 'guest,mgmtgroup'
