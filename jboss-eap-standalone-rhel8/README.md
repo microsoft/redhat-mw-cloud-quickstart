@@ -120,7 +120,7 @@ The deployment takes less than 10 minutes to complete.
 
 If you don't have a Red Hat subscription to install a JBoss EAP, you can go through WildFly instead of JBoss EAP:
 
-*  <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/wildfly-standalone-centos8" target="_blank"> [Red Hat WildFly 18.0.1.Final on CentOS 8]</a> - Standalone WildFly 18 with a sample web app on a CentOs 8 Azure VM.
+*  <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/wildfly-standalone-centos8" target="_blank"> [Java on Azure | Red Hat WildFly 18.0.1.Final on CentOS 8 (standalone mode)]</a> - Standalone WildFly 18 with a sample web app on a CentOs 8 Azure VM.
 
 ## Support
 
