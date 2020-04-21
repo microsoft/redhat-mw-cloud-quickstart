@@ -19,7 +19,7 @@
         "description": "Type of authentication to use on the Virtual Machine."	
       }	
     },
-    "adminPasswordOrKey": {	
+    "adminPasswordOrSSHKey": {	
       "type": "securestring",	
       "metadata": {	
         "description": "SSH Key or password for the Virtual Machine."	
@@ -161,7 +161,7 @@
         "publicKeys": [	
           {	
             "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",	
-            "keyData": "[parameters('adminPasswordOrKey')]"	
+            "keyData": "[parameters('adminPasswordOrSSHKey')]"	
           }	
         ]	
       }	
@@ -308,7 +308,7 @@
         "osProfile": {
           "computerName": "[variables('vmName-payg')]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
         },
         "storageProfile": {
@@ -376,7 +376,7 @@
         "osProfile": {
           "computerName": "[variables('vmName-byos')]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
         },
         "storageProfile": {

@@ -2,7 +2,7 @@
   "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
   "type": "QuickStart",
   "itemDisplayName": "Red Hat WildFly 18.0.1.Final on CentOS 8 (standalone mode)",
-  "description": "This template allows you to create a CentOS VM running WildFly 18.0.1.Final and also deploy a web application called Java-EAP on Azure, you can login into the Admin Console using the Wildfly username and password configured at the time of the deployment.",
+  "description": "This template allows you to create a CentOS 8 VM running WildFly 18.0.1.Final and also deploy a web application called Java-EAP on Azure, you can login into the Admin Console using the Wildfly Username and password configured at the time of the deployment.",
   "summary": "This template deploys a web application named Java-EAP on Azure on a standalone node of WildFly 18.0.1.Final running on CentOS 8 VM.",
   "githubUsername": "SpektraSystems",
   "dateUpdated": "2020-03-31"

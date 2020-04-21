@@ -28,16 +28,16 @@ JBoss EAP (Enterprise Application Platform) is an open source platform for highl
 
 Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools. To obtain an rhsm account for JBoss EAP, go to: www.redhat.com.
 
-This Azure quickstart template deploys a web application called eap-session-replication on JBoss EAP 7.2 cluster running on 2 RHEL 7.7 VMs which are added to the backend pool of a Load Balancer.
+This Azure quickstart template creates all of the compute resources to run a web application called eap-session-replication on JBoss EAP 7.2 cluster running on n number of RHEL 7.7 VMs where n is decided by the user and all the VMs are added to the backend pool of a Load Balancer.
 
 ## Template Solution Architecture
 
-This template creates all of the compute resources to run JBoss EAP 7.2 cluster on top of 2 RHEL 7.7 VMs which are added to the backend pool of a Load Balancer. The following resources are created by this template:
+This template creates all the Azure compute resources to run JBoss EAP 7.2 cluster on top of n number of RHEL 7.7 VMs where n is decided by the user and all the VMs are added to the backend pool of a Load Balancer. The following resources are created by this template:
 
-- 2 RHEL 7.7 VMs
+- RHEL 7.7 VMs
 - 1 Load balancer
-- 3 Public IPs
-- Virtual Network with 2 subnets
+- Public IPs for Load Balancer and VMs
+- Virtual Network with single subnets
 - JBoss EAP 7.2
 - Sample application called eap-session-replication deployed on JBoss EAP 7.2
 - Network Security Group
@@ -47,30 +47,30 @@ Following is the Architecture:
 
 ![alt text](images/arch.png)
 
-To learn more about JBoss Enterprise Application Platform, visit:
+To learn more about the JBoss Enterprise Application Platform, visit:
 https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.2/
 
 ## Licenses, Subscriptions and Costs
 
-The RHEL 7.7 is Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. Total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
+If you select the offer as Pay-As-You-Go, the template will deploy RHEL 7.7 Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. In this case the VM will be licensed automatically after the instance is launched for the first time and total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. To use the Enterprise Application Platform your RHSM account needs EAP entitlement. You can get an evaluation account for EAP from [here](https://access.redhat.com/products/red-hat-jboss-enterprise-application-platform/evaluation). If you select the Offer as BYOS for deploying the template, your RHSM account must have both Red Hat Enterprise Linux entitlement (for subscribing the RHEL OS for the VM) and EAP entitlement and you will have to enter both the pool IDs as mentioned in the template. Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
 
 ## Prerequisites
 
-1. Azure Subscription with the specified payment method (RHEL 7.7 is an [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/RedHat.RedHatEnterpriseLinux77-ARM?tab=Overview) product and requires payment method to be specified in Azure Subscription)
+1. Azure Subscription with the specified payment method (RHEL 7.7 is an [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/RedHat.RedHatEnterpriseLinux77-ARM?tab=Overview) product and requires a payment method to be specified in the Azure Subscription)
 
-2. To deploy the template, you will need to:
+2. To deploy the template, you will need:
 
-    - Choose an admin username and password/ssh key for your VM.  
+    - **Admin Username** and password/ssh key data which is an SSH RSA public key for your VM. 
 
-    - Choose JBoss EAP username and password to enable the JBoss EAP manager UI and deployment method.
+    - **JBoss EAP Username** and password
 
-    - Provide your RHSM username and password
+    - **RHSM Username** and password
     
 ## Deployment Steps
 
-Build your environment with JBoss EAP 7.2 cluster on top of 2 RHEL 7.7 VMs which is added to the backend pool of the Load Balancer on Azure in a few simple steps:  
-1. Launch the template by clicking the Deploy to Azure button.  
-2. Fill in the following parameter values and accept the terms and conditions before clicking on Purchase.
+Build your environment with JBoss EAP 7.2 cluster on top of n number of RHEL 7.7 VMs where n is decided by the user and all the VMs are added to the backend pool of a Load Balancer on Azure in a few simple steps:
+1. Launch the template by clicking the **Deploy to Azure** button.  
+2. Complete the following parameter values and accept the terms and conditions before clicking on the **Purchase** button.
 
     - **Subscription** - Choose the appropriate subscription where you would like to deploy.
 
@@ -82,21 +82,27 @@ Build your environment with JBoss EAP 7.2 cluster on top of 2 RHEL 7.7 VMs which
     
     - **Authentication Type** - Type of authentication to use on the Virtual Machine.
 
-    - **Admin Password or Key** - User account password/ssh key for logging into your RHEL VM.
+    - **Admin Password or SSH Key** - User account password/ssh key data which is an SSH RSA public key for logging into your RHEL VM.
 
     - **JBoss EAP Username** - Username for JBoss EAP Console.
 
     - **JBoss EAP Password** - User account password for JBoss EAP Console.
 
+    - **Offer** - Choose the type of offer from the dropdown options for deploying your Virtual Machine.
+
     - **RHSM Username** - Username for the Red Hat account.
 
     - **RHSM Password** - User account password for the Red Hat account.
    
-    - **RHSM Pool ID** - Red Hat subscription Manager Pool ID.
+    - **RHSM Pool ID for EAP** - Red Hat Subscription Manager Pool ID (Should have EAP entitlement)
+
+    - **RHSM Pool ID for RHEL OS** - Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS offer. You can leave it blank if you select offer Pay-As-You-Go
 
     - **VM Size** - Choose the appropriate size of the VM from the dropdown options.
 
-    - Leave the rest of the parameter values as it is and proceed to purchase.
+    - **Number of Instances** - Number of VMs to be deployed.
+
+    - Leave the rest of the parameter values (artifacts and location) as is and proceed to purchase.
     
 ## Deployment Time 
 
@@ -104,23 +110,23 @@ The deployment takes approximately 10 minutes to complete.
 
 ## Validation Steps
 
-- Once the deployment is successful, go to the outputs section of the deployment.
+- Once the deployment is successful, go to the outputs section of the deployment to obtain the APPUI-LB.
 
   ![alt text](images/outputs.png)
 
-- To obtain the Public IP of a VM, go to the VM details page. Under settings go to Networking section and copy the NIC Public IP. Open a web browser and go to http://<PUBLIC_HOSTNAME>:8080 and you should see the web page:
+- To obtain the Public IP of a VM, go to the VM details page. Under settings go to Networking section and copy the NIC Public IP. Open a web browser and go to http://<PUBLIC_HOSTNAME>:8080 and you should see the web page as follows. Use the same Public IP to Login to the VM.
 
   ![alt text](images/eap.png)
 
-- To access the administration console, copy the Admin Console link in the output page and paste it in a browser. Now click on the link Administration Console and enter JBoss EAP username and password to see the console of the respective VM.
+- To access the administration console, copy the Admin Console link in the output page and paste it in a browser. Now click on the link Administration Console and enter JBoss EAP Username and password to see the console of the respective VM.
 
   ![alt text](images/eap-admin-console.png)
 
-- To access the LB App UI console, copy the AppUI-LB and paste it in a browser. To access the VM App UI console, use the AppUI-1/AppUI-2. The web application displays the Session ID, `Session counter` and `timestamp` (these are variables stored in the session that are replicated) and the container name that the web page and session is being hosted from. Clicking on the Increment counter updates the session counter.
+- To access the LB App UI console, copy the AppUI-LB from the output page and paste it in a browser. The web application displays the Session ID, `Session counter` and `timestamp` (these are variables stored in the session that are replicated) and the container name that the web page and session is being hosted from. Clicking on the Increment counter updates the session counter.
 
   ![alt text](images/eap-session-rep.png)
 
-- Note that in the EAP Session Replication page of Load Balancer, the private IP displayed is that of either one VMs. When you stop/restart that VM1 and click on increment counter/refresh button, the private IP displayed will change to the other but the session ID remains the same which shows that the session ID got replicated.
+- Note that in the EAP Session Replication page of Load Balancer, the private IP displayed is that of one of the VMs. When you stop/restart the VM corresponding to the Private IP displayed and click on increment counter/refresh button, the private IP displayed will change to another VM but the session ID remains the same which shows that the session ID got replicated.
 
   ![alt text](images/eap-ses-rep.png)
 

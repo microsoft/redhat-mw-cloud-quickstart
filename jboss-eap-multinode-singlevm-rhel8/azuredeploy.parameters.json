@@ -5,7 +5,7 @@
       "adminUsername": {
         "value": "GEN-UNIQUE"
       },
-      "adminPasswordOrKey": {
+      "adminPasswordOrSSHKey": {
         "value": "GEN-PASSWORD"
       },
       "dnsLabelPrefix": {

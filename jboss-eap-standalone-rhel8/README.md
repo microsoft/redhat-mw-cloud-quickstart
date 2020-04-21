@@ -28,7 +28,7 @@ JBoss EAP (Enterprise Application Platform) is an open source platform for highl
 
 Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools. To obtain an rhsm account for JBoss EAP, go to: www.redhat.com.
 
-This Azure quickstart template deploys a web application named JBoss-EAP on Azure on JBoss EAP 7.2 running on top of RHEL 8.0 VM. 
+This Azure quickstart template creates all of the compute resources to run a web application named JBoss-EAP on Azure on JBoss EAP 7.2 running on top of RHEL 8.0 VM.
 
 ## Template Solution Architecture
 This template creates all the Azure compute resources to run JBoss EAP 7.2 on top of RHEL 8.0 VM. The following resources are created by this template:
@@ -44,30 +44,30 @@ Following is the Architecture:
 
 ![alt text](images/rhel-arch.png)
 
-To learn more about JBoss Enterprise Application Platform, visit:
+To learn more about the JBoss Enterprise Application Platform, visit:
 https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.2/
 
 ## Licenses, Subscriptions and Costs
 
-The RHEL 8.0 is Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. Total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
+If you select the offer as Pay-As-You-Go, the template will deploy RHEL 8.0 Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. In this case the VM will be licensed automatically after the instance is launched for the first time and total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. To use the Enterprise Application Platform your RHSM account needs EAP entitlement. You can get an evaluation account for EAP from [here](https://access.redhat.com/products/red-hat-jboss-enterprise-application-platform/evaluation). If you select the Offer as BYOS for deploying the template, your RHSM account must have both Red Hat Enterprise Linux entitlement (for subscribing the RHEL OS for the VM) and EAP entitlement and you will have to enter both the pool IDs as mentioned in the template. Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
 
 ## Prerequisites
 
-1. Azure Subscription with the specified payment method (RHEL 8 is an [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/RedHat.RedHatEnterpriseLinux80-ARM?tab=Overview) product and requires the payment method to be specified in Azure Subscription)
+1. Azure Subscription with the specified payment method (RHEL 8 is an [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/RedHat.RedHatEnterpriseLinux80-ARM?tab=Overview) product and requires a payment method to be specified in the Azure Subscription)
 
-2. To deploy the template, you will need to:
+2. To deploy the template, you will need:
 
-   - Choose an admin username and password/ssh key for your VM.
+   - **Admin Username** and password/ssh key data which is an SSH RSA public key for your VM.
     
-   - Choose DNS Label Prefix for the public IP which should be unique. Note that this will also be the name of your VM.
+   - **DNS Label Prefix** for the public IP which should be unique. Note that this will also be the name of your VM.
 
-   - Choose JBoss EAP username and password to enable the JBoss EAP manager UI and deployment method.
+   - **JBoss EAP Username** and password
     
-   - Provide your RHSM username and password
+   - **RHSM Username** and password
 
 ## Deployment Steps
 
-Build your environment with JBoss EAP 7.2 on top of RHEL 8.0 on Azure by clicking the Deploy to Azure button and fill in the following parameter values:
+Build your environment with JBoss EAP 7.2 on top of RHEL 8.0 on Azure by clicking the **Deploy to Azure** button and fill in the following parameter values:
 
    - **Subscription** - Choose the appropriate subscription where you would like to deploy.
 
@@ -81,21 +81,25 @@ Build your environment with JBoss EAP 7.2 on top of RHEL 8.0 on Azure by clickin
    
    - **Authentication Type** - Type of authentication to use on the Virtual Machine.
 
-   - **Admin Password or Key** - User account password/ssh key for logging into your RHEL VM.
+   - **Admin Password or SSH Key** - User account password/ssh key data which is an SSH RSA public key for logging into your RHEL VM.
 
    - **JBoss EAP Username** - Username for JBoss EAP Console.
 
    - **JBoss EAP Password** - User account password for JBoss EAP Console.
+
+   - **Offer** - Choose the type of offer from the dropdown options for deploying your Virtual Machine.
     
    - **RHSM Username** - Username for the Red Hat account.
 
    - **RHSM Password** - User account password for the Red Hat account.
 
-   - **RHSM Pool ID** - Red Hat Subscription Manager Pool ID.
+   - **RHSM Pool ID for EAP** - Red Hat Subscription Manager Pool ID (Should have EAP entitlement)
+
+   - **RHSM Pool ID for RHEL OS** - Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS offer. You can leave it blank if you select offer Pay-As-You-Go
 
    - **VM Size** - Choose the appropriate size of the VM from the dropdown options.
 
-   - Leave the rest of the parameter values as is and accept the terms and conditions before clicking on Purchase
+   - Leave the rest of the parameter values (artifacts and Location) as is and accept the terms and conditions before clicking on Purchase
     
 ## Deployment Time 
 
