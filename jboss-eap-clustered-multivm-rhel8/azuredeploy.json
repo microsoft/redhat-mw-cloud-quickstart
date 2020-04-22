@@ -47,9 +47,9 @@
     },
     "offer": {	
       "type": "string",	
-      "defaultValue": "Pay-As-You-Go",	
+      "defaultValue": "PAYG",	
       "allowedValues": [	
-        "Pay-As-You-Go",		
+        "PAYG",		
         "BYOS"
       ],	
       "metadata": {	
@@ -155,15 +155,15 @@
     "customScriptCommand": "[concat(variables('scriptStart'), variables('scriptFileName'), ' ')]",
     "scriptClose": "'",
     "loadBalancersName": "jbosseap-lb",
-    "vmName1": "jbosseap-payg-server",
-    "vmName2": "jbosseap-byos-server",
+    "vmNamePAYG": "jbosseap-payg-server",
+    "vmNameBYOS": "jbosseap-byos-server",
     "asName": "jbosseap-as",
     "skuName": "Aligned",
     "imagePublisher": "redhat",
-    "imageOffer1": "RHEL",
-    "imageSKU1": "8",
-    "imageOffer2": "rhel-byos",
-    "imageSKU2": "rhel-lvm8",
+    "imageOfferPAYG": "RHEL",
+    "imageSkuPAYG": "8",
+    "imageOfferBYOS": "rhel-byos",
+    "imageSkuBYOS": "rhel-lvm8",
     "nicName": "[concat(uniquestring(resourceGroup().id), '-nic')]",
     "addressPrefix": "10.3.0.0/16",
     "subnetName": "eap-server1-subnet",
@@ -176,8 +176,8 @@
     "virtualNetworkName": "jbosseap72-vnet",
     "backendPoolName": "jbosseap-servers",
     "frontendName" : "LoadBalancerFrontEnd",
-    "healthProbe1" : "eap-lb-health",
-    "healthProbe2" : "eap-jboss-health",
+    "healthProbeEAP" : "eap-lb-health",
+    "healthProbeAdmin" : "eap-jboss-health",
     "linuxConfiguration": {
       "disablePasswordAuthentication": true,
       "ssh": {
@@ -387,10 +387,10 @@
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
+      "condition": "[equals(parameters('Offer'),'PAYG')]",
       "apiVersion": "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('vmName1'), copyIndex())]",
+      "name": "[concat(variables('vmNamePAYG'), copyIndex())]",
       "location": "[parameters('location')]",
       "copy": {
           "name": "virtualMachineLoop",
@@ -419,7 +419,7 @@
           ]
         },
         "osProfile": {
-          "computerName": "[concat(variables('vmName1'), copyIndex())]",
+          "computerName": "[concat(variables('vmNamePAYG'), copyIndex())]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -427,8 +427,8 @@
         "storageProfile": {
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer1')]",
-            "sku": "[variables('imageSku1')]",
+            "offer": "[variables('imageOfferPAYG')]",
+            "sku": "[variables('imageSkuPAYG')]",
             "version": "latest"
           },
           "osDisk": {
@@ -438,7 +438,7 @@
       },
       "resources": [
         {
-          "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
+          "condition": "[equals(parameters('Offer'),'PAYG')]",
           "type": "extensions",
           "name": "[concat('jbosseap-extension-', copyIndex())]",
           "apiVersion": "2019-12-01",
@@ -448,7 +448,7 @@
             "displayName": "JBossEAPInstall"
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName1'), copyIndex()))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmNamePAYG'), copyIndex()))]"
           ],
           "properties": {
             "publisher": "Microsoft.Azure.Extensions",
@@ -471,7 +471,7 @@
       "condition": "[equals(parameters('Offer'),'BYOS')]",
       "apiVersion": "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('vmName2'), copyIndex())]",
+      "name": "[concat(variables('vmNameBYOS'), copyIndex())]",
       "location": "[parameters('location')]",
       "copy": {
           "name": "virtualMachineLoop",
@@ -505,7 +505,7 @@
           ]
         },
         "osProfile": {
-          "computerName": "[concat(variables('vmName2'), copyIndex())]",
+          "computerName": "[concat(variables('vmNameBYOS'), copyIndex())]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -513,8 +513,8 @@
         "storageProfile": {
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer2')]",
-            "sku": "[variables('imageSku2')]",
+            "offer": "[variables('imageOfferBYOS')]",
+            "sku": "[variables('imageSkuBYOS')]",
             "version": "latest"
           },
           "osDisk": {
@@ -534,7 +534,7 @@
             "displayName": "JBossEAPInstall"
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName2'), copyIndex()))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmNameBYOS'), copyIndex()))]"
           ],
           "properties": {
             "publisher": "Microsoft.Azure.Extensions",
@@ -599,7 +599,7 @@
                 "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancersName'), variables('backendPoolName'))]"
               },
               "probe": {
-                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadBalancersName'), variables('healthProbe1'))]"
+                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadBalancersName'), variables('healthProbeEAP'))]"
               }
             }
           },
@@ -619,14 +619,14 @@
                   "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancersName'), variables('backendPoolName'))]"
                 },
                 "probe": {
-                  "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadBalancersName'), variables('healthProbe2'))]"
+                  "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadBalancersName'), variables('healthProbeAdmin'))]"
                 }
               }
             }
         ],
         "probes": [
           {
-            "name": "[variables('healthProbe1')]",
+            "name": "[variables('healthProbeEAP')]",
             "properties": {
               "protocol": "Tcp",
               "port": 8080,
@@ -635,7 +635,7 @@
             }
           },
           {
-              "name": "[variables('healthProbe2')]",
+              "name": "[variables('healthProbeAdmin')]",
               "properties": {
                 "protocol": "Tcp",
                 "port": 9990,

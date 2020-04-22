@@ -45,9 +45,9 @@
     },
     "offer": {	
       "type": "string",	
-      "defaultValue": "Pay-As-You-Go",	
+      "defaultValue": "PAYG",	
       "allowedValues": [	
-        "Pay-As-You-Go",		
+        "PAYG",		
         "BYOS"
       ],	
       "metadata": {	
@@ -142,8 +142,8 @@
     "subnetName": "default",
     "publicIPAddressName": "[concat('myIP8',variables('baseName'))]",
     "publicIPAddressType": "Dynamic",
-    "virtualMachineName-payg": "[concat('vm-payg-',parameters('dnsLabelPrefix'))]",
-    "virtualMachineName-byos": "[concat('vm-byos-',parameters('dnsLabelPrefix'))]",
+    "virtualMachineNamePAYG": "[concat('vm-payg-',parameters('dnsLabelPrefix'))]",
+    "virtualMachineNameBYOS": "[concat('vm-byos-',parameters('dnsLabelPrefix'))]",
     "virtualNetworkName": "eap-vnet",
     "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'),'-nsg8')]",
     "storageAccountType": "Standard_LRS",
@@ -365,10 +365,10 @@
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
+      "condition": "[equals(parameters('Offer'),'PAYG')]",
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2019-12-01",
-      "name": "[variables('virtualMachineName-payg')]",
+      "name": "[variables('virtualMachineNamePAYG')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('sActName'))]",
@@ -400,7 +400,7 @@
           ]
         },
         "osProfile": {
-          "computerName": "[variables('virtualMachineName-payg')]",
+          "computerName": "[variables('virtualMachineNamePAYG')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -408,13 +408,13 @@
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
+      "condition": "[equals(parameters('Offer'),'PAYG')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('virtualMachineName-payg'),'/newuserscript')]",
+      "name": "[concat(variables('virtualMachineNamePAYG'),'/newuserscript')]",
       "apiVersion": "2019-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName-payg'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineNamePAYG'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -433,7 +433,7 @@
       "condition": "[equals(parameters('Offer'),'BYOS')]",
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2019-12-01",
-      "name": "[variables('virtualMachineName-byos')]",
+      "name": "[variables('virtualMachineNameBYOS')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('sActName'))]",
@@ -470,7 +470,7 @@
           ]
         },
         "osProfile": {
-          "computerName": "[variables('virtualMachineName-byos')]",
+          "computerName": "[variables('virtualMachineNameBYOS')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -480,11 +480,11 @@
     {
       "condition": "[equals(parameters('Offer'),'BYOS')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('virtualMachineName-byos'),'/newuserscript')]",
+      "name": "[concat(variables('virtualMachineNameBYOS'),'/newuserscript')]",
       "apiVersion": "2019-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName-byos'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineNameBYOS'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",

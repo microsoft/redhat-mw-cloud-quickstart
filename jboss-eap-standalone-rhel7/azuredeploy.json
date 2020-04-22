@@ -45,9 +45,9 @@
     },
     "offer": {	
       "type": "string",	
-      "defaultValue": "Pay-As-You-Go",	
+      "defaultValue": "PAYG",	
       "allowedValues": [	
-        "Pay-As-You-Go",		
+        "PAYG",		
         "BYOS"
       ],	
       "metadata": {	
@@ -137,10 +137,10 @@
   "variables": {
     "singlequote": "'",
     "imagePublisher": "redhat",
-    "imageOffer1": "rhel",
-    "imageSKU1": "7.7",
-    "imageOffer2": "rhel-byos",
-    "imageSKU2": "rhel-lvm77",
+    "imageOfferPAYG": "rhel",
+    "imageSkuPAYG": "7.7",
+    "imageOfferBYOS": "rhel-byos",
+    "imageSkuBYOS": "rhel-lvm77",
     "baseName": "[uniquestring(parameters('dnsLabelPrefix'),resourceGroup().id)]",
     "nicName": "[concat('myNic8',variables('baseName'))]",
     "addressPrefix": "10.0.0.0/16",
@@ -148,8 +148,8 @@
     "subnet1Prefix": "10.0.0.0/24",
     "publicIPAddressName": "[concat('myIP8',variables('baseName'))]",
     "publicIPAddressType": "Dynamic",
-    "vmName-payg": "[concat('vm-payg-',parameters('dnsLabelPrefix'))]",
-    "vmName-byos": "[concat('vm-byos-',parameters('dnsLabelPrefix'))]",
+    "vmNamePAYG": "[concat('vm-payg-',parameters('dnsLabelPrefix'))]",
+    "vmNameBYOS": "[concat('vm-byos-',parameters('dnsLabelPrefix'))]",
     "virtualNetworkName": "MyVNET8",
     "frontEndNSGName": "[concat(parameters('dnsLabelPrefix'),'-nsg8')]",
     "ScriptFolder": "scripts",
@@ -293,10 +293,10 @@
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
+      "condition": "[equals(parameters('Offer'),'PAYG')]",
       "apiVersion":  "2019-12-01", 
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName-payg')]",
+      "name": "[variables('vmNamePAYG')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
@@ -306,7 +306,7 @@
           "vmSize": "[parameters('vmSize')]"
         },
         "osProfile": {
-          "computerName": "[variables('vmName-payg')]",
+          "computerName": "[variables('vmNamePAYG')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -314,12 +314,12 @@
         "storageProfile": {
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer1')]",
-            "sku": "[variables('imageSKU1')]",
+            "offer": "[variables('imageOfferPAYG')]",
+            "sku": "[variables('imageSkuPAYG')]",
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(variables('vmName-payg'),'_OSDisk')]",
+            "name": "[concat(variables('vmNamePAYG'),'_OSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           }
@@ -334,13 +334,13 @@
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
+      "condition": "[equals(parameters('Offer'),'PAYG')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName-payg'),'/newuserscript')]",
+      "name": "[concat(variables('vmNamePAYG'),'/newuserscript')]",
       "apiVersion": "2019-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName-payg'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmNamePAYG'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -359,7 +359,7 @@
       "condition": "[equals(parameters('Offer'),'BYOS')]",
       "apiVersion":  "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName-byos')]",
+      "name": "[variables('vmNameBYOS')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
@@ -374,7 +374,7 @@
           "vmSize": "[parameters('vmSize')]"
         },
         "osProfile": {
-          "computerName": "[variables('vmName-byos')]",
+          "computerName": "[variables('vmNameBYOS')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -382,12 +382,12 @@
         "storageProfile": {
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer2')]",
-            "sku": "[variables('imageSKU2')]",
+            "offer": "[variables('imageOfferBYOS')]",
+            "sku": "[variables('imageSkuBYOS')]",
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(variables('vmName-byos'),'_OSDisk')]",
+            "name": "[concat(variables('vmNameBYOS'),'_OSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           }
@@ -404,11 +404,11 @@
     {
       "condition": "[equals(parameters('Offer'),'BYOS')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName-byos'),'/newuserscript')]",
+      "name": "[concat(variables('vmNameBYOS'),'/newuserscript')]",
       "apiVersion": "2019-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName-byos'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmNameBYOS'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",

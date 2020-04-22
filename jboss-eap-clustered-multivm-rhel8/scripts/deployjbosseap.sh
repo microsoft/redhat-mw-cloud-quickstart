@@ -6,16 +6,16 @@ echo "Red Hat JBoss EAP 7.2 Cluster Intallation Start " >> /home/$1/install.log
 /bin/date +%H:%M:%S  >> /home/$1/install.log
 
 export EAP_HOME="/opt/rh/eap7/root/usr/share"
-export JBOSS_EAP_USER=$2
-export JBOSS_EAP_PASSWORD=$3
+JBOSS_EAP_USER=$2
+JBOSS_EAP_PASSWORD=$3
 OFFER=$4
-export RHSM_USER=$5
-export RHSM_PASSWORD=$6
-export RHSM_POOL=$7
-export IP_ADDR=$8
-export STORAGE_ACCOUNT_NAME=${9}
-export CONTAINER_NAME=${10}
-export STORAGE_ACCESS_KEY=$(echo "${11}" | openssl enc -d -base64)
+RHSM_USER=$5
+RHSM_PASSWORD=$6
+RHSM_POOL=$7
+IP_ADDR=$8
+STORAGE_ACCOUNT_NAME=${9}
+CONTAINER_NAME=${10}
+STORAGE_ACCESS_KEY=$(echo "${11}" | openssl enc -d -base64)
 
 echo "JBoss EAP admin user"+${JBOSS_EAP_USER} >> /home/$1/install.log
 echo "Private IP Address of VM"+${IP_ADDR} >> /home/$1/install.log
@@ -59,7 +59,6 @@ echo "Copy the standalone-azure-ha.xml from EAP_HOME/doc/wildfly/examples/config
 cp $EAP_HOME/doc/wildfly/examples/configs/standalone-azure-ha.xml $EAP_HOME/wildfly/standalone/configuration/
 
 echo "change the jgroups stack from UDP to TCP " >> /home/$1/install.log
-
 sed -i 's/stack="udp"/stack="tcp"/g'  $EAP_HOME/wildfly/standalone/configuration/standalone-azure-ha.xml
 
 echo "Update interfaces section update jboss.bind.address.management, jboss.bind.address and jboss.bind.address.private from 127.0.0.1 to 0.0.0.0" >> /home/$1/install.log

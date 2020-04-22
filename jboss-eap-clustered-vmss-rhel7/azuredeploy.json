@@ -47,9 +47,9 @@
     },
     "offer": {	
       "type": "string",	
-      "defaultValue": "Pay-As-You-Go",	
+      "defaultValue": "PAYG",	
       "allowedValues": [	
-        "Pay-As-You-Go",		
+        "PAYG",		
         "BYOS"
       ],	
       "metadata": {	
@@ -163,12 +163,12 @@
     "scriptClose": "'",
     "loadBalancersName": "jbosseap-lb",
     "imagePublisher": "redhat",
-    "imageOffer1": "RHEL",
-    "imageSKU1": "7.7",
-    "imageOffer2": "rhel-byos",
-    "imageSKU2": "rhel-lvm77",
-    "vmssName1": "[concat('vmss-payg-',parameters('vmssName'))]",
-    "vmssName2": "[concat('vmss-byos-',parameters('vmssName'))]",
+    "imageOfferPAYG": "RHEL",
+    "imageSkuPAYG": "7.7",
+    "imageOfferBYOS": "rhel-byos",
+    "imageSkuBYOS": "rhel-lvm77",
+    "vmssNamePAYG": "[concat('vmss-payg-',parameters('vmssName'))]",
+    "vmssNameBYOS": "[concat('vmss-byos-',parameters('vmssName'))]",
     "nicName": "[concat(parameters('vmssName'), 'nic')]",
     "addressPrefix": "10.3.0.0/16",
     "subnetName": "eap-server-subnet",
@@ -236,9 +236,9 @@
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'Pay-As-You-Go')]",
+      "condition": "[equals(parameters('Offer'),'PAYG')]",
       "type": "Microsoft.Compute/virtualMachineScaleSets",
-      "name": "[variables('vmssName1')]",
+      "name": "[variables('vmssNamePAYG')]",
       "location": "[parameters('location')]",
       "apiVersion": "2017-03-30",
       "dependsOn": [
@@ -264,13 +264,13 @@
             },
             "imageReference": {
               "publisher": "[variables('imagePublisher')]",
-              "offer": "[variables('imageOffer1')]",
-              "sku": "[variables('imageSKU1')]",
+              "offer": "[variables('imageOfferPAYG')]",
+              "sku": "[variables('imageSkuPAYG')]",
               "version": "latest"
             }
           },
           "osProfile": {
-            "computerNamePrefix": "[variables('vmssName1')]",
+            "computerNamePrefix": "[variables('vmssNamePAYG')]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
             "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -335,7 +335,7 @@
     {
       "condition": "[equals(parameters('Offer'),'BYOS')]",
       "type": "Microsoft.Compute/virtualMachineScaleSets",
-      "name": "[variables('vmssName2')]",
+      "name": "[variables('vmssNameBYOS')]",
       "location": "[parameters('location')]",
       "apiVersion": "2017-03-30",
       "dependsOn": [
@@ -366,13 +366,13 @@
             },
             "imageReference": {
               "publisher": "[variables('imagePublisher')]",
-              "offer": "[variables('imageOffer2')]",
-              "sku": "[variables('imageSKU2')]",
+              "offer": "[variables('imageOfferBYOS')]",
+              "sku": "[variables('imageSkuBYOS')]",
               "version": "latest"
             }
           },
           "osProfile": {
-            "computerNamePrefix": "[variables('vmssName2')]",
+            "computerNamePrefix": "[variables('vmssNameBYOS')]",
             "adminUsername": "[parameters('adminUsername')]",
             "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
             "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"

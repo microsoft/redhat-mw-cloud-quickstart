@@ -4,22 +4,22 @@
 echo "Red Hat JBoss EAP 7.2 Installation Start"  >> /home/$1/install.log
 
 export JBOSS_HOME="/opt/rh/eap7/root/usr/share/wildfly"
-export NODENAME1="node1"
-export NODENAME2="node2"
-export SVR_CONFIG="standalone-ha.xml"
-export PORT_OFFSET=100
-export JBOSS_EAP_USER=$2
-export JBOSS_EAP_PASSWORD=$3
+NODENAME1="node1"
+NODENAME2="node2"
+SVR_CONFIG="standalone-ha.xml"
+PORT_OFFSET=100
+JBOSS_EAP_USER=$2
+JBOSS_EAP_PASSWORD=$3
 OFFER=$4
-export RHSM_USER=$5
-export RHSM_PASSWORD=$6
-export RHSM_POOL=$7
-export IP_ADDR_NAME=$8
-export IP_ADDR=$9
+RHSM_USER=$5
+RHSM_PASSWORD=$6
+RHSM_POOL=$7
+IP_ADDR_NAME=$8
+IP_ADDR=$9
 
-export STORAGE_ACCOUNT_NAME=${10}
-export STORAGE_ACCESS_KEY=${11}
-export CONTAINER_NAME="eapblobcontainer"
+STORAGE_ACCOUNT_NAME=${10}
+STORAGE_ACCESS_KEY=${11}
+CONTAINER_NAME="eapblobcontainer"
 
 echo "JBOSS_EAP_USER: " ${JBOSS_EAP_USER} >> /home/$1/install.log
 echo "RHSM_USER: " ${RHSM_USER} >> /home/$1/install.log
