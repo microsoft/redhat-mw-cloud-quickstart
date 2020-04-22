@@ -22,7 +22,7 @@
     "adminPasswordOrSSHKey": {
         "type": "securestring",
         "metadata": {
-          "description": "SSH Key or password for the Virtual Machine."
+          "description": "Password or SSH key for the Virtual Machine."
         }
     },
     "location": {
