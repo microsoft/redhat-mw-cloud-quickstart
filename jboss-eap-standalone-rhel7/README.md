@@ -112,6 +112,9 @@ The deployment takes less than 10 minutes to complete.
 ## Validation Steps
 
 - Once the deployment is successful, go to the outputs section of the deployment to obtain the VM DNS name
+
+  ![alt text](images/outputs.png)
+  
 - Open a web browser and go to **http://<PUBLIC_HOSTNAME>:8080/JBoss-EAP_on_Azure/** and you should see the application running.
 
   ![alt text](images/app.png)
