@@ -121,7 +121,7 @@ The deployment takes about 10 minutes to complete.
 
 - Once you login into the VM, you can go through the *server.log* on JBoss EAP to see how Jgroup discovery works for clustering. Please enter the following command : 
 
-`vi /opt/rh/eap7/root/usr/share/wildfly/node1/log/server.log`
+`cat /opt/rh/eap7/root/usr/share/wildfly/node1/log/server.log`
 
   ![alt text](images/ssh-command.png)
 
@@ -131,6 +131,7 @@ The deployment takes about 10 minutes to complete.
 
 - Enter the App URL that you copied from the output page and paste it in a browser, you will see EAP Session Replication web page.
 
+  ![alt text](images/eap-session.png)
   ![alt text](images/session-application-app.png)
 
 - The web application displays the *Session ID*, *Session counter* and *Timestamp* (these are variables stored in the session that are replicated) and the container Private IP address that the web page and session is being hosted from. Clicking on the Increment Counter updates the session counter and clicking on Refresh will refresh the page.
