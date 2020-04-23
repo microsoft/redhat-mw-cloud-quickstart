@@ -128,7 +128,7 @@ The deployment takes approximately 10 minutes to complete.
 
 - To access the LB App UI console, enter the AppUI that you copied from the output page and paste it in a browser. The web application displays the *Session ID*, *Session counter* and *Timestamp* (these are variables stored in the session that are replicated) and the container Private IP address that the web page and session is being hosted from. Clicking on the Increment Counter updates the session counter and clicking on Refresh will refresh the page.
 
-  ![alt text](eap-session/eap.png)
+  ![alt text](images/eap-session.png)
   
   ![alt text](images/eap-session-rep.png)
 
