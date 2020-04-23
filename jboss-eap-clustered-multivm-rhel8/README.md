@@ -128,6 +128,8 @@ The deployment takes approximately 10 minutes to complete.
 
 - To access the LB App UI console, enter the AppUI that you copied from the output page and paste it in a browser. The web application displays the *Session ID*, *Session counter* and *Timestamp* (these are variables stored in the session that are replicated) and the container Private IP address that the web page and session is being hosted from. Clicking on the Increment Counter updates the session counter and clicking on Refresh will refresh the page.
 
+  ![alt text](images/eap-session.png)
+  
   ![alt text](images/eap-session-rep.png)
 
 - Note that in the EAP Session Replication page of Load Balancer, the private IP displayed is that of one of the VMs. If you click on Increment Counter/Refresh button when you stop VM,restart VM or if the service the VM corresponding to the Private IP displayed is down, the private IP displayed will change to that of another VM but the Session ID remains the same which shows that the Session ID got replicated.
