@@ -190,7 +190,7 @@
     {
       "type": "Microsoft.Network/publicIpAddresses",
       "apiVersion": "2019-11-01",
-      "name": "[variables('publicIpAddressName')]",
+      "name": "[variables('publicIPAddressName')]",
       "location": "[parameters('location')]",
       "properties": {
         "publicIpAllocationMethod": "[variables('publicIpAddressType')]",
@@ -342,7 +342,7 @@
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
+        "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIPAddressName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -354,7 +354,7 @@
                   },
                   "privateIPAllocationMethod": "Dynamic",
                   "publicIpAddress": {
-                      "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIpAddressName'))]"
+                      "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
                   }
               }
           }
@@ -501,9 +501,9 @@
     }
   ],
   "outputs": {
-    "sshCommand": {
+    "vm DNS Name": {
       "type": "string",
-      "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddressName')).dnsSettings.fqdn)]"
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))).dnsSettings.fqdn]"
     },
     "AppUI-1": {
       "type": "string",

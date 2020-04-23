@@ -114,23 +114,23 @@ The deployment takes approximately 10 minutes to complete.
 
 ## Validation Steps
 
-- Once the deployment is successful, go to the outputs section of the deployment to obtain the APPUI-LB.
+- Once the deployment is successful, go to the outputs section of the deployment to obtain the AppUI-LB.
 
   ![alt text](images/outputs.png)
 
-- To obtain the Public IP of a VM, go to the VM details page. Under settings go to Networking section and copy the NIC Public IP. Open a web browser and go to http://<PUBLIC_HOSTNAME>:8080 and you should see the web page as follows. Use the same Public IP to Login to the VM.
+- To obtain the Public IP of a VM, go to the VM details page. Under settings go to Networking section and copy the NIC Public IP. Open a web browser and go to **http://<PUBLIC_IP_Address>:8080** and you should see the web page as follows. Use the same Public IP to Login to the VM.
 
   ![alt text](images/eap.png)
 
-- To access the administration console, copy the Admin Console link in the output page and paste it in a browser. Now click on the link Administration Console and enter JBoss EAP Username and password to see the console of the respective VM.
+- To access the administration console, click on the **Administration Console** shown in the above image and enter JBoss EAP Username and password to access the console of the respective VM.
 
   ![alt text](images/eap-admin-console.png)
 
-- To access the LB App UI console, copy the AppUI-LB from the output page and paste it in a browser. The web application displays the Session ID, `Session counter` and `timestamp` (these are variables stored in the session that are replicated) and the container name that the web page and session is being hosted from. Clicking on the Increment counter updates the session counter.
+- To access the LB App UI console, enter the AppUI that you copied from the output page and paste it in a browser. The web application displays the *Session ID*, *Session counter* and *Timestamp* (these are variables stored in the session that are replicated) and the container Private IP address that the web page and session is being hosted from. Clicking on the Increment Counter updates the session counter and clicking on Refresh will refresh the page.
 
   ![alt text](images/eap-session-rep.png)
 
-- Note that in the EAP Session Replication page of Load Balancer, the private IP displayed is that of one of the VMs. When you stop/restart the VM corresponding to the Private IP displayed and click on increment counter/refresh button, the private IP displayed will change to another VM but the session ID remains the same which shows that the session ID got replicated.
+- Note that in the EAP Session Replication page of Load Balancer, the private IP displayed is that of one of the VMs. If you click on Increment Counter/Refresh button when you stop VM,restart VM or if the service the VM corresponding to the Private IP displayed is down, the private IP displayed will change to that of another VM but the Session ID remains the same which shows that the Session ID got replicated.
 
   ![alt text](images/eap-ses-rep.png)
 

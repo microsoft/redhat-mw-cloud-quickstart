@@ -113,15 +113,15 @@ The deployment takes about 10 minutes to complete.
 
 ## Validation Steps
 
-- Once the deployment is successful, click on the "Outputs" to see the URL of the SSH Command, App WEB URLs:
+- Once the deployment is successful, go to the outputs section of the deployment to obtain the VM DNS name and App URLs:
 
   ![alt text](images/template-output.png)
 
-- Copy the string from the "sshCommand" field. Open terminal tool(or cmd window) and paste the string to access the VM.
+- Use the VM DNS name to access the VM and enter the VM username and password/ssh key, the "Admin Username" and "Admin Password/SSH Key" you provided before you deployed the template.
 
-- Enter the VM username and password/ssh key, the "Admin Username" and "Admin Password" you provided before you deployed the template.
+- Once you login into the VM, you can go through the *server.log* on JBoss EAP to see how Jgroup discovery works for clustering. Please enter the following command : 
 
-- Once you login into the VM, you can go through the server.log on JBoss EAP how Jgroup discovery works for clustering:
+`vi /opt/rh/eap7/root/usr/share/wildfly/node1/log/server.log`
 
   ![alt text](images/ssh-command.png)
 
@@ -129,13 +129,13 @@ The deployment takes about 10 minutes to complete.
 
   ![alt text](images/session-replication-logs.png)
 
-- Copy the App URL from the output section of the template. Open a web browser and paste the link, you will see EAP Session Replication web page.
+- Enter the App URL that you copied from the output page and paste it in a browser, you will see EAP Session Replication web page.
 
   ![alt text](images/session-application-app.png)
 
-- The web application displays the Session ID, `Session counter` and `timestamp` (these are variables stored in the session that are replicated) and the container name that the web page and session is being hosted from.
+- The web application displays the *Session ID*, *Session counter* and *Timestamp* (these are variables stored in the session that are replicated) and the container Private IP address that the web page and session is being hosted from. Clicking on the Increment Counter updates the session counter and clicking on Refresh will refresh the page.
 
-- Now, select the **Increment Counter** link. The session counter will increase. Note that the session counter increases simultaneously on both App UIs.
+- Now, click on the **Increment Counter**. The session counter will increase. Note that the session counter increases simultaneously on both App UIs.
 
   ![alt text](images/session-replication-increment.png)
 

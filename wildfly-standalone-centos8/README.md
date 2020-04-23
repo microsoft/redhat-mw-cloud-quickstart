@@ -100,12 +100,12 @@ The deployment takes less than 10 minutes to complete.
 
 ## Validation Steps
 
-- Once the deployment is successful, go to the VM and copy the DNS Name of the VM.
+- Once the deployment is successful, go to the outputs section of the deployment to obtain the VM DNS name.
 - Open a web browser and go to **http://<PUBLIC_HOSTNAME>:8080/JBoss-EAP_on_Azure/** and you should see the application running:
 
   ![alt text](images/app.png)
 
-- To access the administration console go to **http://<PUBLIC_HOSTNAME>:8080** and click on the link to Administration Console and enter the Wildfly username and password.
+- To access the administration console go to **http://<PUBLIC_HOSTNAME>:8080** and click on the link to Administration Console and enter the Wildfly Username and password.
 
   ![alt text](images/wildfly-console.png)
 
