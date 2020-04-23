@@ -3,7 +3,7 @@
 /bin/date +%H:%M:%S >> /home/$1/install.log
 echo "Red Hat JBoss EAP 7.2 Installation Start"  >> /home/$1/install.log
 
-JBOSS_HOME="/opt/rh/eap7/root/usr/share/wildfly"
+export JBOSS_HOME="/opt/rh/eap7/root/usr/share/wildfly"
 NODENAME1="node1"
 NODENAME2="node2"
 SVR_CONFIG="standalone-ha.xml"
@@ -48,10 +48,10 @@ echo "Create 2 JBoss EAP nodes on Azure..." >> /home/$1/install.log
 /bin/cp  -rL  $JBOSS_HOME/standalone $JBOSS_HOME/$NODENAME1
 /bin/cp  -rL  $JBOSS_HOME/standalone $JBOSS_HOME/$NODENAME2
 
-echo "JBoss-EAP on Azure app deploy..." >> /home/$1/install.log 
+echo "Eap session replication app deploy..." >> /home/$1/install.log 
 yum install -y git
 cd /home/$1
-git clone https://github.com/danieloh30/eap-session-replication.git
+git clone https://github.com/Suraj2093/eap-session-replication.git
 /bin/cp -rf /home/$1/eap-session-replication/eap-configuration/standalone-ha.xml $JBOSS_HOME/$NODENAME1/configuration/
 /bin/cp -rf /home/$1/eap-session-replication/eap-configuration/standalone-ha.xml $JBOSS_HOME/$NODENAME2/configuration/
 /bin/cp -rf /home/$1/eap-session-replication/target/eap-session-replication.war $JBOSS_HOME/$NODENAME1/deployments/eap-session-replication.war

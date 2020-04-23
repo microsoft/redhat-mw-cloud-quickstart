@@ -51,7 +51,7 @@ echo "Create 2 JBoss EAP nodes on Azure..." >> /home/$1/install.log
 echo "EAP Session Replication app deploy..." >> /home/$1/install.log 
 yum install -y git
 cd /home/$1
-git clone https://github.com/danieloh30/eap-session-replication.git
+git clone https://github.com/Suraj2093/eap-session-replication.git
 /bin/cp -rf /home/$1/eap-session-replication/eap-configuration/standalone-ha.xml $JBOSS_HOME/$NODENAME1/configuration/
 /bin/cp -rf /home/$1/eap-session-replication/eap-configuration/standalone-ha.xml $JBOSS_HOME/$NODENAME2/configuration/
 /bin/cp -rf /home/$1/eap-session-replication/target/eap-session-replication.war $JBOSS_HOME/$NODENAME1/deployments/eap-session-replication.war

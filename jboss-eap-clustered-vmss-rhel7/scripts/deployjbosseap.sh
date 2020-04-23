@@ -82,7 +82,7 @@ echo "@reboot sleep 90 && /bin/jbossservice.sh" >>  /var/spool/cron/root
 chmod 600 /var/spool/cron/root
 
 echo "Deploy an application " >> /home/$1/install.log
-git clone https://github.com/danieloh30/eap-session-replication.git
+git clone https://github.com/Suraj2093/eap-session-replication.git
 cp eap-session-replication/target/eap-session-replication.war $EAP_HOME/wildfly/standalone/deployments/
 touch $EAP_HOME/wildfly/standalone/deployments/eap-session-replication.war.dodeploy
 
