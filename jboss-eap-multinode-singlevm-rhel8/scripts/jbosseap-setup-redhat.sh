@@ -10,7 +10,7 @@ SVR_CONFIG="standalone-ha.xml"
 PORT_OFFSET=100
 JBOSS_EAP_USER=$2
 JBOSS_EAP_PASSWORD=$3
-OFFER=$4
+RHEL_OS_LICENSE_TYPE=$4
 RHSM_USER=$5
 RHSM_PASSWORD=$6
 RHSM_POOL=$7
@@ -33,7 +33,7 @@ echo "IP_ADDR: " ${IP_ADDR} >> /home/$1/install.log
 echo "subscription-manager register..." >> /home/$1/install.log
 subscription-manager register --username ${RHSM_USER} --password ${RHSM_PASSWORD} 
 subscription-manager attach --pool=${RHSM_POOL}
-if [ $OFFER == "BYOS" ]
+if [ $RHEL_OS_LICENSE_TYPE == "BYOS" ]
 then 
     echo "Attaching Pool ID for RHEL OS" >> /home/$1/install.log
     subscription-manager attach --pool=${12}

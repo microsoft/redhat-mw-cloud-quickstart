@@ -16,44 +16,38 @@
         "sshPublicKey"
       ],
       "metadata": {
-        "description": "Type of authentication to use on the Virtual Machine."
+        "description": "Type of authentication to use on the Virtual Machine"
       }
     },
     "adminPasswordOrSSHKey": {
       "type": "securestring",
       "metadata": {
-        "description": "Password or SSH key for the Virtual Machine."
-      }
-   },
-    "dnsLabelPrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
+        "description": "Password or SSH key for the Virtual Machine"
       }
     },
     "wildflyUserName": {
       "type": "string",
       "metadata": {
-        "description": "User name for WildFly manager"
+        "description": "User name for WildFly Manager"
       }
     },
     "wildflyPassword": {
       "type": "securestring",
       "metadata": {
-        "description": "Password for WildFly manager"
+        "description": "Password for WildFly Manager"
       }
     },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
-        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated"
       },
       "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/wildfly-standalone-centos8/"
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
       "metadata": {
-        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated"
       },
       "defaultValue": ""
     },
@@ -61,7 +55,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Location for all resources."
+        "description": "Location for all resources"
       }
     },
     "vmSize": {
@@ -94,7 +88,7 @@
         "Standard_F16"
       ],
       "metadata": {
-        "description": "The size of the Virtual Machine."
+        "description": "The size of the Virtual Machine"
       }
     }
   },
@@ -103,16 +97,16 @@
     "imagePublisher": "OpenLogic",
     "imageOffer": "CentOS",
     "imageSKU": "8.0",
-    "baseName": "[uniquestring(parameters('dnsLabelPrefix'),resourceGroup().id)]",
-    "nicName": "[concat('myNic8',variables('baseName'))]",
+    "nicName": "[concat(uniquestring(resourceGroup().id), '-nic')]",
     "addressPrefix": "10.0.0.0/16",
-    "subnet1Name": "Subnet-1",
-    "subnet1Prefix": "10.0.0.0/24",
-    "publicIPAddressName": "[concat('myIP8',variables('baseName'))]",
+    "subnetName": "centosvm-subnet",
+    "subnetPrefix": "10.0.0.0/24",
+    "publicIPAddressName": "centos-vm-pip",
     "publicIPAddressType": "Dynamic",
-    "vmName": "[parameters('dnsLabelPrefix')]",
-    "virtualNetworkName": "MyVNET8",
-    "frontEndNSGName": "[concat(parameters('dnsLabelPrefix'),'-nsg8')]",
+    "publicIPAddressDNSName" : "[concat('centos-vm-pip-', uniqueString(resourceGroup().id))]",
+    "vmName": "centos-vm",
+    "virtualNetworkName": "centosvm-vnet",
+    "networkSecurityGroupName": "centosvm-nsg",
     "ScriptFolder": "scripts",
     "ScriptFileName": "wildfly-setup.sh",
     "linuxConfiguration": {
@@ -126,7 +120,7 @@
         ]
       }
     },
-    "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet1Name'))]"
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
   },
   "resources": [
     {
@@ -137,18 +131,15 @@
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
         "dnsSettings": {
-          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+          "domainNameLabel": "[variables('publicIPAddressDNSName')]"
         }
       }
     },
     {
       "apiVersion": "2019-11-01",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[variables('frontEndNSGName')]",
+      "name": "[variables('networkSecurityGroupName')]",
       "location": "[parameters('location')]",
-      "tags": {
-        "displayName": "Custom Network Security Group"
-      },
       "properties": {
         "securityRules": [
           {
@@ -202,7 +193,7 @@
       "name": "[variables('virtualNetworkName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('frontEndNSGName'))]"
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
       ],
       "properties": {
         "addressSpace": {
@@ -212,11 +203,11 @@
         },
         "subnets": [
           {
-            "name": "[variables('subnet1Name')]",
+            "name": "[variables('subnetName')]",
             "properties": {
-              "addressPrefix": "[variables('subnet1Prefix')]",
+              "addressPrefix": "[variables('subnetPrefix')]",
               "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('frontEndNSGName'))]"
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
               }
             }
           }
@@ -231,11 +222,11 @@
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('frontEndNSGName'))]"
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
       ],
       "properties": {
         "networkSecurityGroup": {
-          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('frontEndNSGName'))]"
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
         },
         "ipConfigurations": [
           {
@@ -246,7 +237,7 @@
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
               },
               "subnet": {
-                "id": "[variables('subnet1Ref')]"
+                "id": "[variables('subnetRef')]"
               }
             }
           }
@@ -295,7 +286,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),'/newuserscript')]",
+      "name": "[concat(variables('vmName'),'/wildfly-setup')]",
       "apiVersion": "2019-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -319,6 +310,14 @@
     "vm DNS Name": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))).dnsSettings.fqdn]"
+    },
+    "appURL": {
+      "type": "string",
+      "value": "[concat('http://', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ':8080/JBoss-EAP_on_Azure/')]"
+    },
+    "adminConsole": {
+      "type": "string",
+      "value": "[concat('http://', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ':9990')]"
     }
   }
 }

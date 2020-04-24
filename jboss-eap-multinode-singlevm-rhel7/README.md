@@ -50,11 +50,11 @@ https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_applicati
 
 ## Licenses, Subscriptions and Costs
 
-If you select the offer as PAYG (Pay-As-You-Go), the template will deploy RHEL 7.7 Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. In this case the VM will be licensed automatically after the instance is launched for the first time and total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. To use the Enterprise Application Platform your RHSM account needs EAP entitlement. You can get an evaluation account for EAP from [here](https://access.redhat.com/products/red-hat-jboss-enterprise-application-platform/evaluation). 
+If you select the RHEL OS License type as PAYG (Pay-As-You-Go), the template will deploy RHEL 7.7 Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. In this case the VM will be licensed automatically after the instance is launched for the first time and total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. To use the Enterprise Application Platform your RHSM account needs EAP entitlement. You can get an evaluation account for EAP from [here](https://access.redhat.com/products/red-hat-jboss-enterprise-application-platform/evaluation). 
 
-If you select the Offer as BYOS (Bring-Your-Own-Subscription) for deploying the template, your RHSM account must have both Red Hat Enterprise Linux entitlement (for subscribing the RHEL OS for the VM) and EAP entitlement and you will have to enter both the pool IDs as mentioned in the template. To provision the RHEL-BYOS VM in your subscription, you will have to enable it in the Cloud Access from Red Hat portal. You can do that from [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/con-enable-subs). Once your Azure subscription is enabled, please follow this [link](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/redhat/byos) to accept the Marketplace terms for RHEL-BYOS image from your Azure subscription. 
+If you select the RHEL OS License type as BYOS (Bring-Your-Own-Subscription) for deploying the template, your RHSM account must have both Red Hat Enterprise Linux entitlement (for subscribing the RHEL OS for the VM) and EAP entitlement and you will have to enter both the pool IDs as mentioned in the template. To provision the RHEL-BYOS VM in your subscription, you will have to enable it in the Cloud Access from Red Hat portal. You can do that from [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/con-enable-subs). Once your Azure subscription is enabled, please follow this [link](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/redhat/byos) to accept the Marketplace terms for RHEL-BYOS image from your Azure subscription. 
 
-Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM and pricing.
+Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM.
 
 
 ## Prerequisites
@@ -64,8 +64,6 @@ Click [here](https://access.redhat.com/products/red-hat-subscription-management)
 2. To deploy the template, you will need:
 
    - **Admin Username** and password/ssh key data which is an SSH RSA public key for your VM.
-    
-   - **DNS Label Prefix** for the public IP which should be unique. Note that this will also be the name of your VM.
 
    - **JBoss EAP Username** and password
     
@@ -86,14 +84,12 @@ Build your environment with JBoss EAP 7.2 on top of RHEL 7.7 on Azure by clickin
    - **Authentication Type** - Type of authentication to use on the Virtual Machine.
 
    - **Admin Password or SSH Key** - User account password/ssh key data which is an SSH RSA public key for logging into your RHEL VM.
-   
-   - **DNS Label Prefix** - DNS Label for the Public IP and this is also the name of your VM. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error.
 
    - **JBoss EAP Username** - Username for JBoss EAP Console.
 
    - **JBoss EAP Password** - User account password for JBoss EAP Console.
 
-   - **Offer** - Choose the type of offer from the dropdown options for deploying your Virtual Machine.
+   - **RHEL OS License Type** - Choose the type of RHEL OS License from the dropdown options for deploying your Virtual Machine.
     
    - **RHSM Username** - Username for the Red Hat account.
 
@@ -101,7 +97,7 @@ Build your environment with JBoss EAP 7.2 on top of RHEL 7.7 on Azure by clickin
    
    - **RHSM Pool ID for EAP** - Red Hat Subscription Manager Pool ID (Should have EAP entitlement)
 
-   - **RHSM Pool ID for RHEL OS** - Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS offer. You can leave it blank if you select offer PAYG.
+   - **RHSM Pool ID for RHEL OS** - Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS RHEL OS License type. You can leave it blank if you select RHEL OS License type PAYG.
    
    - **VM Size** - Choose the appropriate size of the VM from the dropdown options.
 
@@ -113,7 +109,7 @@ The deployment takes about 10 minutes to complete.
 
 ## Validation Steps
 
-- Once the deployment is successful, go to the outputs section of the deployment to obtain the VM DNS name and App URLs:
+- Once the deployment is successful, go to the outputs section of the deployment to obtain the VM DNS name, App URLs and the Admin Console URL:
 
   ![alt text](images/template-output.png)
 
@@ -129,7 +125,7 @@ The deployment takes about 10 minutes to complete.
 
   ![alt text](images/session-replication-logs.png)
 
-- Enter the App URL that you copied from the output page and paste it in a browser, you will see EAP Session Replication web page.
+- Paste the App URL that you copied from the output page in a browser to view the EAP Session Replication web page.
 
   ![alt text](images/eap-session.png)
   ![alt text](images/session-application-app.png)
@@ -139,6 +135,8 @@ The deployment takes about 10 minutes to complete.
 - Now, click on the **Increment Counter**. The session counter will increase. Note that the session counter increases simultaneously on both App UIs.
 
   ![alt text](images/session-replication-increment.png)
+
+- Paste the Admin Console URL that you copied from the output page in a browser to access the JBoss EAP Admin Console and enter the JBoss EAP Username and password to login.
 
 ## Support
 

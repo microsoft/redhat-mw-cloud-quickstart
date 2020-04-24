@@ -16,34 +16,28 @@
         "sshPublicKey"
       ],
       "metadata": {
-        "description": "Type of authentication to use on the Virtual Machine."
+        "description": "Type of authentication to use on the Virtual Machine"
       }
     },
     "adminPasswordOrSSHKey": {
       "type": "securestring",
         "metadata": {
-          "description": "Password or SSH key for the Virtual Machine."
+          "description": "Password or SSH key for the Virtual Machine"
         }
-    },
-    "dnsLabelPrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
-      }
     },
     "jbossEAPUserName": {
       "type": "string",
       "metadata": {
-        "description": "User name for JBoss EAP manager"
+        "description": "User name for JBoss EAP Manager"
       }
     },
     "jbossEAPPassword": {
       "type": "securestring",
       "metadata": {
-        "description": "Password for JBoss EAP manager"
+        "description": "Password for JBoss EAP Manager"
       }
     },
-    "offer": {	
+    "rhelOSLicenseType": {	
       "type": "string",	
       "defaultValue": "PAYG",	
       "allowedValues": [	
@@ -51,19 +45,19 @@
         "BYOS"
       ],	
       "metadata": {	
-        "description": "Type of offer for deploying your Virtual Machine."	
+        "description": "Select the of RHEL OS License Type for deploying your Virtual Machine. Please read through the guide and make sure you follow the steps mentioned under section 'Licenses, Subscriptions and Costs' if you are selecting BYOS"	
       }	
     },
     "rhsmUserName": {
       "type": "string",
       "metadata": {
-        "description": "User name for Red Hat subscription manager"
+        "description": "User name for Red Hat subscription Manager"
       }
     },
     "rhsmPassword": {
       "type": "securestring",
       "metadata": {
-        "description": "Password for Red Hat subscription  manager"
+        "description": "Password for Red Hat subscription  Manager"
       }
     },
     "rhsmPoolEAP": {
@@ -75,7 +69,7 @@
     "rhsmPoolRHEL": {
       "type": "string",
       "metadata": {
-        "description": "Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS offer"
+        "description": "Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS RHEL OS License Type"
       },
       "defaultValue": ""
     },
@@ -109,20 +103,20 @@
         "Standard_F16"
       ],
       "metadata": {
-        "description": "The size of the Virtual Machine."
+        "description": "The size of the Virtual Machine"
       }
     },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
-        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+        "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated"
       },
       "defaultValue": "https://raw.githubusercontent.com/SpektraSystems/redhat-mw-cloud-quickstart/master/jboss-eap-multinode-singlevm-rhel8/"
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
       "metadata": {
-        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated"
       },
       "defaultValue": ""
     },
@@ -130,26 +124,27 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Location for all resources."
+        "description": "Location for all resources"
       }
     }
   },
   "variables": {
     "singlequote": "'",
-    "baseName": "[uniquestring(parameters('dnsLabelPrefix'),resourceGroup().id)]",
-    "networkInterfaceName": "[concat('myNic8',variables('baseName'))]",
-    "addressPrefixes": "10.0.0.0/24",
-    "subnetName": "default",
-    "publicIPAddressName": "[concat('myIP8',variables('baseName'))]",
+    "nicName": "[concat(uniquestring(resourceGroup().id), '-nic')]",
+    "addressPrefix": "10.0.0.0/16",
+    "subnetPrefix": "10.0.0.0/24",
+    "subnetName": "jbosseap-server-subnet",
+    "publicIPAddressName": "jbosseap-server-pip",
     "publicIPAddressType": "Dynamic",
-    "virtualMachineNamePAYG": "[concat('vm-payg-',parameters('dnsLabelPrefix'))]",
-    "virtualMachineNameBYOS": "[concat('vm-byos-',parameters('dnsLabelPrefix'))]",
-    "virtualNetworkName": "eap-vnet",
-    "networkSecurityGroupName": "[concat(parameters('dnsLabelPrefix'),'-nsg8')]",
+    "publicIPAddressDNSName" : "[concat('jbosseap-server-pip-', uniqueString(resourceGroup().id))]",
+    "vmNamePAYG": "jbosseap-payg-server",
+    "vmNameBYOS": "jbosseap-byos-server",
+    "virtualNetworkName": "jbosseap-vnet",
+    "networkSecurityGroupName": "jbosseap-nsg",
     "storageAccountType": "Standard_LRS",
-    "sActName": "[concat('eap',uniquestring(parameters('dnsLabelPrefix'),resourceGroup().id))]",
+    "storageAccountName": "[concat('jbosstrg', uniqueString(resourceGroup().id))]",
     "ScriptFolder": "scripts",
-    "ScriptFileName": "eap-setup-redhat.sh",
+    "ScriptFileName": "jbosseap-setup-redhat.sh",
     "linuxConfiguration": {	
       "disablePasswordAuthentication": true,	
       "ssh": {	
@@ -166,7 +161,7 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2019-04-01",
-      "name": "[variables('sActName')]",
+      "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "[variables('storageAccountType')]"
@@ -179,7 +174,7 @@
           "type": "blobServices/containers",
           "apiVersion": "2018-07-01",
           "dependsOn": [
-            "[variables('sActName')]"
+            "[variables('storageAccountName')]"
           ],
           "properties": {
             "publicAccess": "Container"
@@ -195,7 +190,7 @@
       "properties": {
         "publicIpAllocationMethod": "[variables('publicIpAddressType')]",
         "dnsSettings": {
-          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+          "domainNameLabel": "[variables('publicIPAddressDNSName')]"
         }
       }
     },
@@ -321,14 +316,14 @@
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
-            "[variables('addressPrefixes')]"
+            "[variables('addressPrefix')]"
           ]
         },
         "subnets": [
           {
             "name":"[variables('subnetName')]", 
             "properties":{
-              "addressPrefix":"10.0.0.0/24"
+              "addressPrefix":"[variables('subnetPrefix')]"
             }
           }
         ]
@@ -337,7 +332,7 @@
     {
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2019-11-01",
-      "name": "[variables('networkInterfaceName')]",
+      "name": "[variables('nicName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]",
@@ -365,14 +360,14 @@
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'PAYG')]",
+      "condition": "[equals(parameters('rhelOSLicenseType'),'PAYG')]",
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2019-12-01",
-      "name": "[variables('virtualMachineNamePAYG')]",
+      "name": "[variables('vmNamePAYG')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('sActName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -395,12 +390,12 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
             }
           ]
         },
         "osProfile": {
-          "computerName": "[variables('virtualMachineNamePAYG')]",
+          "computerName": "[variables('vmNamePAYG')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -408,13 +403,13 @@
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'PAYG')]",
+      "condition": "[equals(parameters('rhelOSLicenseType'),'PAYG')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('virtualMachineNamePAYG'),'/newuserscript')]",
+      "name": "[concat(variables('vmNamePAYG'),'/jbosseap-setup-extension')]",
       "apiVersion": "2019-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineNamePAYG'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmNamePAYG'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -425,19 +420,19 @@
           "fileUris": [
             "[concat(parameters('_artifactsLocation'), variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
-          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('offer'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(variables('publicIPAddressName')).dnsSettings.fqdn,' ',reference(concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))).ipConfigurations[0].properties.privateIPAddress,' ',variables('sActName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sActName')), '2019-04-01').keys[0].value, ' ', parameters('rhsmPoolRHEL'))]"
+          "commandToExecute": "[concat('sh jbosseap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhelOSLicenseType'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(variables('publicIPAddressName')).dnsSettings.fqdn,' ',reference(concat('Microsoft.Network/networkInterfaces/', variables('nicName'))).ipConfigurations[0].properties.privateIPAddress,' ',variables('storageAccountName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-04-01').keys[0].value, ' ', parameters('rhsmPoolRHEL'))]"
         }
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'BYOS')]",
+      "condition": "[equals(parameters('rhelOSLicenseType'),'BYOS')]",
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2019-12-01",
-      "name": "[variables('virtualMachineNameBYOS')]",
+      "name": "[variables('vmNameBYOS')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('sActName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
       ],
       "plan": {
           "name": "rhel-lvm8",
@@ -465,12 +460,12 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
             }
           ]
         },
         "osProfile": {
-          "computerName": "[variables('virtualMachineNameBYOS')]",
+          "computerName": "[variables('vmNameBYOS')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
@@ -478,13 +473,13 @@
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'BYOS')]",
+      "condition": "[equals(parameters('rhelOSLicenseType'),'BYOS')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('virtualMachineNameBYOS'),'/newuserscript')]",
+      "name": "[concat(variables('vmNameBYOS'),'/jbosseap-setup-extension')]",
       "apiVersion": "2019-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineNameBYOS'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmNameBYOS'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -495,7 +490,7 @@
           "fileUris": [
             "[concat(parameters('_artifactsLocation'), variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
-          "commandToExecute": "[concat('sh eap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('offer'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(variables('publicIPAddressName')).dnsSettings.fqdn,' ',reference(concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))).ipConfigurations[0].properties.privateIPAddress,' ',variables('sActName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('sActName')), '2019-04-01').keys[0].value, ' ', parameters('rhsmPoolRHEL'))]"
+          "commandToExecute": "[concat('sh jbosseap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhelOSLicenseType'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(variables('publicIPAddressName')).dnsSettings.fqdn,' ',reference(concat('Microsoft.Network/networkInterfaces/', variables('nicName'))).ipConfigurations[0].properties.privateIPAddress,' ',variables('storageAccountName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-04-01').keys[0].value, ' ', parameters('rhsmPoolRHEL'))]"
         }
       }
     }
@@ -505,13 +500,17 @@
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))).dnsSettings.fqdn]"
     },
-    "AppUI-1": {
+    "appURLNode1": {
       "type": "string",
       "value": "[concat('http://', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ':8080/eap-session-replication/')]"
     },
-    "AppUI-2": {
+    "appURLNode2": {
       "type": "string",
       "value": "[concat('http://', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ':8180/eap-session-replication/')]"
+    },
+    "adminConsole": {
+      "type": "string",
+      "value": "[concat('http://', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ':9990')]"
     }
   }
 }

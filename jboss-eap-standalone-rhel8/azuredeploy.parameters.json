@@ -8,9 +8,6 @@
       "adminPasswordOrKey": {
         "value": "GEN-PASSWORD"
       },
-      "dnsLabelPrefix": {
-          "value": "GEN-UNIQUE"
-      },
       "jbossEAPUserName": {
         "value": "GEN-UNIQUE"
       },

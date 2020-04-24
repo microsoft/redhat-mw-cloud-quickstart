@@ -5,7 +5,7 @@
     "adminUsername": {
       "type": "string",
       "metadata": {
-        "description": "User name for the Virtual Machine."
+        "description": "User name for the Virtual Machine"
       }
     },
     "authenticationType": {
@@ -16,13 +16,13 @@
         "sshPublicKey"
       ],
       "metadata": {
-        "description": "Type of authentication to use on the Virtual Machine."
+        "description": "Type of authentication to use on the Virtual Machine"
       }
     },
     "adminPasswordOrSSHKey": {
           "type": "securestring",
           "metadata": {
-            "description": "Password or SSH key for the Virtual Machine."
+            "description": "Password or SSH key for the Virtual Machine"
           }
     },
     "location": {
@@ -45,7 +45,7 @@
         "description": "Password for the JBoss EAP Manager"
       }
     },
-    "offer": {	
+    "rhelOSLicenseType": {	
       "type": "string",	
       "defaultValue": "PAYG",	
       "allowedValues": [	
@@ -53,19 +53,19 @@
         "BYOS"
       ],	
       "metadata": {	
-        "description": "Type of offer for deploying your Virtual Machine."	
+        "description": "Select the of RHEL OS License Type for deploying your Virtual Machine. Please read through the guide and make sure you follow the steps mentioned under section 'Licenses, Subscriptions and Costs' if you are selecting BYOS"	
       }	
     },
     "rhsmUserName": {
       "type": "string",
       "metadata": {
-        "description": "User name for Red Hat subscription manager"
+        "description": "User name for Red Hat subscription Manager"
       }
     },
     "rhsmPassword": {
       "type": "securestring",
       "metadata": {
-        "description": "Password for Red Hat subscription manager"
+        "description": "Password for Red Hat subscription Manager"
       }
     },
     "rhsmPoolEAP": {
@@ -77,7 +77,7 @@
     "rhsmPoolRHEL": {
       "type": "string",
       "metadata": {
-        "description": "Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS offer"
+        "description": "Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS RHEL OS License Type"
       },
       "defaultValue": ""
     },
@@ -136,7 +136,7 @@
         "Standard_F16"
       ],
       "metadata": {
-        "description": "The size of the Virtual Machine."
+        "description": "The size of the Virtual Machine"
       }
     },
     "numberOfInstances": {
@@ -148,8 +148,8 @@
     }
   },
   "variables": {
-    "scriptFileName": "deployjbosseap.sh",
-    "containerName": "azureping",
+    "scriptFileName": "jbosseap-setup-redhat.sh",
+    "containerName": "eapblobcontainer",
     "singlequote": "'",
     "scriptStart": "su -c'sh ",
     "customScriptCommand": "[concat(variables('scriptStart'), variables('scriptFileName'), ' ')]",
@@ -165,16 +165,16 @@
     "imageOfferBYOS": "rhel-byos",
     "imageSkuBYOS": "rhel-lvm77",
     "nicName": "[concat(uniquestring(resourceGroup().id), '-nic')]",
-    "addressPrefix": "10.3.0.0/16",
-    "subnetName": "eap-server1-subnet",
-    "subnetPrefix": "10.3.2.0/24",
-    "publicIPAddressName": "[concat(uniquestring(resourceGroup().id), '-publicip')]",
-    "publicIPAddresslb": "[concat('pip',uniqueString(resourceGroup().id))]",
-    "publicIPAddresslbDNSName" : "[concat('piplb-', uniqueString(resourceGroup().id))]",
-    "publicIPAddressDNSName" : "[concat('pipvm-', uniqueString(resourceGroup().id))]",
-    "publicIPAddressType": "Static",
-    "virtualNetworkName": "jbosseap72-vnet",
-    "backendPoolName": "jbosseap-servers",
+    "addressPrefix": "10.0.0.0/16",
+    "subnetName": "jbosseap-server-subnet",
+    "subnetPrefix": "10.0.0.0/24",
+    "publicIPAddressName": "jbosseap-server-pip",
+    "publicIPAddresslb": "lbpip",
+    "publicIPAddresslbDNSName" : "[concat('lbpip-', uniqueString(resourceGroup().id))]",
+    "publicIPAddressDNSName" : "[concat('jbosseap-server-pip-', uniqueString(resourceGroup().id))]",
+    "publicIPAddressType": "Dynamic",
+    "virtualNetworkName": "jbosseap-vnet",
+    "backendPoolName": "jbosseap-server",
     "frontendName" : "LoadBalancerFrontEnd",
     "healthProbeEAP" : "eap-jboss-health",
     "healthProbeAdmin" : "eap-admin-health",
@@ -189,8 +189,8 @@
         ]
       }
     },
-    "networkSecurityGroupName": "jbosseap-72-nsg",
-    "jbosseapstrgName": "[concat('jbosstrg', uniqueString(resourceGroup().id))]"
+    "networkSecurityGroupName": "jbosseap-nsg",
+    "storageAccountName": "[concat('jbosstrg', uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -217,12 +217,11 @@
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
         "dnsSettings": {
-        "domainNameLabel": "[concat(variables('publicIPAddresslbDNSName'))]"
+        "domainNameLabel": "[variables('publicIPAddresslbDNSName')]"
       }
       }
     },
     {
-      "comments": "Default Network Security Group for template",
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2019-08-01",
       "name": "[variables('networkSecurityGroupName')]",
@@ -387,7 +386,7 @@
       }
     },
     {
-      "condition": "[equals(parameters('Offer'),'PAYG')]",
+      "condition": "[equals(parameters('rhelOSLicenseType'),'PAYG')]",
       "apiVersion": "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(variables('vmNamePAYG'), copyIndex())]",
@@ -396,12 +395,9 @@
           "name": "virtualMachineLoop",
           "count": "[parameters('numberOfInstances')]"
       },
-      "tags": {
-        "Tag1": "ManagedVM"
-      },
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
         "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
       ],
       "properties": {
@@ -438,15 +434,11 @@
       },
       "resources": [
         {
-          "condition": "[equals(parameters('Offer'),'PAYG')]",
+          "condition": "[equals(parameters('rhelOSLicenseType'),'PAYG')]",
           "type": "extensions",
-          "name": "[concat('jbosseap-extension-', copyIndex())]",
+          "name": "[concat('jbosseap-setup-extension-', copyIndex())]",
           "apiVersion": "2019-12-01",
           "location": "[parameters('location')]",
-          "comments": "This VM Extension Install JBoss EAP",
-          "tags": {
-            "displayName": "JBossEAPInstall"
-          },
           "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmNamePAYG'), copyIndex()))]"
           ],
@@ -461,14 +453,14 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('offer'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(concat(variables('nicName'), copyIndex())).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), ' ', parameters('rhsmPoolRHEL'),' ', variables('scriptClose'))]"
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhelOSLicenseType'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(concat(variables('nicName'), copyIndex())).ipConfigurations[0].properties.privateIPAddress,' ',variables('storageAccountName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-04-01').keys[0].value), ' ', parameters('rhsmPoolRHEL'),' ', variables('scriptClose'))]"
             }
           }
         }
       ]
     },
     {
-      "condition": "[equals(parameters('Offer'),'BYOS')]",
+      "condition": "[equals(parameters('rhelOSLicenseType'),'BYOS')]",
       "apiVersion": "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(variables('vmNameBYOS'), copyIndex())]",
@@ -477,12 +469,9 @@
           "name": "virtualMachineLoop",
           "count": "[parameters('numberOfInstances')]"
       },
-      "tags": {
-        "Tag1": "ManagedVM"
-      },
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('jbosseapstrgName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
         "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
       ],
       "plan": {
@@ -524,15 +513,11 @@
       },
       "resources": [
         {
-          "condition": "[equals(parameters('Offer'),'BYOS')]",
+          "condition": "[equals(parameters('rhelOSLicenseType'),'BYOS')]",
           "type": "extensions",
-          "name": "[concat('jbosseap-extension-', copyIndex())]",
+          "name": "[concat('jbosseap-setup-extension-', copyIndex())]",
           "apiVersion": "2019-12-01",
           "location": "[parameters('location')]",
-          "comments": "This VM Extension Install JBoss EAP",
-          "tags": {
-            "displayName": "JBossEAPInstall"
-          },
           "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmNameBYOS'), copyIndex()))]"
           ],
@@ -547,7 +532,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('offer'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(concat(variables('nicName'), copyIndex())).ipConfigurations[0].properties.privateIPAddress,' ',variables('jbosseapstrgName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('jbosseapstrgName')), '2019-04-01').keys[0].value), ' ', parameters('rhsmPoolRHEL'),' ', variables('scriptClose'))]"
+              "commandToExecute": "[concat(variables('customScriptCommand'), parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhelOSLicenseType'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(concat(variables('nicName'), copyIndex())).ipConfigurations[0].properties.privateIPAddress,' ',variables('storageAccountName'),' ',variables('containerName'),' ',base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-04-01').keys[0].value), ' ', parameters('rhsmPoolRHEL'),' ', variables('scriptClose'))]"
             }
           }
         }
@@ -651,9 +636,6 @@
       "type": "Microsoft.Compute/availabilitySets",
       "location": "[parameters('location')]",
       "apiVersion": "2019-03-01",
-      "tags": {
-        "displayName": "jbosseap-as"
-      },
       "properties": {
         "platformUpdateDomainCount": 2,
         "platformFaultDomainCount": 2
@@ -663,15 +645,12 @@
       }
     },
     {
-      "name": "[variables('jbosseapstrgName')]",
+      "name": "[variables('storageAccountName')]",
       "type": "Microsoft.Storage/storageAccounts",
       "location": "[parameters('location')]",
       "apiVersion": "2019-04-01",
       "sku": {
         "name": "[parameters('jbosseapstrgType')]"
-      },
-      "tags": {
-        "displayName": "jbosseapstrg"
       },
       "kind": "Storage",
       "resources": [
@@ -680,14 +659,14 @@
           "type": "blobServices/containers",
           "apiVersion": "2018-07-01",
           "dependsOn": [
-            "[variables('jbosseapstrgName')]"
+            "[variables('storageAccountName')]"
           ]
         }
       ]
     }
   ],
   "outputs": {
-      "AppUI-LB": {
+      "appURL": {
         "type": "string",
         "value": "[concat('http://', reference(variables('publicIPAddresslb')).dnsSettings.fqdn, '/eap-session-replication/')]"
       }

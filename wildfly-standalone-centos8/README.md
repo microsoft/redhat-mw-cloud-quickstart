@@ -60,9 +60,7 @@ This template uses an Azure CentOS 8 image which is a Pay-as-you-go (PAYG) VM im
 
 2. To create the VM, you will need:
 
-    - **Admin Username** and password/ssh key data which is an SSH RSA public key for your VM.  
-
-    - **DNS Label Prefix** for the public IP which should be unique. Note that this will also be the name of your VM.
+    - **Admin Username** and password/ssh key data which is an SSH RSA public key for your VM.
 
     - **WildFly Username** and password to enable the WildFly Admin Console and Deployment method.
 
@@ -84,8 +82,6 @@ Build your environment with WildFly 18.0.1.Final on top of CentOS 8.0 on Azure i
 
     - **Admin Password or SSH Key** - User account password/ssh key data which is an SSH RSA public key for logging into your CentOS VM.
 
-    - **DNS Label Prefix** - DNS Label for the Public IP and this is also the name of your VM. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error.
-
     - **WildFly Username** - Username for WildFly Console Manager.
 
     - **WildFly Password** - User account password for WildFly Console Manager.
@@ -100,15 +96,15 @@ The deployment takes less than 10 minutes to complete.
 
 ## Validation Steps
 
-- Once the deployment is successful, go to the outputs section of the deployment to obtain the VM DNS name.
+- Once the deployment is successful, go to the outputs section of the deployment to obtain the VM DNS name, App URL and the Admin Console URL:
 
   ![alt text](images/output.png)
 
-- Open a web browser and go to **http://<PUBLIC_HOSTNAME>:8080/JBoss-EAP_on_Azure/** and you should see the application running:
+- Paste the App URL that you copied from the output page in a browser to view the JBoss-EAP on Azure web page.
 
   ![alt text](images/app.png)
 
-- To access the administration console go to **http://<PUBLIC_HOSTNAME>:8080** and click on the link to Administration Console and enter the Wildfly Username and password.
+- Paste the Admin Console URL that you copied from the output page in a browser to access the WildFly Admin Console and enter the JBoss EAP Username and password to login.
 
   ![alt text](images/wildfly-console.png)
 
