@@ -34,7 +34,7 @@ This Azure quickstart template creates all of the compute resources to run a web
 
 ## Template Solution Architecture
 
-This template creates all the Azure compute resources to run JBoss EAP 7.2 cluster on top of RHEL 7.7 VMSS instances where user can decide the number of intances to be deployed and scale it according to their requirement. The following resources are created by this template:
+This template creates all the Azure compute resources to run JBoss EAP 7.2 cluster on top of RHEL 7.7 VMSS instances where user can decide the number of instances to be deployed and scale it according to their requirement. The following resources are created by this template:
 
 - RHEL 7.7 VMSS instances
 - 1 Load balancer
@@ -44,3 +44,74 @@ This template creates all the Azure compute resources to run JBoss EAP 7.2 clust
 - Sample application called eap-session-replication deployed on JBoss EAP 7.2
 - Network Security Group
 - Storage Account
+
+Following is the Architecture:
+
+To be Added
+
+To learn more about the JBoss Enterprise Application Platform, visit:
+https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.2/
+
+## Licenses, Subscriptions and Costs
+
+If you select the RHEL OS License type as PAYG (Pay-As-You-Go), the template will deploy RHEL 7.7 Pay-As-You-Go image which carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. In this case the VM will be licensed automatically after the instance is launched for the first time and total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. To use the Enterprise Application Platform your RHSM account needs EAP entitlement. You can get an evaluation account for EAP from [here](https://access.redhat.com/products/red-hat-jboss-enterprise-application-platform/evaluation). 
+
+If you select the RHEL OS License type as BYOS (Bring-Your-Own-Subscription) for deploying the template, your RHSM account must have both Red Hat Enterprise Linux entitlement (for subscribing the RHEL OS for the VM) and EAP entitlement and you will have to enter both the pool IDs as mentioned in the template. To provision the RHEL-BYOS VM in your subscription, you will have to enable it in the Cloud Access from Red Hat portal. You can do that from [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/con-enable-subs). Once your Azure subscription is enabled, please follow this [link](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/redhat/byos) to accept the Marketplace terms for RHEL-BYOS image from your Azure subscription. 
+
+Click [here](https://access.redhat.com/products/red-hat-subscription-management) to know more about RHSM.
+
+## Prerequisites
+
+1. Azure Subscription with the specified payment method (RHEL 7.7 is an [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/RedHat.RedHatEnterpriseLinux77-ARM?tab=Overview) product and requires a payment method to be specified in the Azure Subscription)
+
+2. To deploy the template, you will need:
+
+    - **Admin Username** and password/ssh key data which is an SSH RSA public key for your VM. 
+
+    - **JBoss EAP Username** and password
+
+    - **RHSM Username** and password
+    
+## Deployment Steps
+
+Build your environment with JBoss EAP 7.2 cluster on top of RHEL 7.7 VMSS instances where user can decide the number of instances to be deployed and scale it according to their requirement on Azure in a few simple steps:
+1. Launch the template by clicking the **Deploy to Azure** button.  
+2. Complete the following parameter values and accept the terms and conditions before clicking on the **Purchase** button.
+
+    - **Subscription** - Choose the appropriate subscription where you would like to deploy.
+
+    - **Resource Group** - Create a new Resource Group or you can select an existing one.
+
+    - **Location** - Choose the appropriate location for your deployment.
+
+    - **Admin Username** - User account name for logging into your RHEL VM.
+    
+    - **Authentication Type** - Type of authentication to use on the Virtual Machine.
+
+    - **Admin Password or SSH Key** - User account password/ssh key data which is an SSH RSA public key for logging into your RHEL VM.
+
+    - **JBoss EAP Username** - Username for JBoss EAP Console.
+
+    - **JBoss EAP Password** - User account password for JBoss EAP Console.
+
+    - **RHEL OS License Type** - Choose the type of RHEL OS License from the dropdown options for deploying your Virtual Machine.
+
+    - **RHSM Username** - Username for the Red Hat account.
+
+    - **RHSM Password** - User account password for the Red Hat account.
+   
+    - **RHSM Pool ID for EAP** - Red Hat Subscription Manager Pool ID (Should have EAP entitlement)
+
+    - **RHSM Pool ID for RHEL OS** - Red Hat Subscription Manager Pool ID (Should have RHEL entitlement). Mandartory if you select the BYOS RHEL OS License type. You can leave it blank if you select RHEL OS License type PAYG.
+
+    - **VMSS Name** - String to be used as a base for naming resources
+
+    - **Instance Count** - VMSS Instance count (100 or less)
+
+    - **VM Size** - Choose the appropriate size of the VM from the dropdown options.
+
+    - Leave the rest of the parameter values (artifacts and location) as is and proceed to purchase.
+    
+## Deployment Time 
+
+The deployment takes approximately 10 minutes to complete.
