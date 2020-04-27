@@ -120,7 +120,7 @@
       },
       "maxValue": 100
     },
-    "vmSku": {
+    "vmSize": {
       "type": "string",
       "defaultValue": "Standard_DS2_v2",
       "allowedValues": [
