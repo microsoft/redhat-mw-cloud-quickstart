@@ -247,7 +247,7 @@
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
       ],
       "sku": {
-        "name": "[parameters('vmSku')]",
+        "name": "[parameters('vmSize')]",
         "tier": "Standard",
         "capacity": "[parameters('instanceCount')]"
       },
@@ -349,7 +349,7 @@
           "product": "rhel-byos"
       },
       "sku": {
-        "name": "[parameters('vmSku')]",
+        "name": "[parameters('vmSize')]",
         "tier": "Standard",
         "capacity": "[parameters('instanceCount')]"
       },
