@@ -547,7 +547,7 @@
     }
    ],
    "outputs": {
-     "AppUI-LB": {
+     "appURL": {
       "type": "string",
       "value": "[concat('http://', reference(variables('publicIPAddresslb')).dnsSettings.fqdn, '/eap-session-replication/')]"
      }
