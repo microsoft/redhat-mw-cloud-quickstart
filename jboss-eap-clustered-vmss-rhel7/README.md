@@ -126,7 +126,7 @@ The deployment takes approximately 10 minutes to complete.
 
 - To obtain the Public IP of VMSS, go to the VMSS details page and copy the Public IP. In settings section go to Instances, you would be able to see all the instances deployed. Note that all the instances have an ID appended at the end of their name. To access the Administration Console of an instance with ID 0, open a web browser and go to **http://<PUBLIC_IP_Address>:9000** and enter JBoss EAP Username and password. You can append the ID of the VMSS instance with 900 to access to the respective Adminstration Console.
 
-  ![alt text](images/eap.png)
+  ![alt text](images/eap-admin-console.png)
 
 - To login to a VMSS instance, you can use the same Public IP address that you copied earlier through port 5000 appended with the instance ID
 
