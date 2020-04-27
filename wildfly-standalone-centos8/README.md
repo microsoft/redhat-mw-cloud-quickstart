@@ -28,7 +28,7 @@ This template creates a standalone node of WildFly on CentOS VM of Standard F1 s
 
 WildFly is an open-source application server runtime that is exceptionally fast, flexible, lightweight and powerful. It is Jakarta EE 8 Full Platform and Web Profile compatible.  The state-of-the-art architecture built on the Modular Service Container enables services on-demand when your application requires them.
 
-This Azure quickstart template deploys a web application named JBoss-EAP on Azure on WildFly 18.0.1.Final running on CentOS 8 VM.
+This Azure quickstart template deploys WildFly 18.0.1.Final running on CentOS 8 VM.
 
 The technology behind WildFly is also available in Red Hat JBoss Enterprise Application Platform (EAP), a hardended enterprise subscription with Red Hat's world-class support, long multi-year maintenance cycles and exclusive content. JBoss EAP is an open-soure application server that you can download for free, for developement use. To obtain a Red Hat Subscription Management (RHSM) account for JBoss EAP, go to: www.redhat.com. Red Hat Subscription Management (RHSM) is a customer-driven, end-to-end solution that provides tools for subscription status and management and integrates with Red Hat's system management tools.
 

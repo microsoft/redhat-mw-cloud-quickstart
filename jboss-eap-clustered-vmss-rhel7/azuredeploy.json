@@ -95,7 +95,7 @@
       },
       "defaultValue": ""
     },  
-    "jbosseapstrgType": {
+    "storageReplication": {
       "type": "string",
       "defaultValue": "Standard_LRS",
       "allowedValues": [
@@ -531,7 +531,7 @@
     "location": "[parameters('location')]",
     "apiVersion": "2019-04-01",
     "sku": {
-      "name": "[parameters('jbosseapstrgType')]"
+      "name": "[parameters('storageReplication')]"
     },
     "kind": "Storage",
       "resources": [
