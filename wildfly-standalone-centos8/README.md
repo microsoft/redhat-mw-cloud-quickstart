@@ -104,7 +104,7 @@ The deployment takes less than 10 minutes to complete.
 
   ![alt text](images/app.png)
 
-- Paste the Admin Console URL that you copied from the output page in a browser to access the WildFly Admin Console and enter the JBoss EAP Username and password to login.
+- Paste the Admin Console URL that you copied from the output page in a browser to access the WildFly Admin Console and enter the Wildfly Username and password to login.
 
   ![alt text](images/wildfly-console.png)
 
