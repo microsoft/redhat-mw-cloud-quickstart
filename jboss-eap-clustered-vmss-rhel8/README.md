@@ -45,7 +45,7 @@ This template creates all the Azure compute resources to run JBoss EAP 7.2 clust
 
 Following is the Architecture:
 
-To be Added
+![alt text](images/arch.png)
 
 To learn more about the JBoss Enterprise Application Platform, visit:
 https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.2/
