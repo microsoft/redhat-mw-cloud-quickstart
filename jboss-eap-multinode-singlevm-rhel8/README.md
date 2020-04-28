@@ -120,7 +120,7 @@ The deployment takes about 10 minutes to complete.
 
 - Once you login into the VM, you can go through the *server.log* on JBoss EAP to see how Jgroup discovery works for clustering. Please enter the following command : 
 
-`cat /opt/rh/eap7/root/usr/share/wildfly/node1/log/server.log`
+  `cat /opt/rh/eap7/root/usr/share/wildfly/node1/log/server.log`
 
   ![alt text](images/ssh-command.png)
 
