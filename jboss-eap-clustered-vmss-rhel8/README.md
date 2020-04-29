@@ -1,4 +1,4 @@
-# Red Hat - JBoss EAP 7.2 on RHEL 8.0 VMSS (clustered)
+# JBoss EAP 7.2 on RHEL 8.0 (clustered, VMSS)
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fjboss-eap-clustered-vmss-rhel8%2Fazuredeploy.json" target="_blank">
     <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>

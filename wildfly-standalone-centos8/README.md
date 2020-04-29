@@ -1,4 +1,4 @@
-# Java on Azure | Red Hat WildFly 18.0.1.Final on CentOS 8 (standalone mode)
+# WildFly 18 on CentOS 8 (stand-alone VM)
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSpektraSystems%2Fredhat-mw-cloud-quickstart%2Fmaster%2Fwildfly-standalone-centos8%2Fazuredeploy.json" target="_blank">
     <img src="https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.png"/>
 </a>
@@ -112,9 +112,9 @@ The deployment takes less than 10 minutes to complete.
 
 If you're interested in Red Hat JBoss EAP Azure Quickstart templates, you can find it here:
 
-*  <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/jboss-eap-standalone-rhel7" target="_blank"> [Red Hat - JBoss EAP 7.2 on RHEL 7.7 VM (standalone mode)]</a> - Standalone JBoss EAP 7.2 with a sample web app on a RHEL 7.7 Azure VM.
+*  <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/jboss-eap-standalone-rhel7" target="_blank"> [JBoss EAP 7.2 on RHEL 7.7 (stand-alone VM)]</a> - Standalone JBoss EAP 7.2 with a sample web app on a RHEL 7.7 Azure VM.
 
-*  <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/jboss-eap-standalone-rhel8" target="_blank"> [Red Hat - JBoss EAP 7.2 on RHEL 8.0 (standalone mode)]</a> - Standalone JBoss EAP 7.2 with a sample web app on a RHEL 8.0 Azure VM.
+*  <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/jboss-eap-standalone-rhel8" target="_blank"> [JBoss EAP 7.2 on RHEL 8.0 (stand-alone VM)]</a> - Standalone JBoss EAP 7.2 with a sample web app on a RHEL 8.0 Azure VM.
 
 ## Support 
 
