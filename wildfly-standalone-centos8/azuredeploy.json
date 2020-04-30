@@ -109,6 +109,19 @@
   },
   "resources": [
     {
+      "apiVersion": "2016-09-01",
+      "name": "pid-2c0c0514-a608-492e-b64e-bc4ace59035b",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
       "apiVersion": "2019-11-01",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
