@@ -149,7 +149,7 @@
   "resources": [
     {
       "apiVersion": "2016-09-01",
-      "name": "pid-cf1bb11d-01b8-449d-9052-aae316c75698​",
+      "name": "pid-cf1bb11d-01b8-449d-9052-aae316c75698",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",

@@ -189,7 +189,7 @@
   "resources": [
     {
       "apiVersion": "2016-09-01",
-      "name": "pid-4d9c78a6-451b-467d-a6da-d86c71c4a6c7​​",
+      "name": "pid-4d9c78a6-451b-467d-a6da-d86c71c4a6c7",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",
