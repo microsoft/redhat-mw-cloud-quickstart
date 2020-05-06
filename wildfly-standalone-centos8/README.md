@@ -116,6 +116,8 @@ If you're interested in Red Hat JBoss EAP Azure Quickstart templates, you can fi
 
 *  <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/jboss-eap-standalone-rhel8" target="_blank"> [JBoss EAP 7.2 on RHEL 8.0 (stand-alone VM)]</a> - Standalone JBoss EAP 7.2 with a sample web app on a RHEL 8.0 Azure VM.
 
+*  <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/jboss7.3-eap-standalone-rhel8" target="_blank"> [JBoss EAP 7.3 on RHEL 8.0 (stand-alone VM)]</a> - Standalone JBoss EAP 7.3 with a sample web app on a RHEL 8.0 Azure VM.
+
 ## Support 
 
 For any support related questions, issues or customization requirements, please contact info@spektrasystems.com
