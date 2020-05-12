@@ -167,9 +167,10 @@
       "name": "[variables('bootStorageAccountName')]",
       "apiVersion": "2019-06-01",
       "location": "[parameters('location')]",
-      "properties": {
-        "accountType": "[variables('storageAccountType')]"
-      }
+      "sku": {
+          "name": "[variables('storageAccountType')]"
+      },
+      "kind": "Storage"
     },
     {
       "apiVersion": "2019-11-01",
@@ -335,7 +336,7 @@
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": true,
-            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
+            "storageUri": "[concat('https://', variables('bootStorageAccountName'), '.blob.core.windows.net')]"
           }
         }
       }
@@ -410,7 +411,7 @@
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": true,
-            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
+            "storageUri": "[concat('https://', variables('bootStorageAccountName'), '.blob.core.windows.net')]"
           }
         }
       }
