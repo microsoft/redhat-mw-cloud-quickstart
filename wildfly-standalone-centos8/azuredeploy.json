@@ -92,8 +92,10 @@
     "vmName": "centos-vm",
     "virtualNetworkName": "centosvm-vnet",
     "networkSecurityGroupName": "centosvm-nsg",
-    "ScriptFolder": "scripts",
-    "ScriptFileName": "wildfly-setup.sh",
+    "scriptFolder": "scripts",
+    "scriptFileName": "wildfly-setup.sh",
+    "bootStorageAccountName": "[concat('bootstrg', uniqueString(resourceGroup().id))]",
+    "storageAccountType": "Standard_LRS",
     "linuxConfiguration": {
       "disablePasswordAuthentication": true,
       "ssh": {
@@ -119,6 +121,15 @@
           "contentVersion": "1.0.0.0",
           "resources": []
         }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('bootStorageAccountName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]",
+      "properties": {
+        "accountType": "[variables('storageAccountType')]"
       }
     },
     {
@@ -248,7 +259,8 @@
       "name": "[variables('vmName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName'))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -279,6 +291,12 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
             }
           ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
+          }
         }
       }
     },
@@ -297,7 +315,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
+            "[concat(parameters('_artifactsLocation'), variables('scriptFolder'), '/', variables('scriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
           "commandToExecute": "[concat('sh wildfly-setup.sh',' ',parameters('adminUsername'),' ',parameters('wildflyUserName'),' ',variables('singlequote'),parameters('wildflyPassword'),variables('singlequote'))]"
         }

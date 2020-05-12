@@ -138,8 +138,10 @@
     "virtualNetworkName": "jbosseap-vnet",
     "networkSecurityGroupName": "jbosseap-nsg",
     "storageAccountName": "[concat('jbosstrg', uniqueString(resourceGroup().id))]",
-    "ScriptFolder": "scripts",
-    "ScriptFileName": "jbosseap-setup-redhat.sh",
+    "scriptFolder": "scripts",
+    "scriptFileName": "jbosseap-setup-redhat.sh",
+    "bootStorageAccountName": "[concat('bootstrg', uniqueString(resourceGroup().id))]",
+    "storageAccountType": "Standard_LRS",
     "linuxConfiguration": {	
       "disablePasswordAuthentication": true,	
       "ssh": {	
@@ -164,6 +166,15 @@
           "contentVersion": "1.0.0.0",
           "resources": []
         }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('bootStorageAccountName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]",
+      "properties": {
+        "accountType": "[variables('storageAccountType')]"
       }
     },
     {
@@ -375,7 +386,8 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName'))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -407,6 +419,12 @@
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
+          }
         }
       }
     },
@@ -426,7 +444,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
+            "[concat(parameters('_artifactsLocation'), variables('scriptFolder'), '/', variables('scriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
           "commandToExecute": "[concat('sh jbosseap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhelOSLicenseType'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(variables('publicIPAddressName')).dnsSettings.fqdn,' ',reference(concat('Microsoft.Network/networkInterfaces/', variables('nicName'))).ipConfigurations[0].properties.privateIPAddress,' ',variables('storageAccountName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-04-01').keys[0].value,' ', parameters('rhsmPoolRHEL'))]"
         }
@@ -440,7 +458,8 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName'))]"
       ],
       "plan": {
         "name": "rhel-lvm77",
@@ -477,6 +496,12 @@
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrSSHKey')]",
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
+          }
         }
       }
     },
@@ -496,7 +521,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
+            "[concat(parameters('_artifactsLocation'), variables('scriptFolder'), '/', variables('scriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
           "commandToExecute": "[concat('sh jbosseap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhelOSLicenseType'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ', parameters('rhsmPoolEAP'),' ',reference(variables('publicIPAddressName')).dnsSettings.fqdn,' ',reference(concat('Microsoft.Network/networkInterfaces/', variables('nicName'))).ipConfigurations[0].properties.privateIPAddress,' ',variables('storageAccountName'),' ',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-04-01').keys[0].value,' ', parameters('rhsmPoolRHEL'))]"
         }

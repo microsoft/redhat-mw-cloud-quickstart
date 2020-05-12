@@ -163,6 +163,8 @@
     "frontendName" : "LoadBalancerFrontEnd",
     "healthProbeEAP" : "eap-lb-health",
     "healthProbeAdmin" : "eap-jboss-health",
+    "bootStorageAccountName": "[concat('bootstrg', uniqueString(resourceGroup().id))]",
+    "storageAccountType": "Standard_LRS",
     "linuxConfiguration": {
       "disablePasswordAuthentication": true,
       "ssh": {
@@ -189,6 +191,15 @@
           "contentVersion": "1.0.0.0",
           "resources": []
         }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('bootStorageAccountName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]",
+      "properties": {
+        "accountType": "[variables('storageAccountType')]"
       }
     },
     {
@@ -396,7 +407,8 @@
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
+        "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName'))]"
       ],
       "properties": {
         "availabilitySet": {
@@ -427,6 +439,12 @@
           },
           "osDisk": {
             "createOption": "FromImage"
+          }
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
           }
         }
       },
@@ -470,7 +488,8 @@
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]"
+        "[concat('Microsoft.Compute/availabilitySets/', variables('asName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName'))]"
       ],
       "plan": {
           "name": "rhel-lvm8",
@@ -506,6 +525,12 @@
           },
           "osDisk": {
             "createOption": "FromImage"
+          }
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
           }
         }
       },

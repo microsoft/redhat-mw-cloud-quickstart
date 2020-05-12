@@ -173,6 +173,8 @@
     "adminBackendPort": 9990,
     "frontendName" : "LoadBalancerFrontEnd",
     "healthProbe" : "eap-lb-health",
+    "bootStorageAccountName": "[concat('bootstrg', uniqueString(resourceGroup().id))]",
+    "storageAccountType": "Standard_LRS",
     "linuxConfiguration": {
       "disablePasswordAuthentication": true,
       "ssh": {
@@ -198,6 +200,15 @@
           "contentVersion": "1.0.0.0",
           "resources": []
         }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('bootStorageAccountName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]",
+      "properties": {
+        "accountType": "[variables('storageAccountType')]"
       }
     },
     {
@@ -242,7 +253,8 @@
       "dependsOn": [
         "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancersName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName'))]"
       ],
       "sku": {
         "name": "[parameters('vmSize')]",
@@ -306,6 +318,12 @@
               }
             ]
           },
+          "diagnosticsProfile": {
+            "bootDiagnostics": {
+              "enabled": true,
+              "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
+            }
+          },
           "extensionProfile": {
             "extensions": [
               {
@@ -339,7 +357,8 @@
       "dependsOn": [
         "[concat('Microsoft.Network/loadBalancers/', variables('loadBalancersName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName'))]"
       ],
       "plan": {
           "name": "rhel-lvm77",
@@ -407,6 +426,12 @@
                 }
               }
             ]
+          },
+          "diagnosticsProfile": {
+            "bootDiagnostics": {
+              "enabled": true,
+              "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
+            }
           },
           "extensionProfile": {
             "extensions": [

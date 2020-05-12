@@ -131,9 +131,11 @@
     "vmNameBYOS": "jbosseap-byos-server",
     "virtualNetworkName": "jbosseap-vnet",
     "networkSecurityGroupName": "jbosseap-nsg",
-    "ScriptFolder": "scripts",
-    "ScriptFileName": "jbosseap-setup-redhat.sh",
+    "scriptFolder": "scripts",
+    "scriptFileName": "jbosseap-setup-redhat.sh",
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
+    "bootStorageAccountName": "[concat('bootstrg', uniqueString(resourceGroup().id))]",
+    "storageAccountType": "Standard_LRS",
     "linuxConfiguration": {	
       "disablePasswordAuthentication": true,	
       "ssh": {	
@@ -158,6 +160,15 @@
           "contentVersion": "1.0.0.0",
           "resources": []
         }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('bootStorageAccountName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]",
+      "properties": {
+        "accountType": "[variables('storageAccountType')]"
       }
     },
     {
@@ -288,7 +299,8 @@
       "name": "[variables('vmNamePAYG')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName'))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -319,6 +331,12 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
             }
           ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
+          }
         }
       }
     },
@@ -338,7 +356,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
+            "[concat(parameters('_artifactsLocation'), variables('scriptFolder'), '/', variables('scriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
           "commandToExecute": "[concat('sh jbosseap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ',parameters('rhelOSLicenseType'),' ', parameters('rhsmPoolEAP'))]"
         }
@@ -351,7 +369,8 @@
       "name": "[variables('vmNameBYOS')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName'))]"
       ],
       "plan": {
         "name": "rhel-lvm77",
@@ -387,6 +406,12 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
             }
           ]
+        },
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true,
+            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('bootStorageAccountName')), '2015-06-15').primaryEndpoints.blob)]"
+          }
         }
       }
     },
@@ -406,7 +431,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), variables('ScriptFolder'), '/', variables('ScriptFileName'), parameters('_artifactsLocationSasToken'))]"
+            "[concat(parameters('_artifactsLocation'), variables('scriptFolder'), '/', variables('scriptFileName'), parameters('_artifactsLocationSasToken'))]"
           ],
           "commandToExecute": "[concat('sh jbosseap-setup-redhat.sh',' ',parameters('adminUsername'),' ',parameters('jbossEAPUserName'),' ',variables('singlequote'),parameters('jbossEAPPassword'),variables('singlequote'),' ',parameters('rhsmUserName'),' ',variables('singlequote'),parameters('rhsmPassword'),variables('singlequote'),' ',parameters('rhelOSLicenseType'),' ', parameters('rhsmPoolEAP'),' ', parameters('rhsmPoolRHEL'))]"
         }
