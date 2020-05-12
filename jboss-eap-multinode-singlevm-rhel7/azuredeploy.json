@@ -156,7 +156,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2016-09-01",
+      "apiVersion": "2019-05-01",
       "name": "pid-2db3a4e1-0866-4754-90a6-ef1852410006",
       "type": "Microsoft.Resources/deployments",
       "properties": {
@@ -171,7 +171,7 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('bootStorageAccountName')]",
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2019-06-01",
       "location": "[parameters('location')]",
       "properties": {
         "accountType": "[variables('storageAccountType')]"
