@@ -27,7 +27,7 @@ echo "Configuring WILDFLY managment user..." >> install.progress.txt
 flag=$?; if [ $flag != 0 ] ; then echo  "WildFly management user configuration Failed" >> install.progress.txt; exit $flag;  fi
 
 echo "Start WILDFLY 18.0.1.Final instance..." >> install.progress.txt
-./wildfly-$WILDFLY_RELEASE.Final/bin/standalone.sh -b $IP_ADDR -bmanagement $IP_ADDR >> install.out.txt 2>&1
+./wildfly-$WILDFLY_RELEASE.Final/bin/standalone.sh -b $IP_ADDR -bmanagement $IP_ADDR & >> install.out.txt 2>&1
 flag=$?; if [ $flag != 0 ] ; then echo  "Starting WildFly service Failed" >> install.progress.txt; exit $flag;  fi
 
 echo "Configure firewall for ports 8080, 9990..." >> install.progress.txt
