@@ -1,65 +1,71 @@
 #!/bin/sh
 
-# $1 - VM Host User Name
-
-/bin/date +%H:%M:%S >> /home/$1/install.progress.txt
-echo "ooooo      RED HAT JBoss EAP 7.2 RPM INSTALL      ooooo" >> /home/$1/install.progress.txt
+/bin/date +%H:%M:%S >> install.progress.txt
+echo "ooooo      RED HAT JBoss EAP 7.2 RPM INSTALL      ooooo" >> install.progress.txt
 
 export EAP_HOME="/opt/rh/eap7/root/usr/share/wildfly"
 
-JBOSS_EAP_USER=$2
-JBOSS_EAP_PASSWORD=$3
-RHSM_USER=$4
-RHSM_PASSWORD=$5
-RHEL_OS_LICENSE_TYPE=$6
-RHSM_POOL=$7
+JBOSS_EAP_USER=$1
+JBOSS_EAP_PASSWORD=$2
+RHSM_USER=$3
+RHSM_PASSWORD=$4
+RHEL_OS_LICENSE_TYPE=$5
+RHSM_POOL=$6
 IP_ADDR=$(hostname -I)
 
-echo "JBoss EAP admin user"+${JBOSS_EAP_USER} >> /home/$1/install.progress.txt
-echo "Initial JBoss EAP 7.2 setup" >> /home/$1/install.progress.txt
-subscription-manager register --username $RHSM_USER --password $RHSM_PASSWORD  >> /home/$1/install.progress.txt 2>&1
-subscription-manager attach --pool=${RHSM_POOL} >> /home/$1/install.progress.txt 2>&1
+echo "JBoss EAP admin user"+${JBOSS_EAP_USER} >> install.progress.txt
+echo "Initial JBoss EAP 7.2 setup" >> install.progress.txt
+subscription-manager register --username $RHSM_USER --password $RHSM_PASSWORD  >> install.out.txt 2>&1
+flag=$?; if [ $flag != 0 ] ; then echo  "Registration Failed" >> install.progress.txt; exit $flag;  fi
+subscription-manager attach --pool=${RHSM_POOL} >> install.out.txt 2>&1
+flag=$?; if [ $flag != 0 ] ; then echo  "Pool Attach for JBoss EAP Failed" >> install.progress.txt; exit $flag;  fi
 if [ $RHEL_OS_LICENSE_TYPE == "BYOS" ]
 then
-    echo "Attaching Pool ID for RHEL OS" >> /home/$1/install.progress.txt
-    subscription-manager attach --pool=$8 >> /home/$1/install.progress.txt 2>&1
+    echo "Attaching Pool ID for RHEL OS" >> install.progress.txt
+    subscription-manager attach --pool=$7 >> install.out.txt 2>&1
+    flag=$?; if [ $flag != 0 ] ; then echo  "Pool Attach for RHEL OS Failed" >> install.progress.txt; exit $flag;  fi
 fi
-echo "Subscribing the system to get access to JBoss EAP 7.2 repos" >> /home/$1/install.progress.txt
+echo "Subscribing the system to get access to JBoss EAP 7.2 repos" >> install.progress.txt
 
 # Install JBoss EAP 7.2 
-subscription-manager repos --enable=jb-eap-7.2-for-rhel-8-x86_64-rpms >> /home/$1/install.out.txt 2>&1
+subscription-manager repos --enable=jb-eap-7.2-for-rhel-8-x86_64-rpms >> install.out.txt 2>&1
+flag=$?; if [ $flag != 0 ] ; then echo  "Enabling repos for JBoss EAP Failed" >> install.progress.txt; exit $flag;  fi
 
-echo "Installing JBoss EAP 7.2 repos" >> /home/$1/install.progress.txt
-yum groupinstall -y jboss-eap7 >> /home/$1/install.out.txt 2>&1
+echo "Installing JBoss EAP 7.2 repos" >> install.progress.txt
+yum groupinstall -y jboss-eap7 >> install.out.txt 2>&1
+flag=$?; if [ $flag != 0 ] ; then echo  "JBoss EAP installation Failed" >> install.progress.txt; exit $flag;  fi
 
-$EAP_HOME/bin/standalone.sh -c standalone-full.xml -b $IP_ADDR -bmanagement $IP_ADDR &
+echo "Start JBoss-EAP service" >> install.progress.txt
+$EAP_HOME/bin/standalone.sh -c standalone-full.xml -b $IP_ADDR -bmanagement $IP_ADDR & >> install.out.txt 2>&1
+flag=$?; if [ $flag != 0 ] ; then echo  "Starting JBoss EAP service Failed" >> install.progress.txt; exit $flag;  fi
 
-echo "Installing GIT" >> /home/$1/install.progress.txt
-yum install -y git >> /home/$1/install.out.txt 2>&1
+echo "Installing GIT" >> install.progress.txt
+yum install -y git >> install.out.txt 2>&1
 
-cd /home/$1
-echo "Getting the sample JBoss-EAP on Azure app to install" >> /home/$1/install.progress.txt
-git clone https://github.com/Suraj2093/dukes.git >> /home/$1/install.out.txt 2>&1
-mv /home/$1/dukes/target/JBoss-EAP_on_Azure.war $EAP_HOME/standalone/deployments/JBoss-EAP_on_Azure.war
-cat > $EAP_HOME/standalone/deployments/JBoss-EAP_on_Azure.war.dodeploy
+echo "Getting the sample JBoss-EAP on Azure app to install" >> install.progress.txt
+git clone https://github.com/Suraj2093/dukes.git >> install.out.txt 2>&1
+flag=$?; if [ $flag != 0 ] ; then echo  "Git clone Failed" >> install.progress.txt; exit $flag;  fi
+mv ./dukes/target/JBoss-EAP_on_Azure.war $EAP_HOME/standalone/deployments/JBoss-EAP_on_Azure.war >> install.out.txt 2>&1
+cat > $EAP_HOME/standalone/deployments/JBoss-EAP_on_Azure.war.dodeploy >> install.out.txt 2>&1
 
-echo "Configuring JBoss EAP management user" >> /home/$1/install.progress.txt
-$EAP_HOME/bin/add-user.sh -u $JBOSS_EAP_USER -p $JBOSS_EAP_PASSWORD -g 'guest,mgmtgroup'
+echo "Configuring JBoss EAP management user" >> install.progress.txt
+$EAP_HOME/bin/add-user.sh -u $JBOSS_EAP_USER -p $JBOSS_EAP_PASSWORD -g 'guest,mgmtgroup' >> install.out.txt 2>&1
+flag=$?; if [ $flag != 0 ] ; then echo  "JBoss EAP management user configuration Failed" >> install.progress.txt; exit $flag;  fi
 
 # Open Red Hat software firewall for port 8080 and 9990:
-firewall-cmd --zone=public --add-port=8080/tcp --permanent  >> /home/$1/install.out.txt 2>&1
-firewall-cmd --zone=public --add-port=9990/tcp --permanent  >> /home/$1/install.out.txt 2>&1
-firewall-cmd --reload  >> /home/$1/install.out.txt 2>&1
+firewall-cmd --zone=public --add-port=8080/tcp --permanent  >> install.out.txt 2>&1
+firewall-cmd --zone=public --add-port=9990/tcp --permanent  >> install.out.txt 2>&1
+firewall-cmd --reload  >> install.out.txt 2>&1
     
-echo "Done." >> /home/$1/install.progress.txt
-/bin/date +%H:%M:%S >> /home/$1/install.progress.txt
+echo "Done." >> install.progress.txt
+/bin/date +%H:%M:%S >> install.progress.txt
 
 # Open Red Hat software firewall for port 22:
-firewall-cmd --zone=public --add-port=22/tcp --permanent >> /home/$1/install.out.txt 2>&1
-firewall-cmd --reload >> /home/$1/install.out.txt 2>&1
+firewall-cmd --zone=public --add-port=22/tcp --permanent >> install.out.txt 2>&1
+firewall-cmd --reload >> install.out.txt 2>&1
 
 # Seeing a race condition timing error so sleep to delay
 sleep 20
 
-echo "ALL DONE!" >> /home/$1/install.progress.txt
-/bin/date +%H:%M:%S >> /home/$1/install.progress.txt
+echo "ALL DONE!" >> install.progress.txt
+/bin/date +%H:%M:%S >> install.progress.txt
