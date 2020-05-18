@@ -17,8 +17,9 @@
 5. [Deployment Steps](#deployment-steps)
 6. [Deployment Time](#deployment-time)
 7. [Validation Steps](#validation-steps)
-8. [Notes](#notes)
-9. [Support](#support)
+8. [Troubleshoot](#troubleshoot)
+9. [Notes](#notes)
+10. [Support](#support)
 
 <!-- /TOC -->
 
@@ -120,6 +121,18 @@ The deployment takes less than 10 minutes to complete.
 - Paste the Admin Console URL that you copied from the output page in a browser to access the JBoss EAP Admin Console and enter the JBoss EAP Username and password to login.
 
   ![alt text](images/admin.png)
+
+## Troubleshoot
+
+If your deployment fails due to the script extension, please login to the VM to check the logs for troubleshooting. The logs are stored in the file jbosseap.install.log in path /var/lib/waagent/custom-script/download/0 or /var/lib/waagent/custon-script/download/1. Please run the following commands to check the logs.
+
+- Move to the directory where the logs are stored
+`cd /var/lib/waagent/custom-script/download`
+
+- List the folder inside the download folder using 'ls' command and move into that folder using 'cd' command.
+
+- To view the logs in jbosseap.install.log
+`vi jbosseap.install.log`
 
 ## Notes
 
