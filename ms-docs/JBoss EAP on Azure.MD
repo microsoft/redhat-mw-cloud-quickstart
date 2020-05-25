@@ -1,8 +1,8 @@
 ---
 title: Quickstart - JBoss EAP on Azure for enterprise Java apps
-description: Deploy JBoss EAP on Azure on Red Hat Enterprise Linux  VM for enterprise Java apps
+description: Deploy JBoss EAP on Azure on Red Hat Enterprise Linux VM for enterprise Java apps
 author: SpektraSystems
-ms.author: karler
+ms.author: <To be Updated>
 ms.topic: quickstart
 ms.date: 05/11/2020
 ---
