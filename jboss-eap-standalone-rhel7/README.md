@@ -54,9 +54,7 @@ If you select the RHEL OS License type as PAYG (Pay-As-You-Go), this template us
 
 > When using the On-Demand image, there is an additional hourly RHEL subscription charge for using this image on top of the normal compute, network and storage costs. At the same time, the instance will be registered to your Red Hat subscription, so you will also be using one of your entitlements. This will lead to "double billing". To avoid this, you would need to build your own RHEL image, which is defined in this [Red Hat KB article](https://access.redhat.com/articles/uploading-rhel-image-to-azure).
 
-If you have a valid Red Hat subscription, register for Cloud Access, [request access](https://access.redhat.com/public-cloud) to the BYOS RHEL image in the Private Azure Marketplace and follow the below mentioned steps to avoid the double billing. To use a 3rd party marketplace offer (such as the BYOS private image), you need to provide the following information for the offer - publisher, offer, sku, and version. You also need to enable the offer for programmatic deployment.
-
-If you are only using one pool ID for all nodes, then enter the same pool ID for both 'rhsmPoolId' and 'rhsmBrokerPoolId'.
+If you have a valid Red Hat subscription, register for Cloud Access, [request access](https://access.redhat.com/public-cloud) to the BYOS RHEL image in the Private Azure Marketplace and follow the below mentioned steps to avoid the double billing.
 
 Check [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details on the VM price.
 
@@ -132,20 +130,21 @@ The deployment takes less than 10 minutes to complete.
 
 ## Troubleshoot
 
-This section is to give you a idea on troubleshooting the issues that might face when you deploy this template. If the parameter criteria are not fulfilled(like the Admin Password Criteria) or if any parameter that are mandatory are not filled in the parameters section then the deployment will not start. Also make sure that you accept the terms and condition mentioned before you click on Purchase. Once the deployment starts you can clearly see the resources getting deployed on the deployment page and if any deployment fails you can see which of the resources failed and check the deployment failure message for more details. If your deployment fails due to the script extension, you can see that the VM is already deployed so please login to the VM to check the logs for more troubleshooting. The logs are stored in the file jbosseap.install.log in path /var/lib/waagent/custom-script/download/0 or /var/lib/waagent/custon-script/download/1. The script can fail due to various reasons like incorrect JBoss EAP Username/Password. This log file give you a clear message on why the script failed and exited. So you can use this log file to detect errors and troubleshoot them. Please run the following commands to check the logs once you login to the VM.
+This section is to give you an idea on troubleshooting the issues that you might face when you deploy this template. If the parameter criteria are not fulfilled(like the Admin Password criteria) or if any parameter that are mandatory are not filled in the parameters section then the deployment will not start. Also make sure that you accept the terms and condition mentioned before you click on Purchase. Once the deployment starts you can clearly see the resources getting deployed on the deployment page and if any deployment fails you can see which of the resources failed and check the deployment failure message for more details. If your deployment fails due to the script extension, you can see that the VM is already deployed so please login to the VM to check the logs for more troubleshooting. The logs are stored in the file jbosseap.install.log in path /var/lib/waagent/custom-script/download/0. The script can fail due to various reasons like incorrect RHSM Username/Password. This log file give you a clear message on why the script failed and exited. So you can use this log file to detect errors and troubleshoot them. Please run the following commands to check the logs once you login to the VM.
 
 - Switch to Root user to avoid permission issues
+
 `sudo su -`
 
 - Enter you VM admin Password if prompted. It might prompt you for password only if you selected the Authentication Type as Password.
 
 - Move to the directory where the logs are stored
-`cd /var/lib/waagent/custom-script/download`
 
-- List the folder inside the download folder using 'ls' command and move into the folder displayed (either 0 or 1) using 'cd' command.
+`cd /var/lib/waagent/custom-script/download/0`
 
 - View the logs in jbosseap.install.log
-`vi jbosseap.install.log`
+
+`more jbosseap.install.log`
 
 ## Notes
 
