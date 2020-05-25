@@ -134,17 +134,17 @@ This section is to give you an idea on troubleshooting the issues that you might
 
 - Switch to Root user to avoid permission issues
 
-`sudo su -`
+    `sudo su -`
 
 - Enter your VM admin Password if prompted. It might prompt you for password only if you selected the Authentication Type as Password.
 
 - Move to the directory where the logs are stored
 
-`cd /var/lib/waagent/custom-script/download/0`
+    `cd /var/lib/waagent/custom-script/download/0`
 
 - View the logs in jbosseap.install.log
 
-`more jbosseap.install.log`
+    `more jbosseap.install.log`
 
 ## Notes
 
