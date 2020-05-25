@@ -15,10 +15,7 @@ This quickstart shows you how to deploy JBoss EAP on top of Red Hat Enterprise L
 
 * Azure Subscription with the specified payment method (RHEL 7.7/8.0 is an [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/apps?filters=partners%3Blinux&page=1&search=Red%20Hat%20Enterprise%20Linux) product and requires a payment method to be specified in the Azure Subscription). Note that you will not be able to deploy Red Hat Enterprise Linux in MSDN subscription.
 * To install JBoss EAP, you need to have an Red Hat Account and your Red Hat Subscription Management (RHSM) account needs EAP entitlement to use the Enterprise Application Platform. Set up an account on the [Red Hat Customer Portal](https://access.redhat.com/). You can get an evaluation account for EAP from [here](https://access.redhat.com/products/red-hat-jboss-enterprise-application-platform/evaluation).
-* Review the [JBoss EAP 7 supported configurations](https://access.redhat.com/articles/2026253) and ensure your system is supportable.
-* Ensure that your system is up to date with Red Hat issued updates and errata.
-* Register the Red Hat Enterprise Linux server using Red Hat Subscription Manager if you have used the byos image available on Azure.
-    
+
 ## Use case
 
 Red Hat JBoss Enterprise Application Platform (JBoss EAP) 7.2 is a certified implementation of the Java Enterprise Edition (Java EE) 8 specification. JBoss EAP provides preconfigured options for features such as high-availability clustering, messaging, and distributed caching. It also enables users to write, deploy, and run applications using the various APIs and services that JBoss EAP provides. Check the features of JBoss EAP [here](https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.2/html-single/introduction_to_jboss_eap/index#about_eap).
@@ -59,11 +56,19 @@ In addition to providing functionality and APIs to its applications, JBoss EAP h
     
 JBoss EAP can also work in Cluster, please check [JBoss EAP Clustering](https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.2/html/configuring_messaging/clusters_overview) to know more.
 
+> Note that this quickstart tells you how to deploy 11 templates mentioned below in *ARM Template* section and none of them are deploys JBoss EAP in Domain Server mode.
+
 ## Support and subscription notes
 
-If you do not have RHEL OS license of you own, you will have to use RHEL PAYG (Pay-As-You-Go) marketplace image for deployment. RHEL Pay-As-You-Go image carries a separate hourly charge that is in addition to Microsoft's Linux VM rates. In this case the VM will be licensed automatically after the instance is launched for the first time and total price of the VM consists of the base Linux VM price plus RHEL VM image surcharge. See [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details. You also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP.
+If you select the RHEL OS License type as PAYG (Pay-As-You-Go), this template uses the On-Demand Red Hat Enterprise Linux Pay-As-You-Go image from the Azure Gallery.
 
-If you have a RHEL OS license you can deploy the VM using BYOS (Bring-Your-Own-Subscription) plan. Here your Red Hat Subscription Management (RHSM) account must have both Red Hat Enterprise Linux entitlement (for subscribing the RHEL OS for the VM) and EAP entitlement. To provision the RHEL-BYOS VM in your subscription, you will have to enable it in the Cloud Access from Red Hat portal and activate Red Hat Gold Images for your subscription. You can enable subscription for cloud access by following the instructions mentioned [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/con-enable-subs) and activate the Red Hat Gold Images by following the instructions mentioned [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/using_red_hat_gold_images#con-azure-access). Once your Azure subscription is enabled, please follow this [link](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/redhat/byos) to accept the Marketplace terms for RHEL-BYOS image from your Azure subscription.
+> When using the On-Demand image, there is an additional hourly RHEL subscription charge for using this image on top of the normal compute, network and storage costs. At the same time, the instance will be registered to your Red Hat subscription, so you will also be using one of your entitlements. This will lead to "double billing". To avoid this, you would need to build your own RHEL image, which is defined in this [Red Hat KB article](https://access.redhat.com/articles/uploading-rhel-image-to-azure).
+
+If you have a valid Red Hat subscription, register for Cloud Access, [request access](https://access.redhat.com/public-cloud) to the BYOS RHEL image in the Private Azure Marketplace and follow the below mentioned steps to avoid the double billing.
+
+Check [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details on the VM price.
+
+You can select the RHEL OS License type as BYOS (Bring-Your-Own-Subscription) for deploying the template to avoid double billing. Your RHSM account must have both Red Hat Enterprise Linux entitlement (for subscribing the RHEL OS for the VM) and EAP entitlement and you will have to enter both the pool IDs as mentioned in the template. To provision the RHEL-BYOS VM in your subscription, you will have to enable it in the Cloud Access from Red Hat portal and activate Red Hat Gold Images for your subscription. You can enable subscription for cloud access by following the instructions mentioned [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/con-enable-subs) and activate the Red Hat Gold Images by following the instructions mentioned [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/using_red_hat_gold_images#con-azure-access). Once your Azure subscription is enabled, please follow this [link](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/redhat/byos) to accept the Marketplace terms for RHEL-BYOS image from your Azure subscription.
 
 Note that in both the cases your RHSM account needs EAP entitlement to use the Enterprise Application Platform. You can get an evaluation account for EAP from [here](https://access.redhat.com/products/red-hat-jboss-enterprise-application-platform/evaluation).
 
@@ -71,13 +76,21 @@ Click [here](https://access.redhat.com/products/red-hat-subscription-management)
 
 ## How to consume
 
-You can install JBoss EAP using different methods. You can declare an environment variable named *EAP_HOME* which is used to denote the path to the JBoss EAP installation.
+You can deploy the template in three following ways :
 
-- **ZIP Installation** - The ZIP archive is suitable for installation on all supported operating systems. This method should be used if you wish to extract the instance manually. The ZIP installation provides a default installation of JBoss EAP, and all configuration must be done following installation. Here *EAP_HOME* is the install directory *jboss-eap-7.2* directory where you extracted the ZIP archive.
+- Using Powershell : You can use powershell to deploy the template by running the following commands. Please check [here](https://docs.microsoft.com/en-us/powershell/azure/?view=azps-2.8.0) to install and configure Azure PowerShell.
 
-- **JAR Installer** - The JAR installer can either be run in a console or as a graphical wizard. Both options provide step-by-step instructions for installing and configuring the server instance. This is the preferred method to install JBoss EAP on all supported platforms. Additional setup, including the Quickstarts and Maven repository, is also possible with the installer.
+    `New-AzResourceGroup -Name <resource-group-name> -Location <resource-group-location> #use this command when you need to create a new resource group for your deployment`
 
-- **RPM Installation** - JBoss EAP can be installed using RPM packages on supported installations of Red Hat Enterprise Linux 6, Red Hat Enterprise Linux 7, and Red Hat Enterprise Linux 8. Here *EAP_HOME* is the install directory which is */opt/rh/eap7/root/usr/share/wildfly/*.
+    `New-AzResourceGroupDeployment -ResourceGroupName <resource-group-name> -TemplateUri <raw link to the template which can be obtained from github>`
+    
+- Using Azure CLI : You can use Azure CLI to deploy the template by running the following commands. Please check [here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to install and configure the Azure Cross-Platform Command-Line Interface.
+
+    `az group create --name <resource-group-name> --location <resource-group-location> #use this command when you need to create a new resource group for your deployment`
+
+    `az group deployment create --resource-group <my-resource-group> --template-uri <raw link to the template which can be obtained from github>`
+
+- Using Azure Portal : You can use Azure portal to deploy the template by going to the GitHub links mentioned below in *ARM Template* section and clicking on **Deploy to Azure** button.
 
 ## ARM template
 
@@ -102,22 +115,6 @@ You can install JBoss EAP using different methods. You can declare an environmen
 * <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/jboss-eap-clustered-vmss-rhel8" target="_blank">JBoss EAP 7.2 on RHEL 8.0 (clustered, VMSS)</a> - This Azure template deploys a web application called eap-session-replication on JBoss EAP 7.2 cluster running on RHEL 8.0 VMSS instances.
 
 * <a href="https://github.com/SpektraSystems/redhat-mw-cloud-quickstart/tree/master/jboss-eap7.3-clustered-vmss-rhel8" target="_blank">JBoss EAP 7.3 on RHEL 8.0 (clustered, VMSS)</a> - This Azure template deploys a web application called eap-session-replication on JBoss EAP 7.3 cluster running on RHEL 8.0 VMSS instances.
-
-You can deploy the template in three following ways :
-
-- Using Powershell : You can use powershell to deploy the template by running the following commands. Please check [here](https://docs.microsoft.com/en-us/powershell/azure/?view=azps-2.8.0) to install and configure Azure PowerShell.
-
-    `New-AzResourceGroup -Name <resource-group-name> -Location <resource-group-location> #use this command when you need to create a new resource group for your deployment`
-
-    `New-AzResourceGroupDeployment -ResourceGroupName <resource-group-name> -TemplateUri <raw link to the template which can be obtained from github>`
-    
-- Using Azure CLI : You can use Azure CLI to deploy the template by running the following commands. Please check [here](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to install and configure the Azure Cross-Platform Command-Line Interface.
-
-    `az group create --name <resource-group-name> --location <resource-group-location> #use this command when you need to create a new resource group for your deployment`
-
-    `az group deployment create --resource-group <my-resource-group> --template-uri <raw link to the template which can be obtained from github>`
-
-- Using Azure Portal : You can use Azure portal to deploy the template by going to the GitHub links mentioned above and clicking on **Deploy to Azure** button.
 
 ## Resource Links:
 
