@@ -51,7 +51,13 @@ https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_applicati
 
 ## Licenses, Subscriptions and Costs
 
-If you select the RHEL OS License type as PAYG (Pay-As-You-Go), this template uses the On-Demand Red Hat Enterprise Linux 8.0 Pay-As-You-Go image from the Azure Gallery. When using the On-Demand image, there is an additional hourly RHEL subscription charge for using this image on top of the normal compute, network and storage costs. At the same time, the instance will be registered to your Red Hat subscription, so you will also be using one of your entitlements. Check [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details on the VM price. This will lead to "double billing". To avoid this, you would need to build your own RHEL image, which is defined in this [Red Hat KB article](https://access.redhat.com/articles/uploading-rhel-image-to-azure). In addition you also need to have a Red Hat account to register to Red Hat Subscription Manager (RHSM) and install JBoss EAP. If you have a valid Red Hat subscription, register for Cloud Access, [request access](https://access.redhat.com/public-cloud) to the BYOS RHEL image in the Private Azure Marketplace and follow the below mentioned steps to avoid the double billing.
+If you select the RHEL OS License type as PAYG (Pay-As-You-Go), this template uses the On-Demand Red Hat Enterprise Linux 8.0 Pay-As-You-Go image from the Azure Gallery.
+
+> When using the On-Demand image, there is an additional hourly RHEL subscription charge for using this image on top of the normal compute, network and storage costs. At the same time, the instance will be registered to your Red Hat subscription, so you will also be using one of your entitlements. This will lead to "double billing". To avoid this, you would need to build your own RHEL image, which is defined in this [Red Hat KB article](https://access.redhat.com/articles/uploading-rhel-image-to-azure).
+
+If you have a valid Red Hat subscription, register for Cloud Access, [request access](https://access.redhat.com/public-cloud) to the BYOS RHEL image in the Private Azure Marketplace and follow the below mentioned steps to avoid the double billing.
+
+Check [Red Hat Enterprise Linux pricing](https://azure.microsoft.com/en-us/pricing/details/virtual-machines/red-hat/) for details on the VM price.
 
 You can select the RHEL OS License type as BYOS (Bring-Your-Own-Subscription) for deploying the template to avoid double billing. Your RHSM account must have both Red Hat Enterprise Linux entitlement (for subscribing the RHEL OS for the VM) and EAP entitlement and you will have to enter both the pool IDs as mentioned in the template. To provision the RHEL-BYOS VM in your subscription, you will have to enable it in the Cloud Access from Red Hat portal and activate Red Hat Gold Images for your subscription. You can enable subscription for cloud access by following the instructions mentioned [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/con-enable-subs) and activate the Red Hat Gold Images by following the instructions mentioned [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/using_red_hat_gold_images#con-azure-access). Once your Azure subscription is enabled, please follow this [link](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/redhat/byos) to accept the Marketplace terms for RHEL-BYOS image from your Azure subscription.
 
@@ -144,20 +150,25 @@ The deployment takes about 10 minutes to complete.
 
 ## Troubleshoot
 
-This section is to give you a idea on troubleshooting the issues that might face when you deploy this template. If the parameter criteria are not fulfilled(like the Admin Password criteria) or if any parameter that are mandatory are not filled in the parameters section then the deployment will not start. Also make sure that you accept the terms and condition mentioned before you click on Purchase. Once the deployment starts you can clearly see the resources getting deployed on the deployment page and if any deployment fails you can see which of the resources failed and check the deployment failure message for more details. If your deployment fails due to the script extension, you can see that the VM is already deployed so please login to the VM to check the logs for more troubleshooting. The logs are stored in the file jbosseap.install.log in path /var/lib/waagent/custom-script/download/0 or /var/lib/waagent/custon-script/download/1. The script can fail due to various reasons like incorrect RHSM Username/Password. This log file give you a clear message on why the script failed and exited. So you can use this log file to detect errors and troubleshoot them. Please run the following commands to check the logs once you login to the VM.
+This section is to give you an idea on troubleshooting the issues that you might face when you deploy this template. If the parameter criteria are not fulfilled(like the Admin Password criteria) or if any parameter that are mandatory are not filled in the parameters section then the deployment will not start. Also make sure that you accept the terms and conditions mentioned before you click on Purchase. Once the deployment starts you can clearly see the resources getting deployed on the deployment page and if any deployment fails you can see which of the resources failed and check the deployment failure message for more details. If your deployment fails due to the script extension, you can see that the VM is already deployed so please login to the VM to check the logs for more troubleshooting. The logs are stored in the file jbosseap.install.log in path /var/lib/waagent/custom-script/download/0. The script can fail due to various reasons like incorrect RHSM Username/Password. This log file give you a clear message on why the script failed and exited. So you can use this log file to detect errors and troubleshoot them. Please run the following commands to check the logs once you login to the VM.
 
 - Switch to Root user to avoid permission issues
-`sudo su -`
 
-- Enter you VM admin Password if prompted. It might prompt you for password only if you selected the Authentication Type as Password.
+    `sudo su -`
+
+- Enter your VM admin Password if prompted. It might prompt you for password only if you selected the Authentication Type as Password.
 
 - Move to the directory where the logs are stored
-`cd /var/lib/waagent/custom-script/download`
 
-- List the folder inside the download folder using 'ls' command and move into the folder displayed (either 0 or 1) using 'cd' command.
+    `cd /var/lib/waagent/custom-script/download/0`
 
 - View the logs in jbosseap.install.log
-`vi jbosseap.install.log`
+
+    `more jbosseap.install.log`
+
+If you select BYOS as RHEL OS License type, then please make sure that you complete some pre-requisite steps before you start the deployment. To provision the RHEL-BYOS VM in your subscription, you will have to enable it in the Cloud Access from Red Hat portal and activate Red Hat Gold Images for your subscription. You can enable subscription for cloud access by following the instructions mentioned [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/con-enable-subs) and activate the Red Hat Gold Images by following the instructions mentioned [here](https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/red_hat_cloud_access_reference_guide/using_red_hat_gold_images#con-azure-access). If this is not done you will face issue with validating the template due to marketplace purchase eligibility failed.
+
+Once your Azure subscription is enabled, please follow this [link](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/redhat/byos) to accept the Marketplace terms for RHEL-BYOS image from your Azure subscription otherwise your template will fail.
 
 ## Support
 
